@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function RootPage() {
-  const [currentBGImage, setCurrentBGImage] = useState<string>("default");
+  const [currentBGImage, setCurrentBGImage] =
+    useState<string>("HotTearsMakeup.jpg");
 
   return (
     <div
@@ -12,10 +13,14 @@ export default function RootPage() {
       style={{ backgroundImage: `url('${currentBGImage}')` }}
     >
       <div className="h-full flex justify-center">
-        <div className="flex flex-col justify-evenly pt-[15vh] pb-[10vh] text-center">
+        <div
+          className="flex flex-col justify-evenly pt-[15vh] pb-[10vh] text-center"
+          onMouseLeave={() => setCurrentBGImage("HotTearsMakeup.jpg")}
+        >
           <div>
             <Link
               href={"/film/grins"}
+              onMouseOver={() => setCurrentBGImage("Mike_and_abby.jpg")}
               className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
             >
               GRINS
@@ -42,6 +47,7 @@ export default function RootPage() {
           <div>
             <Link
               href={"/film/craigslist"}
+              onMouseOver={() => setCurrentBGImage("Mike_tongue_out.jpg")}
               className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
             >
               CRAIGSLIST

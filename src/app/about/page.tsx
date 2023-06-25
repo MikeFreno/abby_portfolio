@@ -8,7 +8,7 @@ export default function AboutPage() {
           <div className="text-3xl font-semibold pb-8 tracking-wider">
             Abigail Weinick
           </div>
-          <p className="w-1/3 pb-8">
+          <p className="w-3/4 pb-8">
             Abby is an award-winning artist based in Brooklyn, New York with a
             background in writing, directing, and photography. Originally from
             Readington, New Jersey, Abby graduated from Mason Gross at Rutgers
@@ -20,12 +20,12 @@ export default function AboutPage() {
             <div>abigailweinick@gmail.com</div>
           </div>
         </div>
-        <div className="my-auto px">
+        <div className="my-auto pr-12">
           <Image
             src={"/Abby_self_mirror.jpg"}
             alt="abby-in-mirror"
             height={600}
-            width={600}
+            width={1000}
           />
         </div>
       </div>
