@@ -8,7 +8,7 @@ export default function RootPage() {
 
   return (
     <div
-      className={`h-screen w-screen bg-cover bg-fixed bg-center bg-no-repeat page-fade-in`}
+      className={`h-screen w-screen bg-cover bg-fixed bg-center bg-no-repeat page-fade-in transition-all ease-in-out duration-700`}
       style={{ backgroundImage: `url('${currentBGImage}')` }}
     >
       <div className="h-full flex justify-center">
@@ -24,6 +24,7 @@ export default function RootPage() {
           <div>
             <Link
               href={"/film/hottears"}
+              onMouseOver={() => setCurrentBGImage("TempHotTears.jpg")}
               className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
             >
               HOT TEARS
@@ -32,6 +33,7 @@ export default function RootPage() {
           <div>
             <Link
               href={"/film/dirt"}
+              onMouseOver={() => setCurrentBGImage("DirtLipstick.jpg")}
               className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
             >
               DIRT

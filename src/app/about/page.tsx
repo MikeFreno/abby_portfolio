@@ -20,14 +20,14 @@ export default function AboutPage() {
             <div>abigailweinick@gmail.com</div>
           </div>
         </div>
-      </div>
-      <div className="absolute h-screen">
-        <Image
-          src={"/Abby_self_mirror.jpg"}
-          alt="abby-in-mirror"
-          height={600}
-          width={600}
-        />
+        <div className="my-auto px">
+          <Image
+            src={"/Abby_self_mirror.jpg"}
+            alt="abby-in-mirror"
+            height={600}
+            width={600}
+          />
+        </div>
       </div>
     </div>
   );
