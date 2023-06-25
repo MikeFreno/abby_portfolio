@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RootPage() {
   const [currentBGImage, setCurrentBGImage] =
     useState<string>("HotTearsMakeup.jpg");
-
   return (
     <div
       className={`h-screen w-screen bg-cover bg-fixed bg-center bg-no-repeat page-fade-in transition-all ease-in-out duration-700`}
