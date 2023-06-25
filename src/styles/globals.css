@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hover-underline-animation {
+  display: inline-block;
+  position: relative;
+}
+
+.hover-underline-animation::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1.5px;
+  bottom: 0;
+  left: 0;
+  background-color: #27272a;
+  transform-origin: bottom right;
+  transition: transform 0.35s ease-out;
+}
+
+.hover-underline-animation:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+#LineA,
+#LineB {
+  transition: all 0.5s ease;
+}
+#menu {
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+.LineA {
+  transform: translate(20px, -14px) rotate(45deg);
+}
+.LineB {
+  transform: translate(-50px, 48px) rotate(-45deg);
+}
+.fade-in {
+  opacity: 0;
+  animation: fade-in 0.5s ease-in-out forwards;
+}
+.fade-in-long {
+  opacity: 0;
+  animation: fade-in 1s ease-in-out forwards;
+}
+.fade-out {
+  opacity: 1;
+  animation: fade-out 0.5s ease-in-out forwards;
+}
+.page-fade-in {
+  opacity: 0;
+  animation: fade-in 1s ease-in forwards;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
