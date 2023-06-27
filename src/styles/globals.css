@@ -2,12 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-.hover-underline-animation {
+.hover-underline-animation-black {
   display: inline-block;
   position: relative;
 }
 
-.hover-underline-animation::after {
+.hover-underline-animation-black::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -20,10 +20,34 @@
   transition: transform 0.35s ease-out;
 }
 
-.hover-underline-animation:hover::after {
+.hover-underline-animation-black:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
+
+.hover-underline-animation-white {
+  display: inline-block;
+  position: relative;
+}
+
+.hover-underline-animation-white::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1.5px;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom right;
+  transition: transform 0.35s ease-out;
+}
+
+.hover-underline-animation-white:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 #LineA,
 #LineB {
   transition: all 0.5s ease;
@@ -69,4 +93,70 @@
   to {
     opacity: 0;
   }
+}
+.input-group {
+  position: relative;
+  margin-top: 45px;
+}
+
+input {
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+  outline: none;
+}
+
+.bar {
+  position: relative;
+  display: block;
+}
+
+.bar:before,
+.bar:after {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 0px;
+  position: absolute;
+  background: #34d399;
+  transition: width 0.3s ease-out;
+}
+
+.bar:before {
+  left: 50%;
+}
+
+.bar:after {
+  right: 50%;
+}
+
+input:focus ~ .bar:before,
+input:focus ~ .bar:after {
+  width: 50%;
+}
+
+input:focus ~ label,
+input:valid ~ label {
+  top: -20px;
+  font-size: 14px;
+  color: #34d399;
+}
+
+label {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.scroll-y-disabled {
+  overflow: hidden;
 }

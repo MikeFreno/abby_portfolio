@@ -1,9 +1,9 @@
 import "~/styles/globals.css";
 
-import { MuseoModerno, Raleway } from "next/font/google";
+import { Playfair_Display, Raleway } from "next/font/google";
 import Navbar from "./Navbar";
 
-const museo = MuseoModerno({ subsets: ["latin"] });
+const playfair = Playfair_Display({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Abigail Weinick",
@@ -16,12 +16,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth scroll-y-disabled">
       <link rel="icon" href="/favicon.ico" sizes="any" />
-      <body className={museo.className}>
-        <Navbar />
-        {children}
-      </body>
+      <body className={playfair.className}>{children}</body>
     </html>
   );
 }

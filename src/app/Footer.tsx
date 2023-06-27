@@ -14,7 +14,7 @@ export default function Footer() {
           href="https://www.instagram.com/_abigailthesnail_/"
           target="_blank"
           rel="noreferrer"
-          className="mx-2"
+          className="ml-2"
         >
           <InstagramLogo height={20} width={20} />
         </a>

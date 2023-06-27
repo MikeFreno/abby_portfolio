@@ -8,7 +8,11 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed w-full z-50">
+      <div
+        className={`${
+          pathname == "/" ? "text-white" : "text-black"
+        } fixed w-full z-50`}
+      >
         <div className="flex justify-between px-12 py-6 md:px-16 md:py-8">
           <Link
             href={"/"}
@@ -22,8 +26,10 @@ export default function Navbar() {
               className={`${
                 pathname == "/" || pathname.split("/")[1] == "film"
                   ? "underline underline-offset-4"
-                  : "hover-underline-animation"
-              } mx-4 px-2  my-auto`}
+                  : pathname == "/"
+                  ? "hover-underline-animation-white"
+                  : "hover-underline-animation-black"
+              } mx-2 px-2 my-auto`}
             >
               Film
             </Link>
@@ -33,8 +39,10 @@ export default function Navbar() {
                 pathname == "/photography" ||
                 pathname.split("/")[1] == "photography"
                   ? "underline underline-offset-4"
-                  : "hover-underline-animation"
-              } mx-4 px-2  my-auto`}
+                  : pathname == "/"
+                  ? "hover-underline-animation-white"
+                  : "hover-underline-animation-black"
+              } mx-2 px-2 my-auto`}
             >
               Photography
             </Link>
@@ -44,8 +52,10 @@ export default function Navbar() {
                 pathname == "/commercial" ||
                 pathname.split("/")[1] == "commercial"
                   ? "underline underline-offset-4"
-                  : "hover-underline-animation"
-              } mx-4 px-2  my-auto`}
+                  : pathname == "/"
+                  ? "hover-underline-animation-white"
+                  : "hover-underline-animation-black"
+              } mx-2 px-2 my-auto`}
             >
               Commercial Work
             </Link>
@@ -54,8 +64,10 @@ export default function Navbar() {
               className={`${
                 pathname == "/about" || pathname.split("/")[1] == "about"
                   ? "underline underline-offset-4"
-                  : "hover-underline-animation"
-              } mx-4 px-2  my-auto`}
+                  : pathname == "/"
+                  ? "hover-underline-animation-white"
+                  : "hover-underline-animation-black"
+              } mx-2 px-2 my-auto`}
             >
               About
             </Link>
