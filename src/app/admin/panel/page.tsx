@@ -9,7 +9,11 @@ export default async function AdminMainPage() {
   if (authStatus === 202) {
     return (
       <div className="h-screen w-screen flex flex-col justify-center align-middle">
-        <div className="text-center">hi abby</div>
+        <div className="fixed left-0 h-screen bg-emerald-200 w-64">
+          <button>Movie Section Controls</button>
+          <button>Photography Section Controls</button>
+          <button>Commercial Section Controls</button>
+        </div>
       </div>
     );
   } else {
@@ -17,7 +21,7 @@ export default async function AdminMainPage() {
       <div className="h-screen w-screen flex flex-col justify-center align-middle">
         <div className="text-center">Not authorized</div>
         <Link
-          href={"/admin"}
+          href={"/admin/login"}
           className="px-4 py-2 bg-emerald-400 mx-auto rounded-md"
         >
           Back to login
