@@ -19,7 +19,6 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth scroll-y-disabled">
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <body className={playfair.className}>
-        <Navbar />
         {children}
       </body>
     </html>

@@ -1,5 +1,4 @@
-import Footer from "../Footer";
-import Navbar from "../Navbar";
+import QuickSelectControls from "./QuickSelectControls";
 
 export default function NonRootLayout({
   children,
@@ -8,9 +7,8 @@ export default function NonRootLayout({
 }) {
   return (
     <section>
-      <Navbar />
+      <QuickSelectControls />
       {children}
-      <Footer />
     </section>
   );
 }

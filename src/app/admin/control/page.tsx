@@ -3,18 +3,13 @@ import Link from "next/link";
 import jwt from "jsonwebtoken";
 import { env } from "~/env.mjs";
 import { redirect } from "next/navigation";
+import QuickSelectControls from "./QuickSelectControls";
 
 export default async function AdminMainPage() {
   const authStatus = await checkAuth();
   if (authStatus === 202) {
     return (
-      <div className="h-screen w-screen flex flex-col justify-center align-middle">
-        <div className="fixed left-0 h-screen bg-emerald-200 w-64">
-          <button>Movie Section Controls</button>
-          <button>Photography Section Controls</button>
-          <button>Commercial Section Controls</button>
-        </div>
-      </div>
+      <div className="h-screen w-screen flex flex-col justify-center align-middle"></div>
     );
   } else {
     return (

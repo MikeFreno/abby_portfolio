@@ -5,9 +5,9 @@ import { cookies } from "next/headers";
 
 export default async function AdminLoginPage() {
   const authStatus = await checkAuth();
-
   async function adminLogin(data: FormData) {
     "use server";
+
     const userName = data.get("username")?.toString();
     const password = data.get("password")?.toString();
     if (userName == env.ADMIN_USERNAME && password == env.ADMIN_PASSWORD) {
@@ -26,7 +26,7 @@ export default async function AdminLoginPage() {
         httpOnly: true,
         sameSite: "strict",
       });
-      redirect("/admin/panel");
+      redirect("/admin/control");
     }
   }
 
@@ -36,12 +36,7 @@ export default async function AdminLoginPage() {
         <div className="text-3xl text-center pt-[15vh]">Admin Login</div>
         <div className="flex justify-center">
           <form
-            action={() => {
-              adminLogin;
-              document
-                .getElementById("error-message")
-                ?.classList.remove("hidden");
-            }}
+            action={adminLogin}
             className="flex flex-col justify-evenly pt-4"
           >
             <div className="input-group">
@@ -91,7 +86,7 @@ async function checkAuth() {
         returnValue = 401;
       } else {
         returnValue = 202;
-        redirect("/admin/panel");
+        redirect("/admin/control");
       }
     });
   } else {

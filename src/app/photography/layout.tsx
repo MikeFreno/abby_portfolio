@@ -1,4 +1,5 @@
 import Footer from "../Footer";
+import Navbar from "../Navbar";
 
 export default function NonRootLayout({
   children,
@@ -7,6 +8,7 @@ export default function NonRootLayout({
 }) {
   return (
     <section>
+      <Navbar />
       {children}
       <Footer />
     </section>
