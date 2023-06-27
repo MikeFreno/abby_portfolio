@@ -202,6 +202,14 @@ export default function QuickSelectControls() {
             </div>
           ) : null}
         </div>
+        <div className={`fixed bottom-12 left-12`}>
+          <Link
+            href={"/"}
+            className="mx-auto text-xl hover-underline-animation-black"
+          >
+            Go to home
+          </Link>
+        </div>
       </div>
     </>
   );

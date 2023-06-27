@@ -1,3 +1,3 @@
 export default function CreatePage({ params }: { params: { type: string } }) {
-  return <div>Create Type: {params.type}</div>;
+  return <div className="">Create Type: {params.type}</div>;
 }
