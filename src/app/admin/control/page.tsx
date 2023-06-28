@@ -1,9 +1,8 @@
-import Link from "next/link";
-import { checkAuth } from "./actions";
+import QuickSelectControls from "./QuickSelectControls";
 
 export default async function AdminMainPage() {
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen w-full px-12">
       <div className="text-center">All Drafts</div>
     </div>
   );

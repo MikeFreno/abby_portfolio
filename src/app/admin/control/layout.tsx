@@ -1,6 +1,6 @@
 import Link from "next/link";
-import QuickSelectControls from "./QuickSelectControls";
 import { checkAuth } from "./actions";
+import QuickSelectControls from "./QuickSelectControls";
 
 export const metadata = {
   title: "Admin | Abigail Weinick",

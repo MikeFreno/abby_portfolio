@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ChevronDown from "~/icons/ChevronDown";
 import MenuBars from "~/icons/MenuBars";
 import { CookieDestruction } from "./actions";
+import { usePathname } from "next/navigation";
 
-export default async function QuickSelectControls() {
+export default function QuickSelectControls() {
   const [showingMenu, setShowingMenu] = useState<boolean>(true);
   const [movieControlsShowing, setMovieControlsShowing] =
     useState<boolean>(false);
@@ -56,7 +56,7 @@ export default async function QuickSelectControls() {
     <>
       <button
         onClick={menuToggle}
-        className={`z-50 mt-2 ml-2 flex justify-end fixed my-auto`}
+        className={`z-50 mt-2 ml-2 fixed justify-end my-auto`}
         ref={closeRef}
       >
         <MenuBars stroke={"black"} />
@@ -65,7 +65,7 @@ export default async function QuickSelectControls() {
         ref={menuRef}
         className={`${
           showingMenu ? "" : "-translate-x-full"
-        } transition-all duration-700 ease-in-out fixed top-0 overflow-scroll left-0 h-screen bg-emerald-200`}
+        } transition-all duration-700 ease-in-out top-0 fixed overflow-scroll left-0 h-screen bg-emerald-200`}
       >
         <div className="text-center text-3xl underline pt-8">Quick Select</div>
         <div className="flex flex-col mx-8">

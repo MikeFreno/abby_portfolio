@@ -3,5 +3,5 @@ export default function DraftMainPage({
 }: {
   params: { type: string };
 }) {
-  return <div>Draft Type: {params.type}</div>;
+  return <div className="px-12">Draft Type: {params.type}</div>;
 }
