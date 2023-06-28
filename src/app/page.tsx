@@ -3,6 +3,17 @@
 import Link from "next/link";
 import { useState } from "react";
 import Navbar from "./Navbar";
+import {
+  Gilda_Display,
+  Amita,
+  Fredericka_the_Great,
+  Mali,
+} from "next/font/google";
+
+const gilda = Gilda_Display({ weight: "400", subsets: ["latin"] });
+const amita = Amita({ weight: "400", subsets: ["latin"] });
+const fredericka = Fredericka_the_Great({ weight: "400", subsets: ["latin"] });
+const mali = Mali({ weight: "400", subsets: ["latin"] });
 
 export default function RootPage() {
   const [currentBGImage, setCurrentBGImage] =
@@ -21,14 +32,14 @@ export default function RootPage() {
       >
         <div className="h-full flex justify-center">
           <div
-            className="flex flex-col justify-evenly pt-[15vh] pb-[10vh] text-center px-8"
+            className={`flex flex-col justify-evenly pt-[15vh] pb-[10vh] text-center px-8`}
             onMouseLeave={() => setCurrentBGImage("HotTearsMakeup.jpg")}
           >
             <div>
               <Link
                 href={"/film/grins"}
                 onMouseOver={() => setCurrentBGImage("Mike_and_abby.jpg")}
-                className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
+                className={`${gilda.className} text-6xl transition-all duration-500 ease-in-out hover:tracking-wider`}
               >
                 GRINS
               </Link>
@@ -37,7 +48,7 @@ export default function RootPage() {
               <Link
                 href={"/film/hottears"}
                 onMouseOver={() => setCurrentBGImage("TempHotTears.jpg")}
-                className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
+                className={`${amita.className} text-6xl transition-all duration-500 ease-in-out hover:tracking-wider`}
               >
                 HOT TEARS
               </Link>
@@ -46,7 +57,7 @@ export default function RootPage() {
               <Link
                 href={"/film/dirt"}
                 onMouseOver={() => setCurrentBGImage("DirtLipstick.jpg")}
-                className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
+                className={`${fredericka.className} text-6xl transition-all duration-500 ease-in-out hover:tracking-wider`}
               >
                 DIRT
               </Link>
@@ -55,7 +66,7 @@ export default function RootPage() {
               <Link
                 href={"/film/craigslist"}
                 onMouseOver={() => setCurrentBGImage("Mike_tongue_out.jpg")}
-                className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
+                className={`${mali.className} text-6xl transition-all duration-500 ease-in-out hover:tracking-wider`}
               >
                 CRAIGSLIST
               </Link>

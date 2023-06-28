@@ -1,9 +1,8 @@
-import Footer from "../Footer";
-import Navbar from "../Navbar";
+import Navbar from "~/app/Navbar";
 
 export const metadata = {
-  title: "Commercial Work | Abigail Weinick",
-  description: "Commercial Work",
+  title: "Login | Abigail Weinick",
+  description: "Admin Login",
 };
 
 export default function NonRootLayout({
@@ -15,7 +14,6 @@ export default function NonRootLayout({
     <section>
       <Navbar />
       {children}
-      <Footer />
     </section>
   );
 }

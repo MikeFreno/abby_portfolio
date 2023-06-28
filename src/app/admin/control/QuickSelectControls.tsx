@@ -1,14 +1,14 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ChevronDown from "~/icons/ChevronDown";
 import MenuBars from "~/icons/MenuBars";
-import { CookieDestruction } from "./cookieDestruction";
+import { CookieDestruction } from "./actions";
 
-export default function QuickSelectControls() {
+export default async function QuickSelectControls() {
   const [showingMenu, setShowingMenu] = useState<boolean>(true);
-
   const [movieControlsShowing, setMovieControlsShowing] =
     useState<boolean>(false);
   const [photographyControlsShowing, setPhotographyControlsShowing] =
@@ -35,6 +35,7 @@ export default function QuickSelectControls() {
   const menuToggle = () => {
     setShowingMenu(!showingMenu);
   };
+
   useEffect(() => {
     if (showingMenu) {
       document.getElementById("LineA")?.classList.add("LineA");
