@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
+import "~/styles/tiptap_styles.scss";
 
-import { Playfair_Display, Raleway } from "next/font/google";
-import Navbar from "./Navbar";
+import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({ subsets: ["latin"] });
 
