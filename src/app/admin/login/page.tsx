@@ -1,31 +1,43 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { env } from "~/env.mjs";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 export default async function AdminLoginPage() {
-  const authStatus = await checkAuth();
+  const getAuth = await checkAuth();
+
   async function adminLogin(data: FormData) {
     "use server";
 
     const userName = data.get("username")?.toString();
     const password = data.get("password")?.toString();
+    const rememberMeValue = data.get("rememberMe"); //'on' or 'off'
     if (userName == env.ADMIN_USERNAME && password == env.ADMIN_PASSWORD) {
       const accessToken = jwt.sign(
-        {
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 14,
-          data: userName,
-        },
+        rememberMeValue == "on"
+          ? {
+              exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 14,
+              data: env.JWT_ENCODED_VALUE,
+            }
+          : { data: env.JWT_ENCODED_VALUE },
         env.JWT_SECRET_KEY
       );
-      cookies().set({
-        name: "token",
-        value: accessToken,
-        maxAge: 60 * 60 * 24 * 14,
-        path: "/admin",
-        httpOnly: true,
-        sameSite: "strict",
-      });
+      rememberMeValue == "on"
+        ? cookies().set({
+            name: "token",
+            value: accessToken,
+            maxAge: 60 * 60 * 24 * 14,
+            path: "/admin",
+            httpOnly: true,
+            sameSite: "strict",
+          })
+        : cookies().set({
+            name: "token",
+            value: accessToken,
+            path: "/admin",
+            httpOnly: true,
+            sameSite: "strict",
+          });
       redirect("/admin/control");
     }
   }
@@ -59,6 +71,12 @@ export default async function AdminLoginPage() {
               <span className="bar"></span>
               <label>Password</label>
             </div>
+            <div className="flex pt-4">
+              <input type="checkbox" className="my-auto" name="rememberMe" />
+              <div className="my-auto px-2 text-sm font-normal">
+                Remember Me
+              </div>
+            </div>
             <div className="flex justify-end pt-4">
               <button
                 type="submit"
@@ -81,10 +99,10 @@ async function checkAuth() {
   const token = cookies().get("token");
   let returnValue;
   if (token) {
-    jwt.verify(token.value, env.JWT_SECRET_KEY, (err) => {
+    jwt.verify(token.value, env.JWT_SECRET_KEY, (err, value) => {
       if (err) {
         returnValue = 401;
-      } else {
+      } else if ((value as JwtPayload).data === env.JWT_ENCODED_VALUE) {
         returnValue = 202;
         redirect("/admin/control");
       }

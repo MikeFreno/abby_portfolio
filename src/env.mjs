@@ -11,6 +11,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     ADMIN_USERNAME: z.string().min(1),
     ADMIN_PASSWORD: z.string().min(1),
+    JWT_ENCODED_VALUE: z.string().min(1),
     JWT_SECRET_KEY: z.string().min(1),
   },
 
@@ -31,6 +32,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     ADMIN_USERNAME: process.env.ADMIN_USERNAME,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+    JWT_ENCODED_VALUE: process.env.JWT_ENCODED_VALUE,
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
   },
   /**

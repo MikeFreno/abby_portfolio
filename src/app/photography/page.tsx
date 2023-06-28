@@ -1,3 +1,3 @@
 export default function PhotographyPage() {
-  return <></>;
+  return <div className="min-h-screen"></div>;
 }

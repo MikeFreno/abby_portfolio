@@ -1,15 +1,16 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { env } from "~/env.mjs";
 import { redirect } from "next/navigation";
-import QuickSelectControls from "./QuickSelectControls";
 
 export default async function AdminMainPage() {
   const authStatus = await checkAuth();
   if (authStatus === 202) {
     return (
-      <div className="h-screen w-screen flex flex-col justify-center align-middle"></div>
+      <div className="min-h-screen w-full">
+        <div className="text-center">All Drafts</div>
+      </div>
     );
   } else {
     return (
@@ -30,11 +31,11 @@ async function checkAuth() {
   const token = cookies().get("token");
   let returnValue;
   if (token) {
-    jwt.verify(token.value, env.JWT_SECRET_KEY, (err) => {
+    jwt.verify(token.value, env.JWT_SECRET_KEY, (err, value) => {
       if (err) {
         returnValue = 401;
         redirect("/admin");
-      } else {
+      } else if ((value as JwtPayload).data === env.JWT_ENCODED_VALUE) {
         returnValue = 202;
       }
     });

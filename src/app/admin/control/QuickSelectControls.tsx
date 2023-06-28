@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ChevronDown from "~/icons/ChevronDown";
 import MenuBars from "~/icons/MenuBars";
+import { CookieDestruction } from "./cookieDestruction";
 
 export default function QuickSelectControls() {
   const [showingMenu, setShowingMenu] = useState<boolean>(true);
@@ -13,6 +15,8 @@ export default function QuickSelectControls() {
     useState<boolean>(false);
   const [commercialControlsShowing, setCommercialControlsShowing] =
     useState<boolean>(false);
+
+  const pathname = usePathname();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -41,6 +45,12 @@ export default function QuickSelectControls() {
     }
   }, [showingMenu]);
 
+  useEffect(() => {
+    if (pathname != "/admin/control") {
+      setShowingMenu(false);
+    }
+  }, [pathname]);
+
   return (
     <>
       <button
@@ -54,7 +64,7 @@ export default function QuickSelectControls() {
         ref={menuRef}
         className={`${
           showingMenu ? "" : "-translate-x-full"
-        } transition-all duration-700 ease-in-out fixed top-0 left-0 h-screen bg-emerald-200`}
+        } transition-all duration-700 ease-in-out fixed top-0 overflow-scroll left-0 h-screen bg-emerald-200`}
       >
         <div className="text-center text-3xl underline pt-8">Quick Select</div>
         <div className="flex flex-col mx-8">
@@ -202,13 +212,30 @@ export default function QuickSelectControls() {
             </div>
           ) : null}
         </div>
-        <div className={`fixed bottom-12 left-12`}>
-          <Link
-            href={"/"}
-            className="mx-auto text-xl hover-underline-animation-black"
-          >
-            Go to home
-          </Link>
+        <div className="flex flex-col pt-64 px-4">
+          <div className="left-8 py-2">
+            <Link
+              href={"/admin/control"}
+              className="mx-auto text-xl hover-underline-animation-black"
+            >
+              Go to admin main
+            </Link>
+          </div>
+          <div className="left-8 py-2">
+            <a
+              href={"/"}
+              className="mx-auto text-xl hover-underline-animation-black"
+            >
+              Go to website home
+            </a>
+          </div>
+          <form action={CookieDestruction}>
+            <button type="submit" className="left-8 py-2 flex justify-start">
+              <div className="text-xl hover-underline-animation-black">
+                Sign out
+              </div>
+            </button>
+          </form>
         </div>
       </div>
     </>

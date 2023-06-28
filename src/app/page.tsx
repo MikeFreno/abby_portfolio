@@ -21,7 +21,7 @@ export default function RootPage() {
       >
         <div className="h-full flex justify-center">
           <div
-            className="flex flex-col justify-evenly pt-[15vh] pb-[10vh] text-center"
+            className="flex flex-col justify-evenly pt-[15vh] pb-[10vh] text-center px-8"
             onMouseLeave={() => setCurrentBGImage("HotTearsMakeup.jpg")}
           >
             <div>

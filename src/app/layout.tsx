@@ -18,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth scroll-y-disabled">
       <link rel="icon" href="/favicon.ico" sizes="any" />
-      <body className={playfair.className}>
-        {children}
-      </body>
+      <body className={`${playfair.className}`}>{children}</body>
     </html>
   );
 }
