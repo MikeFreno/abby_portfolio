@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { checkAuth } from "./actions";
 import QuickSelectControls from "./QuickSelectControls";
-
+import "~/styles/styles.scss";
 export const metadata = {
   title: "Admin | Abigail Weinick",
   description: "Admin Control",

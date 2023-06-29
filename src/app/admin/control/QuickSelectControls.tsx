@@ -65,7 +65,7 @@ export default function QuickSelectControls() {
         ref={menuRef}
         className={`${
           showingMenu ? "" : "-translate-x-full"
-        } transition-all duration-700 ease-in-out top-0 fixed overflow-scroll left-0 h-screen bg-emerald-200`}
+        } transition-all duration-700 ease-in-out top-0 z-40 fixed overflow-scroll left-0 h-screen bg-emerald-200`}
       >
         <div className="text-center text-3xl underline pt-8">Quick Select</div>
         <div className="flex flex-col mx-8">

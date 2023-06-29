@@ -112,7 +112,7 @@
   margin-top: 45px;
 }
 
-input {
+input.underlinedInput {
   font-size: 18px;
   padding: 10px 10px 10px 5px;
   display: block;
@@ -120,7 +120,7 @@ input {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-input:focus {
+input.underlinedInput:focus {
   outline: none;
 }
 
@@ -148,19 +148,19 @@ input:focus {
   right: 50%;
 }
 
-input:focus ~ .bar:before,
-input:focus ~ .bar:after {
+input.underlinedInput:focus ~ .bar:before,
+input.underlinedInput:focus ~ .bar:after {
   width: 50%;
 }
 
-input:focus ~ label,
-input:not(:placeholder-shown) ~ label {
+input.underlinedInput:focus ~ label,
+input.underlinedInput:not(:placeholder-shown) ~ label {
   top: -20px;
   font-size: 14px;
   color: #34d399;
 }
 
-label {
+label.underlinedInputLabel {
   color: rgba(0, 0, 0, 0.4);
   font-size: 18px;
   font-weight: normal;
@@ -248,7 +248,7 @@ input[type="checkbox"] {
   margin: 0;
 
   font: inherit;
-  width: 1.35em;
+  width: 1.15em;
   height: 1.15em;
   border: 0.15em solid #34d399;
   border-radius: 0.15em;
@@ -264,7 +264,6 @@ input[type="checkbox"]::before {
   height: 0.65em;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
   transform: scale(0);
-  margin-left: 5px;
   color: #34d399;
   transform-origin: bottom left;
   transition: 120ms transform ease-in-out;
@@ -280,4 +279,7 @@ input[type="checkbox"]:checked::before {
   -webkit-box-shadow: 0px 0 25px 5px black;
   box-shadow: 0px 0 25px 5px #3f3f46;
   animation: shadowfadein 1.5s forwards; /* Start the animation */
+}
+.ProseMirror {
+  padding: 4px 4px 4px 4px;
 }

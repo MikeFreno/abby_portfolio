@@ -55,21 +55,23 @@ export default async function AdminLoginPage() {
               <input
                 type="text"
                 required
-                className="bg-transparent"
+                className="bg-transparent underlinedInput"
                 name="username"
+                placeholder=" "
               />
               <span className="bar"></span>
-              <label>Username</label>
+              <label className="underlinedInputLabel">Username</label>
             </div>
             <div className="input-group">
               <input
                 type="password"
                 required
-                className="bg-transparent"
+                className="bg-transparent underlinedInput"
                 name="password"
+                placeholder=" "
               />
               <span className="bar"></span>
-              <label>Password</label>
+              <label className="underlinedInputLabel">Password</label>
             </div>
             <div className="flex pt-4">
               <input type="checkbox" className="my-auto" name="rememberMe" />

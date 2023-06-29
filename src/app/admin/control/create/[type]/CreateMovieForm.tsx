@@ -7,10 +7,10 @@ import Dropzone from "~/components/Dropzone";
 export default function CreateMovieForm() {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
-  const [imageHolder, setImageHolder] = useState<string | ArrayBuffer | null>(
-    null
-  );
+  const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
+  const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
 
+  const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
 
@@ -26,65 +26,103 @@ export default function CreateMovieForm() {
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
-        setImageHolder(str);
+        if (str) setImageHolder((prevHeldImages) => [...prevHeldImages, str]);
       };
       reader.readAsDataURL(file);
     });
   }, []);
+
+  const savingStateToggle = () => {
+    setSavingAsDraft(!savingAsDraft);
+  };
 
   const createMoviePage = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen overflow-scroll py-8">
       <div className="text-2xl text-center">Create A Movie Post</div>
       <div className="flex justify-center">
         <form
           onSubmit={createMoviePage}
           className="flex flex-col align-middle justify-evenly w-1/2"
         >
-          <div className="input-group">
+          <div className="input-group mx-auto">
             <input
               ref={titleRef}
               type="text"
-              className="bg-transparent w-[500px]"
+              className="bg-transparent w-[500px] underlinedInput"
               name="title"
+              required
               placeholder=" "
             />
             <span className="bar"></span>
-            <label>Title</label>
+            <label className="underlinedInputLabel">Title</label>
           </div>
-          <div className="pt-4">
-            <TextEditor updateContent={setEditorContent} />
+          <div className="py-4">
+            <div className="text-center font-light text-lg">
+              Enter Blurb below (optional)
+            </div>
+            <div className="pt-4 prose lg:prose-lg ProseMirror">
+              <TextEditor updateContent={setEditorContent} />
+            </div>
           </div>
-
-          <div className="input-group">
+          <div className="input-group mx-auto">
             <input
               ref={linkRef}
               type="text"
-              className="bg-transparent w-[500px]"
+              className="bg-transparent w-[500px] underlinedInput"
               name="link"
               placeholder=" "
             />
             <span className="bar"></span>
-            <label>Link to embed</label>
+            <label className="underlinedInputLabel">
+              Link to embed (optional)
+            </label>
           </div>
-          {images.map((image) => (
-            <Dropzone
-              key={images.indexOf(image)}
-              onDrop={handleImageDrop}
-              acceptedFiles={"image/jpg, image/jpeg, image/png"}
-              fileHolder={image}
-            />
-          ))}
-
-          <div className="flex justify-end pt-4">
+          <div className="flex flex-col">
+            <div className="text-center text-lg pt-4 -mb-2 font-light">
+              Awards / other images
+            </div>
+            <div className="mx-auto flex">
+              {images.map((image, index) => (
+                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+                <img
+                  key={index}
+                  src={imageHolder[index] as string}
+                  className="w-36 h-36 my-auto mx-4"
+                />
+              ))}
+              <Dropzone
+                onDrop={handleImageDrop}
+                acceptedFiles={"image/jpg, image/jpeg, image/png"}
+              />
+            </div>
+          </div>
+          <div className="flex justify-evenly pt-4">
+            <div className="flex my-auto">
+              <input
+                type="checkbox"
+                className="my-auto"
+                checked={!savingAsDraft}
+                ref={postCheckboxRef}
+                onClick={savingStateToggle}
+                readOnly
+              />
+              <div className="my-auto px-2 text-sm font-normal">
+                Check to Post
+              </div>
+            </div>
             <button
               type="submit"
-              className="rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
+              className={`${
+                !savingAsDraft
+                  ? "w-32 border-emerald-500 bg-emerald-400 hover:bg-emerald-500"
+                  : "w-36 border-blue-500 bg-blue-400 hover:bg-blue-500 "
+              } rounded border text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
             >
-              Post
+              {!savingAsDraft ? "Post!" : "Save as Draft"}
             </button>
           </div>
         </form>

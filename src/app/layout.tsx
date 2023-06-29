@@ -1,5 +1,4 @@
 import "~/styles/globals.css";
-import "~/styles/tiptap_styles.scss";
 
 import { Playfair_Display } from "next/font/google";
 
