@@ -1,12 +1,12 @@
 import CreateCommercialForm from "./CreateCommercialForm";
-import CreateMovieForm from "./CreateMovieForm";
+import CreateFilmForm from "./CreateFilmForm";
 import CreatePhotographyForm from "./CreatePhotographyForm";
 
 export default function CreatePage({ params }: { params: { type: string } }) {
-  if (params.type == "movie") {
+  if (params.type == "film") {
     return (
       <>
-        <CreateMovieForm />
+        <CreateFilmForm />
       </>
     );
   } else if (params.type == "photography") {

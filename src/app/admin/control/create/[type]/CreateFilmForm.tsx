@@ -4,7 +4,7 @@ import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
 
-export default function CreateMovieForm() {
+export default function CreateFilmForm() {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
@@ -36,16 +36,16 @@ export default function CreateMovieForm() {
     setSavingAsDraft(!savingAsDraft);
   };
 
-  const createMoviePage = (e: React.FormEvent) => {
+  const createFilmPage = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   return (
-    <div className="min-h-screen overflow-scroll py-8">
+    <div className="py-8 overflow-scroll">
       <div className="text-2xl text-center">Create A Movie Post</div>
       <div className="flex justify-center">
         <form
-          onSubmit={createMoviePage}
+          onSubmit={createFilmPage}
           className="flex flex-col align-middle justify-evenly w-1/2"
         >
           <div className="input-group mx-auto">

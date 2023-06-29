@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 
 export default function QuickSelectControls() {
   const [showingMenu, setShowingMenu] = useState<boolean>(true);
-  const [movieControlsShowing, setMovieControlsShowing] =
+  const [filmControlsShowing, setFilmControlsShowing] =
     useState<boolean>(false);
   const [photographyControlsShowing, setPhotographyControlsShowing] =
     useState<boolean>(false);
@@ -21,8 +21,8 @@ export default function QuickSelectControls() {
   const menuRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  const toggleMovieControls = () => {
-    setMovieControlsShowing(!movieControlsShowing);
+  const toggleFilmControls = () => {
+    setFilmControlsShowing(!filmControlsShowing);
   };
   const togglePhotographyControls = () => {
     setPhotographyControlsShowing(!photographyControlsShowing);
@@ -71,13 +71,13 @@ export default function QuickSelectControls() {
         <div className="flex flex-col mx-8">
           <button
             className="text-start mt-16 transition-all duration-500 ease-in-out hover-underline-animation-black"
-            onClick={toggleMovieControls}
+            onClick={toggleFilmControls}
           >
             <div className="flex justify-between">
-              <div>Movie Section Controls</div>
+              <div>Film Section Controls</div>
               <div
                 className={`${
-                  movieControlsShowing ? "" : "-rotate-90"
+                  filmControlsShowing ? "" : "-rotate-90"
                 } my-auto transition-all duration-300 ease-in-out transform`}
               >
                 <ChevronDown
@@ -89,28 +89,28 @@ export default function QuickSelectControls() {
               </div>
             </div>
           </button>
-          {movieControlsShowing ? (
+          {filmControlsShowing ? (
             <div className="h-fit fade-in flex flex-col pl-4 pt-4">
               <Link
-                href={"/admin/control/create/movie"}
+                href={"/admin/control/create/film"}
                 className="my-2 w-fit"
-                onClick={() => setMovieControlsShowing(false)}
+                onClick={() => setFilmControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">
                   Create New
                 </div>
               </Link>
               <Link
-                href={"/admin/control/drafts/movie"}
+                href={"/admin/control/drafts/film"}
                 className="my-2 w-fit"
-                onClick={() => setMovieControlsShowing(false)}
+                onClick={() => setFilmControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">Drafts</div>
               </Link>
               <Link
-                href={"/admin/control/edit/movie"}
+                href={"/admin/control/edit/film"}
                 className="my-2 w-fit"
-                onClick={() => setMovieControlsShowing(false)}
+                onClick={() => setFilmControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">Edit</div>
               </Link>
@@ -229,6 +229,14 @@ export default function QuickSelectControls() {
             >
               Go to website home
             </a>
+          </div>
+          <div className="left-8 py-2">
+            <Link
+              href={"/admin/control/database"}
+              className="mx-auto text-xl hover-underline-animation-black"
+            >
+              Database Control
+            </Link>
           </div>
           <form action={CookieDestruction}>
             <button type="submit" className="left-8 py-2 flex justify-start">
