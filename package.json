@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@planetscale/database": "^1.7.0",
     "@t3-oss/env-nextjs": "^0.6.0",
     "@tiptap/extension-color": "^2.0.3",
     "@tiptap/extension-list-item": "^2.0.3",

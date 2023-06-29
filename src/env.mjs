@@ -13,6 +13,8 @@ export const env = createEnv({
     ADMIN_PASSWORD: z.string().min(1),
     JWT_ENCODED_VALUE: z.string().min(1),
     JWT_SECRET_KEY: z.string().min(1),
+    DATABASE_URL: z.string().min(1),
+    DANGEROUS_DBCOMMAND_PASSWORD: z.string().min(1),
   },
 
   /**
@@ -34,6 +36,8 @@ export const env = createEnv({
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     JWT_ENCODED_VALUE: process.env.JWT_ENCODED_VALUE,
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+    DATABASE_URL: process.env.DATABASE_URL,
+    DANGEROUS_DBCOMMAND_PASSWORD: process.env.DANGEROUS_DBCOMMAND_PASSWORD,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
