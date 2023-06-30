@@ -3,8 +3,9 @@
 import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
+import { Row } from "~/types/db";
 
-export default function CreateFilmForm() {
+export default function EditFilmForm(project: Row) {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
@@ -99,7 +100,7 @@ export default function CreateFilmForm() {
 
   return (
     <div className="py-8 overflow-scroll">
-      <div className="text-2xl text-center">Create A Film Post</div>
+      <div className="text-2xl text-center">Edit A Film Post</div>
       <div className="flex justify-center">
         <form
           onSubmit={createFilmPage}
@@ -111,6 +112,7 @@ export default function CreateFilmForm() {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="title"
+              defaultValue={project.Title}
               required
               placeholder=" "
             />
@@ -122,7 +124,10 @@ export default function CreateFilmForm() {
               Enter Blurb below (optional)
             </div>
             <div className="pt-4 prose lg:prose-lg ProseMirror">
-              <TextEditor updateContent={setEditorContent} />
+              <TextEditor
+                updateContent={setEditorContent}
+                preSet={project.Blurb}
+              />
             </div>
           </div>
           <div className="input-group mx-auto">
@@ -131,7 +136,8 @@ export default function CreateFilmForm() {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="link"
-              placeholder=" "
+              defaultValue={project.Embedded_Link ? project.Embedded_Link : ""}
+              placeholder={" "}
             />
             <span className="bar"></span>
             <label className="underlinedInputLabel">
@@ -165,6 +171,7 @@ export default function CreateFilmForm() {
                 checked={!savingAsDraft}
                 ref={postCheckboxRef}
                 onClick={savingStateToggle}
+                defaultValue={project.Published}
                 readOnly
               />
               <div className="my-auto px-2 text-sm font-normal">

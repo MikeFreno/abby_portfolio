@@ -15,6 +15,8 @@ export const env = createEnv({
     JWT_SECRET_KEY: z.string().min(1),
     DATABASE_URL: z.string().min(1),
     DANGEROUS_DBCOMMAND_PASSWORD: z.string().min(1),
+    AWS_REGION: z.string().min(1),
+    AWS_S3_BUCKET_NAME: z.string().min(1),
   },
 
   /**
@@ -38,6 +40,8 @@ export const env = createEnv({
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     DANGEROUS_DBCOMMAND_PASSWORD: process.env.DANGEROUS_DBCOMMAND_PASSWORD,
+    AWS_REGION: process.env.AWS_REGION,
+    AWS_S3_BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

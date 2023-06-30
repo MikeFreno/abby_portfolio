@@ -6,6 +6,7 @@ import ChevronDown from "~/icons/ChevronDown";
 import MenuBars from "~/icons/MenuBars";
 import { CookieDestruction } from "./actions";
 import { usePathname } from "next/navigation";
+import useOnClickOutside from "~/components/ClickOutsideHook";
 
 export default function QuickSelectControls() {
   const [showingMenu, setShowingMenu] = useState<boolean>(true);
@@ -35,6 +36,10 @@ export default function QuickSelectControls() {
   const menuToggle = () => {
     setShowingMenu(!showingMenu);
   };
+
+  useOnClickOutside([menuRef, closeRef], () => {
+    setShowingMenu(false);
+  });
 
   useEffect(() => {
     if (showingMenu) {

@@ -9,10 +9,12 @@ import {
 import StarterKit from "@tiptap/starter-kit";
 import React from "react";
 
-export default function TextEditor({ updateContent }: any) {
+export default function TextEditor({ updateContent, preSet }: any) {
   const editor = useEditor({
     extensions: [StarterKit],
-    content: `
+    content: preSet
+      ? preSet
+      : `
       <p>
         <em><b>Clear this if you don&apos;t want a blurb!</b></em>
       </p>
@@ -37,18 +39,21 @@ export default function TextEditor({ updateContent }: any) {
           editor={editor}
         >
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={editor.isActive("bold") ? "is-active" : ""}
           >
             Bold
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={editor.isActive("italic") ? "is-active" : ""}
           >
             Italic
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleStrike().run()}
             className={editor.isActive("strike") ? "is-active" : ""}
           >
@@ -63,6 +68,7 @@ export default function TextEditor({ updateContent }: any) {
           editor={editor}
         >
           <button
+            type="button"
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 1 }).run()
             }
@@ -73,6 +79,7 @@ export default function TextEditor({ updateContent }: any) {
             H1
           </button>
           <button
+            type="button"
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
@@ -83,18 +90,21 @@ export default function TextEditor({ updateContent }: any) {
             H2
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={editor.isActive("bulletList") ? "is-active" : ""}
           >
             Bullet List
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={editor.isActive("orderedList") ? "is-active" : ""}
           >
             Ordered List
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             className={editor.isActive("orderedList") ? "is-active" : ""}
           >

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Row {
   id: number;
   Title: string;
@@ -35,12 +37,33 @@ export default async function AdminMainPage() {
             <>
               {resData.rows.filter((row) => row.Type == "film").length > 0 ? (
                 <>
-                  <div className="text-center">Film drafts</div>
-                  {resData.rows
-                    .filter((row) => row.Type == "film")
-                    .map((row) => (
-                      <div key={row.id}></div>
-                    ))}
+                  <div className="text-center py-2 text-xl underline underline-offset-4 tracking-wide">
+                    Film drafts
+                  </div>
+                  <div className="grid grid-cols-2 gap-8 grid-flow-row pb-4">
+                    {resData.rows
+                      .filter((row) => row.Type == "film")
+                      .map((row) => (
+                        <div
+                          key={row.id}
+                          className="px-8 py-4 rounded-md shadow-xl bg-zinc-100 h-fit"
+                        >
+                          <div className="flex flex-col justify-evenly">
+                            <div className="text-2xl text-center py-4">
+                              Title: {row.Title}
+                            </div>
+                            <div className="flex justify-center py-4">
+                              <a
+                                href={`/admin/control/edit/${row.id}`}
+                                className="w-fit rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
+                              >
+                                Edit this film post
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                   <hr />
                 </>
               ) : null}
