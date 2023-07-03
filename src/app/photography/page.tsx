@@ -4,7 +4,7 @@ import { ResponseData, Row } from "~/types/db";
 
 async function getPhotographyData() {
   const photographyResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-live-projects-by-type`,
+    `/api/database/get-live-projects-by-type`,
     {
       method: "POST",
       body: JSON.stringify({ type: "photography" }),
