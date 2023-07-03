@@ -10,20 +10,14 @@ async function getPhotographyData() {
       body: JSON.stringify({ type: "photography" }),
     }
   );
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
 
-  // Recommendation: handle errors
-  if (!photographyResponse.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch photography album data");
-  }
+  const projects = (await photographyResponse.json()) as ResponseData;
 
-  return photographyResponse.json();
+  return projects;
 }
 
 export default async function PhotographyPage() {
-  const photographyData = (await getPhotographyData()) as ResponseData;
+  const photographyData = await getPhotographyData();
 
   if (photographyData.rows && photographyData.rows.length > 0) {
     return (
