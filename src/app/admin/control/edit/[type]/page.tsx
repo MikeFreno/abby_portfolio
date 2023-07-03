@@ -10,7 +10,7 @@ export default async function EditOverviewPage({
     `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-live-projects-by-type`,
     {
       method: "POST",
-      body: JSON.stringify({ id: params.type }),
+      body: JSON.stringify({ type: params.type }),
       cache: "no-store",
     }
   );

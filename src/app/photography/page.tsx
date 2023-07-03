@@ -1,17 +1,29 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { ResponseData } from "~/types/db";
+import { ResponseData, Row } from "~/types/db";
 
-export default async function PhotographyPage() {
+async function getPhotographyData() {
   const photographyResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-all-live-photography`,
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-live-projects-by-type`,
     {
-      method: "GET",
-      cache: "no-store",
+      method: "POST",
+      body: JSON.stringify({ type: "photography" }),
     }
   );
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
 
-  const photographyData = (await photographyResponse.json()) as ResponseData;
+  // Recommendation: handle errors
+  if (!photographyResponse.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch data");
+  }
+
+  return photographyResponse.json();
+}
+
+export default async function PhotographyPage() {
+  const photographyData = (await getPhotographyData()) as ResponseData;
 
   if (photographyData.rows && photographyData.rows.length > 0) {
     return (
@@ -23,7 +35,7 @@ export default async function PhotographyPage() {
                 src={
                   row.Attachments?.split(",")[0]
                     ? row.Attachments?.split(",")[0]
-                    : "placeholder"
+                    : "/placeholder.jpg"
                 }
               />
             </div>
