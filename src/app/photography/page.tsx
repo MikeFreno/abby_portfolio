@@ -16,7 +16,7 @@ async function getPhotographyData() {
   // Recommendation: handle errors
   if (!photographyResponse.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch photography album data");
   }
 
   return photographyResponse.json();

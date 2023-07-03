@@ -5,7 +5,7 @@ const Dropzone = ({ onDrop, accept }: any) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept,
-    maxFiles: 1,
+    maxFiles: 100,
   });
   return (
     <div
