@@ -1,19 +1,5 @@
 import Link from "next/link";
-
-interface Row {
-  id: number;
-  Title: string;
-  Blurb: string | null;
-  Embedded_Link: string | null;
-  Attachments: string | null;
-  Published: 0 | 1;
-  Type: "film" | "commercial" | "photography";
-}
-
-interface ResponseData {
-  error: string | null;
-  rows: Row[] | null;
-}
+import { ResponseData } from "~/types/db";
 
 export default async function AdminMainPage() {
   const responseRows = await fetch(

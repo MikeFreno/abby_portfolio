@@ -10,8 +10,8 @@ export async function POST(input: NextRequest) {
   const { type } = inputData;
 
   const conn = ConnectionFactory();
-  const query = "SELECT * FROM Project WHERE Type = ?";
-  const params = [type];
+  const query = "SELECT * FROM Project WHERE Type = ? AND Published = ?";
+  const params = [type, true];
   const results = await conn.execute(query, params);
   return NextResponse.json({ rows: results.rows }, { status: 200 });
 }
