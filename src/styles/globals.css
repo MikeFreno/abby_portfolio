@@ -283,3 +283,6 @@ input[type="checkbox"]:checked::before {
 .ProseMirror {
   padding: 4px 4px 4px 4px;
 }
+.white-underline {
+  text-decoration-color: white;
+}

@@ -69,7 +69,11 @@ export default function Navbar() {
                     ? "hover-underline-animation-white"
                     : "hover-underline-animation-black"
                 } ${
-                  filmDropDownShowing ? "border-b border-black" : null
+                  filmDropDownShowing
+                    ? pathname == "/"
+                      ? "border-b border-white"
+                      : "border-b border-black"
+                    : null
                 } mx-2 px-2 my-auto z-50`}
               >
                 Film

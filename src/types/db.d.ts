@@ -7,3 +7,7 @@ export interface Row {
   Published: 0 | 1;
   Type: "film" | "commercial" | "photography";
 }
+interface ResponseData {
+  error: string | null;
+  rows: Row[] | null;
+}

@@ -98,7 +98,7 @@ export default function QuickSelectControls() {
             <div className="h-fit fade-in flex flex-col pl-4 pt-4">
               <Link
                 href={"/admin/control/create/film"}
-                className="my-2 w-fit"
+                className="mt-2 w-fit"
                 onClick={() => setFilmControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">
@@ -106,15 +106,8 @@ export default function QuickSelectControls() {
                 </div>
               </Link>
               <Link
-                href={"/admin/control/drafts/film"}
-                className="my-2 w-fit"
-                onClick={() => setFilmControlsShowing(false)}
-              >
-                <div className="hover-underline-animation-black">Drafts</div>
-              </Link>
-              <Link
                 href={"/admin/control/edit/film"}
-                className="my-2 w-fit"
+                className="mt-2 w-fit"
                 onClick={() => setFilmControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">Edit</div>
@@ -146,7 +139,7 @@ export default function QuickSelectControls() {
               <div className="h-fit fade-in flex flex-col pl-4 pt-4">
                 <Link
                   href={"/admin/control/create/photography"}
-                  className="my-2 w-fit"
+                  className="mt-2 w-fit"
                   onClick={() => setPhotographyControlsShowing(false)}
                 >
                   <div className="hover-underline-animation-black">
@@ -154,15 +147,8 @@ export default function QuickSelectControls() {
                   </div>
                 </Link>
                 <Link
-                  href={"/admin/control/drafts/photography"}
-                  className="my-2 w-fit"
-                  onClick={() => setPhotographyControlsShowing(false)}
-                >
-                  <div className="hover-underline-animation-black">Drafts</div>
-                </Link>
-                <Link
                   href={"/admin/control/edit/photography"}
-                  className="my-2 w-fit"
+                  className="mt-2 w-fit"
                   onClick={() => setPhotographyControlsShowing(false)}
                 >
                   <div className="hover-underline-animation-black">Edit</div>
@@ -194,7 +180,7 @@ export default function QuickSelectControls() {
             <div className="h-fit fade-in flex flex-col pl-4 pt-4">
               <Link
                 href={"/admin/control/create/commercial"}
-                className="my-2 w-fit"
+                className="mt-2 w-fit"
                 onClick={() => setCommercialControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">
@@ -202,15 +188,8 @@ export default function QuickSelectControls() {
                 </div>
               </Link>
               <Link
-                href={"/admin/control/drafts/commercial"}
-                className="my-2 w-fit"
-                onClick={() => setCommercialControlsShowing(false)}
-              >
-                <div className="hover-underline-animation-black">Drafts</div>
-              </Link>
-              <Link
                 href={"/admin/control/edit/commercial"}
-                className="my-2 w-fit"
+                className="mt-2 w-fit"
                 onClick={() => setCommercialControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">Edit</div>

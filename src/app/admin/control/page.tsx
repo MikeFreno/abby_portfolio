@@ -53,12 +53,12 @@ export default async function AdminMainPage() {
                               Title: {row.Title}
                             </div>
                             <div className="flex justify-center py-4">
-                              <a
-                                href={`/admin/control/edit/${row.id}`}
+                              <Link
+                                href={`/admin/control/edit/${row.Type}/${row.id}`}
                                 className="w-fit rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
                               >
                                 Edit this film post
-                              </a>
+                              </Link>
                             </div>
                           </div>
                         </div>

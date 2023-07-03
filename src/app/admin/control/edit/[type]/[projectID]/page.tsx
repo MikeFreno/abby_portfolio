@@ -11,12 +11,13 @@ interface ResponseData {
 export default async function EditSpecificPage({
   params,
 }: {
-  params: { projectID: string };
+  params: { type: string; projectID: string };
 }) {
   const projectResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-all-drafts`,
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-project-by-id`,
     {
-      method: "GET",
+      method: "POST",
+      body: JSON.stringify({ id: params.projectID }),
       cache: "no-store",
     }
   );
