@@ -41,15 +41,17 @@ export default function CreateFilmForm() {
     e.preventDefault();
     setSubmitButtonLoading(true);
     if (titleRef.current && linkRef.current) {
-      let attachmentString = "";
-      images.forEach(async (image, index) => {
-        const key = await AddImageToS3(
-          image,
-          titleRef.current!.value,
-          "commercial"
-        );
-        attachmentString += key + ",";
-      });
+      // Use Array.prototype.map() to create an array of promises
+      const uploadPromises = images.map((image) =>
+        AddImageToS3(image, titleRef.current!.value, "commercial")
+      );
+
+      // Use Promise.all() to wait for all promises to resolve
+      const keys = await Promise.all(uploadPromises);
+
+      // Join all keys into a single string with commas
+      const attachmentString = keys.join(",");
+
       const data = {
         title: titleRef.current.value,
         blurb: editorContent,

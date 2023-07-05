@@ -51,15 +51,17 @@ export default function EditPhotographyForm(project: Row) {
     e.preventDefault();
     setSubmitButtonLoading(true);
     if (titleRef.current) {
-      let attachmentString = "";
-      images.forEach(async (image, index) => {
-        const key = await AddImageToS3(
-          image,
-          titleRef.current!.value,
-          "photography"
-        );
-        attachmentString += key + ",";
-      });
+      // Use Array.prototype.map() to create an array of promises
+      const uploadPromises = images.map((image) =>
+        AddImageToS3(image, titleRef.current!.value, "photography")
+      );
+
+      // Use Promise.all() to wait for all promises to resolve
+      const keys = await Promise.all(uploadPromises);
+
+      // Join all keys into a single string with commas
+      const attachmentString = keys.join(",");
+
       const data = {
         title: titleRef.current.value,
         blurb: editorContent,
@@ -70,7 +72,7 @@ export default function EditPhotographyForm(project: Row) {
       };
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "POST", body: JSON.stringify(data) }
+        { method: "PATCH", body: JSON.stringify(data) }
       );
     }
 
@@ -205,14 +207,21 @@ export default function EditPhotographyForm(project: Row) {
               </div>
             </div>
             <button
-              type="submit"
+              type={submitButtonLoading ? "button" : "submit"}
+              disabled={submitButtonLoading}
               className={`${
-                !savingAsDraft
+                submitButtonLoading
+                  ? "w-32 bg-zinc-500"
+                  : !savingAsDraft
                   ? "w-32 border-emerald-500 bg-emerald-400 hover:bg-emerald-500"
                   : "w-36 border-blue-500 bg-blue-400 hover:bg-blue-500 "
               } rounded border text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
             >
-              {!savingAsDraft ? "Post!" : "Save as Draft"}
+              {submitButtonLoading
+                ? "Loading..."
+                : !savingAsDraft
+                ? "Post!"
+                : "Save as Draft"}
             </button>
           </div>
         </form>

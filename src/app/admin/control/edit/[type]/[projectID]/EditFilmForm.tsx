@@ -52,15 +52,17 @@ export default function EditFilmForm(project: Row) {
     e.preventDefault();
     setSubmitButtonLoading(true);
     if (titleRef.current && linkRef.current) {
-      let attachmentString = "";
-      images.forEach(async (image, index) => {
-        const key = await AddImageToS3(
-          image,
-          titleRef.current!.value,
-          "photography"
-        );
-        attachmentString += key + ",";
-      });
+      // Use Array.prototype.map() to create an array of promises
+      const uploadPromises = images.map((image) =>
+        AddImageToS3(image, titleRef.current!.value, "film")
+      );
+
+      // Use Promise.all() to wait for all promises to resolve
+      const keys = await Promise.all(uploadPromises);
+
+      // Join all keys into a single string with commas
+      const attachmentString = keys.join(",");
+
       const data = {
         title:
           project.Title !== titleRef.current.value
@@ -77,7 +79,7 @@ export default function EditFilmForm(project: Row) {
       };
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "POST", body: JSON.stringify(data) }
+        { method: "PATCH", body: JSON.stringify(data) }
       );
     }
     setSubmitButtonLoading(false);
@@ -93,6 +95,7 @@ export default function EditFilmForm(project: Row) {
     router.refresh();
     setDeleteButtonLoading(false);
   };
+
   const removeImage = async (index: number, key: string) => {
     const imgStringArr = project.Attachments!.split(",");
     const newString = imgStringArr.filter((str) => str !== key).join(",");
