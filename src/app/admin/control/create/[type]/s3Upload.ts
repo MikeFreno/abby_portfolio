@@ -18,7 +18,7 @@ export default async function AddImageToS3(
   const { uploadURL, key } =
     (await getPreSignedResponse.json()) as getPreSignedResponseData;
 
-  //update server with image url
+  // Update server with image URL
   await fetch(uploadURL, {
     method: "PUT",
     body: file as File,

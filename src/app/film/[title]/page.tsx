@@ -15,6 +15,7 @@ export default async function DynamicFilmPage({
         type: "film",
         title: params.title.replace("%20", " "),
       }),
+      cache: "no-store",
     }
   );
   const projectData = (await filmResponse.json()) as ResponseData;

@@ -6,7 +6,7 @@ export default function Loading() {
         <div className="flex flex-col">
           <div className="animate-spin">
             <Image
-              src={"/circle-logo.jpg"}
+              src={"/circle-logo.png"}
               alt={"logo"}
               height={80}
               width={80}

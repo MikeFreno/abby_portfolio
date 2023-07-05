@@ -25,8 +25,6 @@ export async function POST(input: NextRequest) {
   const { title, blurb, embedded_link, attachments, published, type } =
     inputData;
 
-  console.log(attachments);
-
   const conn = ConnectionFactory();
   const query = `
     INSERT INTO Project (Title, Blurb, Embedded_Link, Attachments, Published, Type)

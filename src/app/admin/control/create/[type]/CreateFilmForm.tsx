@@ -51,6 +51,7 @@ export default function CreateFilmForm() {
 
       // Join all keys into a single string with commas
       const attachmentString = keys.join(",");
+      console.log(attachmentString);
 
       const data = {
         title: titleRef.current.value,
