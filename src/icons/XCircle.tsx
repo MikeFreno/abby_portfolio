@@ -1,9 +1,8 @@
-export default function ChevronDown(props: {
+export default function XCircle(props: {
   height: number;
   width: number;
   stroke: string;
   strokeWidth: number;
-  className?: string;
 }) {
   return (
     <svg
@@ -18,7 +17,7 @@ export default function ChevronDown(props: {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+        d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
       />
     </svg>
   );

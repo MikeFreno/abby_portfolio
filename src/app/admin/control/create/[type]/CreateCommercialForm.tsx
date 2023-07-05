@@ -3,12 +3,19 @@
 import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
+import AddImageToS3 from "./s3Upload";
+import XCircle from "~/icons/XCircle";
+import { useRouter } from "next/navigation";
 
 export default function CreateFilmForm() {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
+  const [submitButtonLoading, setSubmitButtonLoading] =
+    useState<boolean>(false);
+
+  const router = useRouter();
 
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -17,12 +24,6 @@ export default function CreateFilmForm() {
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
       setImages((prevImages) => [...prevImages, file]);
-      const ext = file.type.split("/")[1];
-      // if (ext) {
-      //   setImageExt(ext);
-      // } else {
-      //   throw new Error("file extension not found");
-      // }
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
@@ -36,8 +37,41 @@ export default function CreateFilmForm() {
     setSavingAsDraft(!savingAsDraft);
   };
 
-  const createCommercialPage = (e: React.FormEvent) => {
+  const createCommercialPage = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitButtonLoading(true);
+    if (titleRef.current && linkRef.current) {
+      let attachmentString = "";
+      images.forEach(async (image, index) => {
+        const key = await AddImageToS3(
+          image,
+          titleRef.current!.value,
+          "photography"
+        );
+        attachmentString += key + ",";
+      });
+      const data = {
+        title: titleRef.current.value,
+        blurb: editorContent,
+        embedded_link: linkRef.current.value,
+        attachments: attachmentString,
+        published: !savingAsDraft,
+        type: "commercial",
+      };
+      await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
+        { method: "POST", body: JSON.stringify(data) }
+      );
+      router.push(`/film/${titleRef.current.value}`);
+    }
+    setSubmitButtonLoading(false);
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setImageHolder((prevHeldImages) =>
+      prevHeldImages.filter((image, i) => i !== index)
+    );
   };
 
   return (
@@ -85,19 +119,35 @@ export default function CreateFilmForm() {
             <div className="text-center text-lg pt-4 -mb-2 font-light">
               Awards / other images
             </div>
-            <div className="mx-auto flex">
-              {images.map((image, index) => (
-                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                <img
-                  key={index}
-                  src={imageHolder[index] as string}
-                  className="w-36 h-36 my-auto mx-4"
-                />
-              ))}
+            <div className="flex justify-center">
               <Dropzone
                 onDrop={handleImageDrop}
                 acceptedFiles={"image/jpg, image/jpeg, image/png"}
               />
+            </div>
+            <div className="grid grid-cols-6 gap-4 -mx-24">
+              {images.map((image, index) => (
+                <div key={index}>
+                  <button
+                    type="button"
+                    className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
+                    onClick={() => removeImage(index)}
+                  >
+                    <XCircle
+                      height={24}
+                      width={24}
+                      stroke={"black"}
+                      strokeWidth={1}
+                    />
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element,
+                    jsx-a11y/alt-text */}
+                  <img
+                    src={imageHolder[index] as string}
+                    className="w-36 h-36 my-auto mx-4"
+                  />
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex justify-evenly pt-4">
@@ -115,14 +165,21 @@ export default function CreateFilmForm() {
               </div>
             </div>
             <button
-              type="submit"
+              type={submitButtonLoading ? "button" : "submit"}
+              disabled={submitButtonLoading}
               className={`${
-                !savingAsDraft
+                submitButtonLoading
+                  ? "w-32 bg-zinc-500"
+                  : !savingAsDraft
                   ? "w-32 border-emerald-500 bg-emerald-400 hover:bg-emerald-500"
                   : "w-36 border-blue-500 bg-blue-400 hover:bg-blue-500 "
               } rounded border text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
             >
-              {!savingAsDraft ? "Post!" : "Save as Draft"}
+              {submitButtonLoading
+                ? "Loading..."
+                : !savingAsDraft
+                ? "Post!"
+                : "Save as Draft"}
             </button>
           </div>
         </form>

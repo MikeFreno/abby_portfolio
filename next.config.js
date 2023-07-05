@@ -3,6 +3,15 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "abbyportfolio.s3.amazonaws.com",
+        pathname: "/**",
+      },
+    ],
+  },
   async redirects() {
     return [
       {

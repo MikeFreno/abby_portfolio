@@ -4,12 +4,17 @@ import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
 import { Row } from "~/types/db";
+import { useRouter } from "next/navigation";
 
 export default function EditFilmForm(project: Row) {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
+  const [deleteButtonLoading, setDeleteButtonLoading] =
+    useState<boolean>(false);
+
+  const router = useRouter();
 
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -18,12 +23,6 @@ export default function EditFilmForm(project: Row) {
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
       setImages((prevImages) => [...prevImages, file]);
-      const ext = file.type.split("/")[1];
-      // if (ext) {
-      //   setImageExt(ext);
-      // } else {
-      //   throw new Error("file extension not found");
-      // }
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
@@ -41,9 +40,33 @@ export default function EditFilmForm(project: Row) {
     e.preventDefault();
   };
 
+  const deletePost = async () => {
+    setDeleteButtonLoading(true);
+    await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/database/delete-by-id`, {
+      method: "POST",
+      body: JSON.stringify({ id: project.id }),
+    });
+    router.back();
+    router.refresh();
+    setDeleteButtonLoading(false);
+  };
+
   return (
     <div className="py-8 overflow-scroll">
       <div className="text-2xl text-center">Edit A Commercial Post</div>
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          onClick={deletePost}
+          className={`${
+            !deleteButtonLoading
+              ? "w-40 border-red-500 bg-red-400 hover:bg-red-500"
+              : "w-36 border-zinc-500 bg-zinc-400 hover:bg-zinc-500"
+          } rounded border mr-12 text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
+        >
+          {!deleteButtonLoading ? "Delete Post" : "Loading..."}
+        </button>
+      </div>
       <div className="flex justify-center">
         <form
           onSubmit={createCommercialPage}

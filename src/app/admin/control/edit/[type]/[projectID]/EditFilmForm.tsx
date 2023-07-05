@@ -4,6 +4,8 @@ import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
 import { Row } from "~/types/db";
+import { useRouter } from "next/navigation";
+import AddImageToS3 from "../../../create/[type]/s3Upload";
 
 export default function EditFilmForm(project: Row) {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -12,6 +14,10 @@ export default function EditFilmForm(project: Row) {
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
+  const [deleteButtonLoading, setDeleteButtonLoading] =
+    useState<boolean>(false);
+
+  const router = useRouter();
 
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -20,8 +26,6 @@ export default function EditFilmForm(project: Row) {
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
       setImages((prevImages) => [...prevImages, file]);
-      console.log(file.name);
-      const ext = file.type.split("/")[1];
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
@@ -41,12 +45,12 @@ export default function EditFilmForm(project: Row) {
     if (titleRef.current && linkRef.current) {
       let attachmentString = "";
       images.forEach(async (image, index) => {
-        if (index > 0) {
-          attachmentString += ",";
-        }
-        const imgName = image.name;
-        await AddImageToS3(image, titleRef.current!.value);
-        attachmentString += `${titleRef.current!.value}/${imgName}`;
+        const key = await AddImageToS3(
+          image,
+          titleRef.current!.value,
+          "photography"
+        );
+        attachmentString += key + ",";
       });
       const data = {
         title: titleRef.current.value,
@@ -64,43 +68,33 @@ export default function EditFilmForm(project: Row) {
     setSubmitButtonLoading(false);
   };
 
-  const AddImageToS3 = async (file: Blob | File, title: string) => {
-    const getPreSignedResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/s3/getPreSignedURL`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          type: "film",
-          title: title,
-          filename: file.name,
-        }),
-      }
-    );
-
-    const { uploadURL, key } =
-      (await getPreSignedResponse.json()) as getPreSignedResponseData;
-
-    //update server with image url
-    await fetch(uploadURL, {
-      method: "PUT",
-      body: file as File,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        // Continue your code here
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    return key;
+  const deletePost = async () => {
+    setDeleteButtonLoading(true);
+    await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/database/delete-by-id`, {
+      method: "POST",
+      body: JSON.stringify({ id: project.id }),
+    });
+    router.back();
+    router.refresh();
+    setDeleteButtonLoading(false);
   };
 
   return (
     <div className="py-8 overflow-scroll">
       <div className="text-2xl text-center">Edit A Film Post</div>
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          onClick={deletePost}
+          className={`${
+            !deleteButtonLoading
+              ? "w-40 border-red-500 bg-red-400 hover:bg-red-500"
+              : "w-36 border-zinc-500 bg-zinc-400 hover:bg-zinc-500"
+          } rounded border mr-12 text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
+        >
+          {!deleteButtonLoading ? "Delete Post" : "Loading..."}
+        </button>
+      </div>
       <div className="flex justify-center">
         <form
           onSubmit={createFilmPage}

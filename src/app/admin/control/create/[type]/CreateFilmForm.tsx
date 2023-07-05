@@ -3,6 +3,9 @@
 import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
+import AddImageToS3 from "./s3Upload";
+import XCircle from "~/icons/XCircle";
+import { useRouter } from "next/navigation";
 
 export default function CreateFilmForm() {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -12,6 +15,8 @@ export default function CreateFilmForm() {
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
 
+  const router = useRouter();
+
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
@@ -19,8 +24,6 @@ export default function CreateFilmForm() {
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
       setImages((prevImages) => [...prevImages, file]);
-      console.log(file.name);
-      const ext = file.type.split("/")[1];
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
@@ -40,12 +43,12 @@ export default function CreateFilmForm() {
     if (titleRef.current && linkRef.current) {
       let attachmentString = "";
       images.forEach(async (image, index) => {
-        if (index > 0) {
-          attachmentString += ",";
-        }
-        const imgName = image.name;
-        await AddImageToS3(image, titleRef.current!.value);
-        attachmentString += `${titleRef.current!.value}/${imgName}`;
+        const key = await AddImageToS3(
+          image,
+          titleRef.current!.value,
+          "photography"
+        );
+        attachmentString += key + ",";
       });
       const data = {
         title: titleRef.current.value,
@@ -59,42 +62,16 @@ export default function CreateFilmForm() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
         { method: "POST", body: JSON.stringify(data) }
       );
+
+      router.push(`/film/${titleRef.current.value}`);
     }
     setSubmitButtonLoading(false);
   };
-
-  const AddImageToS3 = async (file: Blob | File, title: string) => {
-    const getPreSignedResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/s3/getPreSignedURL`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          type: "film",
-          title: title,
-          filename: file.name,
-        }),
-      }
+  const removeImage = (index: number) => {
+    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setImageHolder((prevHeldImages) =>
+      prevHeldImages.filter((image, i) => i !== index)
     );
-
-    const { uploadURL, key } =
-      (await getPreSignedResponse.json()) as getPreSignedResponseData;
-
-    //update server with image url
-    await fetch(uploadURL, {
-      method: "PUT",
-      body: file as File,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        // Continue your code here
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    return key;
   };
 
   return (
@@ -142,19 +119,35 @@ export default function CreateFilmForm() {
             <div className="text-center text-lg pt-4 -mb-2 font-light">
               Awards / other images
             </div>
-            <div className="mx-auto flex">
-              {images.map((image, index) => (
-                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                <img
-                  key={index}
-                  src={imageHolder[index] as string}
-                  className="w-36 h-36 my-auto mx-4"
-                />
-              ))}
+            <div className="flex justify-center">
               <Dropzone
                 onDrop={handleImageDrop}
                 acceptedFiles={"image/jpg, image/jpeg, image/png"}
               />
+            </div>
+            <div className="grid grid-cols-6 gap-4 -mx-24">
+              {images.map((image, index) => (
+                <div key={index}>
+                  <button
+                    type="button"
+                    className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
+                    onClick={() => removeImage(index)}
+                  >
+                    <XCircle
+                      height={24}
+                      width={24}
+                      stroke={"black"}
+                      strokeWidth={1}
+                    />
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element,
+                    jsx-a11y/alt-text */}
+                  <img
+                    src={imageHolder[index] as string}
+                    className="w-36 h-36 my-auto mx-4"
+                  />
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex justify-evenly pt-4">
@@ -194,9 +187,4 @@ export default function CreateFilmForm() {
       </div>
     </div>
   );
-}
-
-interface getPreSignedResponseData {
-  uploadURL: string;
-  key: string;
 }

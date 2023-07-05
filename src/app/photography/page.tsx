@@ -1,7 +1,6 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 import { Row } from "~/types/db";
 import { ConnectionFactory } from "../api/database/ConnectionFactory";
+import AlbumCover from "./AlbumCover";
 
 export default async function PhotographyMainPage() {
   const conn = ConnectionFactory();
@@ -15,17 +14,18 @@ export default async function PhotographyMainPage() {
     if (photographyData.length > 0)
       return (
         <div className="min-h-screen">
-          <div className="grid grid-cols-2 gap-2 grid-flow-col">
+          <div className="grid grid-cols-2 gap-2 grid-flow-col px-12 py-24">
             {photographyData.map((row) => (
-              <div key={row.id}>
-                <img
-                  src={
-                    row.Attachments?.split(",")[0]
-                      ? row.Attachments?.split(",")[0]
-                      : "/placeholder.jpg"
-                  }
-                />
-              </div>
+              <AlbumCover
+                key={row.id}
+                id={row.id}
+                Title={row.Title}
+                Blurb={row.Blurb}
+                Embedded_Link={row.Embedded_Link}
+                Attachments={row.Attachments}
+                Published={row.Published}
+                Type={row.Type}
+              />
             ))}
           </div>
         </div>

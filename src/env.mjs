@@ -25,7 +25,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+    NEXT_PUBLIC_AWS_BUCKET_STRING: z.string().min(1),
+    NEXT_PUBLIC_DOMAIN: z.string().min(1),
   },
 
   /**
@@ -42,6 +43,8 @@ export const env = createEnv({
     DANGEROUS_DBCOMMAND_PASSWORD: process.env.DANGEROUS_DBCOMMAND_PASSWORD,
     AWS_REGION: process.env.AWS_REGION,
     AWS_S3_BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME,
+    NEXT_PUBLIC_AWS_BUCKET_STRING: process.env.NEXT_PUBLIC_AWS_BUCKET_STRING,
+    NEXT_PUBLIC_DOMAIN: process.env.NEXT_PUBLIC_DOMAIN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

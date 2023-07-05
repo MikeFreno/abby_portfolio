@@ -69,7 +69,7 @@ export default function QuickSelectControls() {
       <div
         ref={menuRef}
         className={`${
-          showingMenu ? "" : "-translate-x-full"
+          showingMenu ? "navShadow" : "-translate-x-full"
         } transition-all duration-700 ease-in-out top-0 z-40 fixed overflow-scroll left-0 h-screen bg-emerald-200`}
       >
         <div className="text-center text-3xl underline pt-8">Quick Select</div>
@@ -197,38 +197,40 @@ export default function QuickSelectControls() {
             </div>
           ) : null}
         </div>
-        <div className="flex flex-col pt-64 px-4">
-          <div className="left-8 py-2">
-            <Link
-              href={"/admin/control"}
-              className="mx-auto text-xl hover-underline-animation-black"
-            >
-              Go to admin main
-            </Link>
+        <div className="fixed bottom-10">
+          <div className="flex flex-col px-4">
+            <div className="left-8 py-2">
+              <Link
+                href={"/admin/control"}
+                className="mx-auto text-xl hover-underline-animation-black"
+              >
+                Go to admin main
+              </Link>
+            </div>
+            <div className="left-8 py-2">
+              <a
+                href={"/"}
+                className="mx-auto text-xl hover-underline-animation-black"
+              >
+                Go to website home
+              </a>
+            </div>
+            <div className="left-8 py-2">
+              <Link
+                href={"/admin/control/database"}
+                className="mx-auto text-xl hover-underline-animation-black"
+              >
+                Database Control
+              </Link>
+            </div>
+            <form action={CookieDestruction}>
+              <button type="submit" className="left-8 py-2 flex justify-start">
+                <div className="text-xl hover-underline-animation-black">
+                  Sign out
+                </div>
+              </button>
+            </form>
           </div>
-          <div className="left-8 py-2">
-            <a
-              href={"/"}
-              className="mx-auto text-xl hover-underline-animation-black"
-            >
-              Go to website home
-            </a>
-          </div>
-          <div className="left-8 py-2">
-            <Link
-              href={"/admin/control/database"}
-              className="mx-auto text-xl hover-underline-animation-black"
-            >
-              Database Control
-            </Link>
-          </div>
-          <form action={CookieDestruction}>
-            <button type="submit" className="left-8 py-2 flex justify-start">
-              <div className="text-xl hover-underline-animation-black">
-                Sign out
-              </div>
-            </button>
-          </form>
         </div>
       </div>
     </>

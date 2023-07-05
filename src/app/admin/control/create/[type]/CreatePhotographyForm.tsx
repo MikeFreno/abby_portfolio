@@ -3,26 +3,26 @@
 import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
+import XCircle from "~/icons/XCircle";
+import AddImageToS3 from "./s3Upload";
+import { useRouter } from "next/navigation";
 
 export default function CreatePhotographyForm() {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
+  const [submitButtonLoading, setSubmitButtonLoading] =
+    useState<boolean>(false);
+
+  const router = useRouter();
 
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
-  const linkRef = useRef<HTMLInputElement>(null);
 
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
       setImages((prevImages) => [...prevImages, file]);
-      const ext = file.type.split("/")[1];
-      // if (ext) {
-      //   setImageExt(ext);
-      // } else {
-      //   throw new Error("file extension not found");
-      // }
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
@@ -36,8 +36,46 @@ export default function CreatePhotographyForm() {
     setSavingAsDraft(!savingAsDraft);
   };
 
-  const createPhotographyPage = (e: React.FormEvent) => {
+  const createPhotographyPage = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitButtonLoading(true);
+    if (titleRef.current) {
+      // Use Array.prototype.map() to create an array of promises
+      const uploadPromises = images.map((image) =>
+        AddImageToS3(image, titleRef.current!.value, "photography")
+      );
+
+      // Use Promise.all() to wait for all promises to resolve
+      const keys = await Promise.all(uploadPromises);
+
+      // Join all keys into a single string with commas
+      const attachmentString = keys.join(",");
+
+      const data = {
+        title: titleRef.current.value,
+        blurb: editorContent,
+        embedded_link: null,
+        attachments: attachmentString,
+        published: !savingAsDraft,
+        type: "photography",
+      };
+
+      await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
+        { method: "POST", body: JSON.stringify(data) }
+      );
+
+      router.push(`/photography/${titleRef.current.value}`);
+    }
+
+    setSubmitButtonLoading(false);
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setImageHolder((prevHeldImages) =>
+      prevHeldImages.filter((image, i) => i !== index)
+    );
   };
 
   return (
@@ -68,26 +106,39 @@ export default function CreatePhotographyForm() {
               <TextEditor updateContent={setEditorContent} />
             </div>
           </div>
-          <div className="flex flex-col">
-            <div className="text-center text-lg pt-4 -mb-2 font-light">
-              Images - NEEDS WORK - Currently only accepts one photo at a time.
-              Also the order of upload determines order of appearance with no
-              ability to adjust
-            </div>
-            <div className="mx-auto flex">
-              {images.map((image, index) => (
-                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+          <div className="text-center text-lg pt-4 -mb-2 font-light">
+            Images - NEEDS WORK - Order of upload determines order of appearance
+            with no ability to adjust
+          </div>
+          <div className="flex justify-center">
+            <Dropzone
+              onDrop={handleImageDrop}
+              acceptedFiles={"image/jpg, image/jpeg, image/png"}
+            />
+          </div>
+          <div className="grid grid-cols-6 gap-4 -mx-24">
+            {images.map((image, index) => (
+              <div key={index}>
+                <button
+                  type="button"
+                  className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
+                  onClick={() => removeImage(index)}
+                >
+                  <XCircle
+                    height={24}
+                    width={24}
+                    stroke={"black"}
+                    strokeWidth={1}
+                  />
+                </button>
+                {/* eslint-disable-next-line @next/next/no-img-element,
+                    jsx-a11y/alt-text */}
                 <img
-                  key={index}
                   src={imageHolder[index] as string}
                   className="w-36 h-36 my-auto mx-4"
                 />
-              ))}
-              <Dropzone
-                onDrop={handleImageDrop}
-                acceptedFiles={"image/jpg, image/jpeg, image/png"}
-              />
-            </div>
+              </div>
+            ))}
           </div>
           <div className="flex justify-evenly pt-4">
             <div className="flex my-auto">
@@ -104,14 +155,21 @@ export default function CreatePhotographyForm() {
               </div>
             </div>
             <button
-              type="submit"
+              type={submitButtonLoading ? "button" : "submit"}
+              disabled={submitButtonLoading}
               className={`${
-                !savingAsDraft
+                submitButtonLoading
+                  ? "w-32 bg-zinc-500"
+                  : !savingAsDraft
                   ? "w-32 border-emerald-500 bg-emerald-400 hover:bg-emerald-500"
                   : "w-36 border-blue-500 bg-blue-400 hover:bg-blue-500 "
               } rounded border text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
             >
-              {!savingAsDraft ? "Post!" : "Save as Draft"}
+              {submitButtonLoading
+                ? "Loading..."
+                : !savingAsDraft
+                ? "Post!"
+                : "Save as Draft"}
             </button>
           </div>
         </form>
