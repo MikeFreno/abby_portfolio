@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 
 interface POSTInputData {
@@ -18,11 +18,14 @@ interface PATCHInputData {
   published: boolean | null;
   type: string | null;
 }
+
 //create a new project
 export async function POST(input: NextRequest) {
   const inputData = (await input.json()) as POSTInputData;
   const { title, blurb, embedded_link, attachments, published, type } =
     inputData;
+
+  console.log(attachments);
 
   const conn = ConnectionFactory();
   const query = `
@@ -31,9 +34,10 @@ export async function POST(input: NextRequest) {
     `;
 
   const params = [title, blurb, embedded_link, attachments, published, type];
-  const results = await conn.execute(query, params);
-  console.log(results);
+  const res = await conn.execute(query, params);
+  return NextResponse.json({ res });
 }
+
 //update a project
 export async function PATCH(input: NextRequest) {
   const inputData = (await input.json()) as PATCHInputData;
@@ -41,6 +45,8 @@ export async function PATCH(input: NextRequest) {
     inputData;
 
   const conn = ConnectionFactory();
+
+  console.log(attachments);
 
   let setFields = "";
   const updateParams = [];
@@ -73,5 +79,6 @@ export async function PATCH(input: NextRequest) {
   const query = `UPDATE Project SET ${setFields.slice(0, -2)} WHERE id = ?`;
   const params = [...updateParams, id];
 
-  await conn.execute(query, params);
+  const res = await conn.execute(query, params);
+  return NextResponse.json({ res });
 }

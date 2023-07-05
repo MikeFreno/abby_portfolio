@@ -66,8 +66,7 @@ function CommercialProjectChunk(commercial: Row) {
             width="800"
             height="450"
             src={commercial.Embedded_Link}
-            title="YouTube video player"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           />
         </div>
       ) : null}

@@ -21,6 +21,10 @@ export default async function DynamicFilmPage({
 
   if (projectData.rows) {
     if (projectData.rows[0]) {
+      console.log(
+        "attachments: " + projectData.rows[0].Attachments?.split(",")
+      );
+
       return (
         <div className="">
           {projectData.rows[0].Embedded_Link ? (
@@ -29,7 +33,7 @@ export default async function DynamicFilmPage({
                 width="800"
                 height="450"
                 src={projectData.rows[0].Embedded_Link}
-                allow="clipboard-write; encrypted-media; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               />
             </div>
           ) : (
@@ -45,6 +49,15 @@ export default async function DynamicFilmPage({
               __html: projectData.rows[0].Blurb as string,
             }}
           />
+          <div className="grid grid-cols-3 gap-4">
+            {projectData.rows[0].Attachments?.split(",").map((key, index) => (
+              <img
+                key={index}
+                src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
+                alt={index.toString()}
+              />
+            ))}
+          </div>
         </div>
       );
     } else {

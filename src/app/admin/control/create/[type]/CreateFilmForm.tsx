@@ -60,6 +60,7 @@ export default function CreateFilmForm() {
         published: !savingAsDraft,
         type: "film",
       };
+
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
         { method: "POST", body: JSON.stringify(data) }

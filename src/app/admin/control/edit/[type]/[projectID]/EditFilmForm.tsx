@@ -13,6 +13,10 @@ export default function EditFilmForm(project: Row) {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
+  const [newImageHolder, setNewImageHolder] = useState<
+    (string | ArrayBuffer)[]
+  >([]);
+
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
@@ -38,7 +42,8 @@ export default function EditFilmForm(project: Row) {
       const reader = new FileReader();
       reader.onload = () => {
         const str = reader.result;
-        if (str) setImageHolder((prevHeldImages) => [...prevHeldImages, str]);
+        if (str)
+          setNewImageHolder((prevHeldImages) => [...prevHeldImages, str]);
       };
       reader.readAsDataURL(file);
     });
@@ -61,7 +66,7 @@ export default function EditFilmForm(project: Row) {
       const keys = await Promise.all(uploadPromises);
 
       // Join all keys into a single string with commas
-      const attachmentString = keys.join(",");
+      const attachmentString = imageHolder.join(",") + keys.join(",");
 
       const data = {
         title:
@@ -81,6 +86,7 @@ export default function EditFilmForm(project: Row) {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
         { method: "PATCH", body: JSON.stringify(data) }
       );
+      router.push(`/film/${titleRef.current.value}`);
     }
     setSubmitButtonLoading(false);
   };
@@ -112,6 +118,13 @@ export default function EditFilmForm(project: Row) {
       prevImages.filter((image, i) => i !== index - imageHolder.length)
     );
     setImageHolder((prevHeldImages) =>
+      prevHeldImages.filter((image, i) => i !== index)
+    );
+  };
+
+  const removeNewImage = (index: number) => {
+    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setNewImageHolder((prevHeldImages) =>
       prevHeldImages.filter((image, i) => i !== index)
     );
   };
@@ -204,6 +217,29 @@ export default function EditFilmForm(project: Row) {
                     jsx-a11y/alt-text */}
                   <img
                     src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
+                    className="w-36 h-36 my-auto mx-4"
+                  />
+                </div>
+              ))}
+              <div className="border-r mx-auto border-black" />
+              {images.map((image, index) => (
+                <div key={index}>
+                  <button
+                    type="button"
+                    className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
+                    onClick={() => removeNewImage(index)}
+                  >
+                    <XCircle
+                      height={24}
+                      width={24}
+                      stroke={"black"}
+                      strokeWidth={1}
+                    />
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element,
+                    jsx-a11y/alt-text */}
+                  <img
+                    src={newImageHolder[index] as string}
                     className="w-36 h-36 my-auto mx-4"
                   />
                 </div>

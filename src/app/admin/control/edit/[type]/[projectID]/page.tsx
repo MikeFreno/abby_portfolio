@@ -23,7 +23,7 @@ export default async function EditSpecificPage({
   );
   const project = (await projectResponse.json()) as ResponseData;
 
-  if (project.rows) {
+  if (project.rows && project.rows.length > 0) {
     if (project.rows[0].Type == "film") {
       return (
         <>
