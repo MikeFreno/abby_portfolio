@@ -8,7 +8,7 @@ import {
 
 export default function Footer() {
   return (
-    <div className="absolute bottom-0 pt-4 pb-24 w-screen">
+    <div className="pt-24 pb-12 w-screen">
       <div className="flex justify-center">
         <a
           href="https://www.instagram.com/_abigailthesnail_/"

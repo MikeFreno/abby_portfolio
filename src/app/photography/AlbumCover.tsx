@@ -30,12 +30,12 @@ export default function AlbumCover(project: Row) {
     <div className="relative mx-auto">
       <Link
         href={`/photography/${project.Title}`}
-        className="absolute inset-0 z-50 flex items-center justify-center bg-opacity-30 bg-white hover:bg-opacity-0 transition-opacity duration-500 ease-in-out"
+        className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-white hover:bg-opacity-0 transition-all duration-500 ease-in-out"
         style={{
           top: 0,
           left: 0,
           height: targetHeight ? `${targetHeight}px` : "100%",
-          width: targetWidth ? `${targetWidth}px` : "320px",
+          width: targetWidth ? `${targetWidth}px` : "480px",
         }}
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
@@ -55,8 +55,8 @@ export default function AlbumCover(project: Row) {
             : "/placeholder.jpg"
         }
         alt={project.Title + " cover"}
-        width={320}
-        height={320}
+        width={480}
+        height={480}
       />
     </div>
   );

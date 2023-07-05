@@ -14,7 +14,7 @@ export default async function PhotographyMainPage() {
     if (photographyData.length > 0)
       return (
         <div className="min-h-screen">
-          <div className="grid grid-cols-2 gap-2 grid-flow-col px-12 py-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 px-12 py-24">
             {photographyData.map((row) => (
               <AlbumCover
                 key={row.id}

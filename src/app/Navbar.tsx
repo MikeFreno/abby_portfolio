@@ -201,9 +201,9 @@ export default function Navbar() {
           ref={menuRef}
           className={`${
             showingMobileMenu ? "navShadow" : "translate-x-full"
-          } absolute top-0 right-0 h-screen w-3/5 md:hidden bg-zinc-50 transition-all duration-500 ease-in-out`}
+          } absolute z-[1000] top-0 right-0 h-screen w-3/5 md:hidden bg-zinc-50 transition-all duration-500 ease-in-out`}
         >
-          <div className="flex flex-col h-1/2 pt-[10vh] text-black">
+          <div className="flex z-[1000] flex-col h-1/2 pt-[10vh] text-black">
             <Link
               href={"/"}
               className={`${

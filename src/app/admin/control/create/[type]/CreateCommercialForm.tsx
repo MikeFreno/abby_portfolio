@@ -46,7 +46,7 @@ export default function CreateFilmForm() {
         const key = await AddImageToS3(
           image,
           titleRef.current!.value,
-          "photography"
+          "commercial"
         );
         attachmentString += key + ",";
       });
@@ -62,7 +62,7 @@ export default function CreateFilmForm() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
         { method: "POST", body: JSON.stringify(data) }
       );
-      router.push(`/film/${titleRef.current.value}`);
+      router.push(`/commercial`);
     }
     setSubmitButtonLoading(false);
   };

@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+import { env } from "~/env.mjs";
 import { ResponseData } from "~/types/db";
 
 export default async function DynamicFilmPage({
@@ -9,25 +11,43 @@ export default async function DynamicFilmPage({
     `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-live-project-by-type-and-title`,
     {
       method: "POST",
-      body: JSON.stringify({ type: "film", title: params.title }),
-      cache: "no-store",
+      body: JSON.stringify({
+        type: "film",
+        title: params.title.replace("%20", " "),
+      }),
     }
   );
-  const project = (await filmResponse.json()) as ResponseData;
+  const projectData = (await filmResponse.json()) as ResponseData;
 
-  if (project.rows && project.rows[0]) {
+  if (projectData.rows) {
+    if (projectData.rows[0]) {
+      return (
+        <div className="">
+          <div className="py-24 text-center text-2xl">
+            {projectData.rows[0].Title}
+          </div>
+          <div
+            className="text-center pb-12"
+            dangerouslySetInnerHTML={{
+              __html: projectData.rows[0].Blurb as string,
+            }}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="h-screen w-screen flex flex-col justify-center">
+          <div className="-mt-16 text-center">Film not found</div>
+        </div>
+      );
+    }
+  } else {
     return (
-      <div className="min-h-screen w-full">
-        <div>{project.rows[0].Title}</div>
-        <div>{project.rows[0].Blurb}</div>
-        <div>{project.rows[0].Embedded_Link}</div>
-        <div>{project.rows[0].Attachments}</div>
+      <div className="h-screen w-screen flex flex-col justify-center">
+        <div className="-mt-16 text-center">
+          Data fetching from server failed!
+        </div>
       </div>
     );
-  } else
-    return (
-      <div className="h-screen w-full flex flex-col justify-center">
-        <div className="mx-auto text-xl -mt-[10vh]">Error: no film found</div>
-      </div>
-    );
+  }
 }
