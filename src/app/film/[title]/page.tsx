@@ -45,7 +45,7 @@ export default async function DynamicFilmPage({
             {projectData.rows[0].Title}
           </div>
           <div
-            className="text-center py-12"
+            className="flex justify-center text-center mx-auto py-12 max-w-[60vw] md:max-w-[40vw]"
             dangerouslySetInnerHTML={{
               __html: projectData.rows[0].Blurb as string,
             }}
