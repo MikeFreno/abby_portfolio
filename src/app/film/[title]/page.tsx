@@ -23,11 +23,24 @@ export default async function DynamicFilmPage({
     if (projectData.rows[0]) {
       return (
         <div className="">
-          <div className="py-24 text-center text-2xl">
+          {projectData.rows[0].Embedded_Link ? (
+            <div className="py-24 flex justify-center mx-auto">
+              <iframe
+                width="800"
+                height="450"
+                src={projectData.rows[0].Embedded_Link}
+                allow="clipboard-write; encrypted-media; picture-in-picture; web-share"
+              />
+            </div>
+          ) : (
+            <div className="h-96" />
+          )}
+
+          <div className="text-center text-4xl tracking-wide font-semibold">
             {projectData.rows[0].Title}
           </div>
           <div
-            className="text-center pb-12"
+            className="text-center py-12"
             dangerouslySetInnerHTML={{
               __html: projectData.rows[0].Blurb as string,
             }}

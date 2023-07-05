@@ -47,10 +47,12 @@ export default function Navbar() {
     <>
       <div
         className={`${
-          pathname == "/" ? "text-white" : "text-black"
+          pathname == "/"
+            ? "text-white"
+            : "text-black bg-opacity-20 bg-white backdrop-blur-sm"
         } fixed w-full z-50`}
       >
-        <div className="flex justify-between px-12 py-6 md:px-16 md:py-8">
+        <div className="flex justify-between px-12 py-3 md:px-16 md:py-4">
           <a
             href={"/"}
             className="flex text-3xl tracking-wide font-semibold mx-auto md:m-0"
@@ -91,7 +93,7 @@ export default function Navbar() {
                 } flex flex-col py-2 px-4 shadow-2xl bg-white -ml-14 mt-1 rounded fixed transition-all duration-500 ease-in-out`}
               >
                 <Link
-                  href={"/film/grins"}
+                  href={"/film/Grins"}
                   className="flex justify-end w-full py-2 pl-2"
                 >
                   <div
@@ -105,7 +107,7 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href={"/film/hottears"}
+                  href={"/film/Hot Tears"}
                   className="flex justify-end w-full py-2 pl-2"
                 >
                   <div
@@ -119,7 +121,7 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href={"/film/dirt"}
+                  href={"/film/Dirt"}
                   className="flex justify-end w-full py-2 pl-2"
                 >
                   <div
@@ -133,7 +135,7 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href={"/film/craigslist"}
+                  href={"/film/Craigslist"}
                   className="flex justify-end w-full py-2 pl-2"
                 >
                   <div

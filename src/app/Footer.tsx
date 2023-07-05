@@ -14,7 +14,7 @@ export default function Footer() {
           href="https://www.instagram.com/_abigailthesnail_/"
           target="_blank"
           rel="noreferrer"
-          className="ml-2 hover:scale-110 transition-all duration-200 ease-in-out transform"
+          className="hover:scale-110 transition-all duration-200 ease-in-out transform"
         >
           <InstagramLogo height={20} width={20} />
         </a>
@@ -22,7 +22,7 @@ export default function Footer() {
           href="https://www.linkedin.com/in/abigail-weinick/"
           target="_blank"
           rel="noreferrer"
-          className="ml-2 mr-1 hover:scale-110 transition-all duration-200 ease-in-out transform"
+          className="mx-1 hover:scale-110 transition-all duration-200 ease-in-out transform"
         >
           <LinkedInLogo height={20} width={20} />
         </a>
@@ -38,7 +38,7 @@ export default function Footer() {
           href="https://www.youtube.com/channel/UCPIjchDkDoWPC9xz_wWMAwQ"
           target="_blank"
           rel="noreferrer"
-          className="ml-1 mr-2 hover:scale-110 transition-all duration-200 ease-in-out transform"
+          className="mx-1 hover:scale-110 transition-all duration-200 ease-in-out transform"
         >
           <YoutubeLogo height={20} width={20} />
         </a>
@@ -46,7 +46,7 @@ export default function Footer() {
           href="https://www.imdb.com/name/nm11670632/?ref_=nm_mv_close"
           target="_blank"
           rel="noreferrer"
-          className="mr-2 hover:scale-110 transition-all duration-200 ease-in-out transform"
+          className="hover:scale-110 transition-all duration-200 ease-in-out transform"
         >
           <IMDBLogo height={20} width={20} />
         </a>

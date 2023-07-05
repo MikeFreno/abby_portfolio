@@ -29,7 +29,7 @@ export default async function EditOverviewPage({
               No live {params.type} currently!
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-8 grid-flow-row pb-4 px-24 pt-24">
+            <div className="grid grid-cols-2 gap-8 grid-flow-row pb-4 px-24 pt-24 last:flex last:justify-center">
               {projects.rows.map((row) => (
                 <div
                   key={row.id}

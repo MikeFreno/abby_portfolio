@@ -43,11 +43,7 @@ export default function CreateFilmForm() {
     if (titleRef.current && linkRef.current) {
       let attachmentString = "";
       images.forEach(async (image, index) => {
-        const key = await AddImageToS3(
-          image,
-          titleRef.current!.value,
-          "photography"
-        );
+        const key = await AddImageToS3(image, titleRef.current!.value, "film");
         attachmentString += key + ",";
       });
       const data = {

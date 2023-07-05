@@ -1,11 +1,13 @@
 "use client";
 
 import TextEditor from "~/components/TextEditor";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
 import { Row } from "~/types/db";
 import { useRouter } from "next/navigation";
 import AddImageToS3 from "../../../create/[type]/s3Upload";
+import XCircle from "~/icons/XCircle";
+import { env } from "~/env.mjs";
 
 export default function EditFilmForm(project: Row) {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -23,6 +25,13 @@ export default function EditFilmForm(project: Row) {
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (project.Attachments) {
+      const imgStringArr = project.Attachments.split(",");
+      setImageHolder(imgStringArr);
+    }
+  }, [project]);
+
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
       setImages((prevImages) => [...prevImages, file]);
@@ -39,7 +48,7 @@ export default function EditFilmForm(project: Row) {
     setSavingAsDraft(!savingAsDraft);
   };
 
-  const createFilmPage = async (e: React.FormEvent) => {
+  const editFilmPage = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitButtonLoading(true);
     if (titleRef.current && linkRef.current) {
@@ -53,12 +62,18 @@ export default function EditFilmForm(project: Row) {
         attachmentString += key + ",";
       });
       const data = {
-        title: titleRef.current.value,
-        blurb: editorContent,
-        embedded_link: linkRef.current.value,
-        attachments: attachmentString,
+        title:
+          project.Title !== titleRef.current.value
+            ? titleRef.current.value
+            : null,
+        blurb: project.Title !== editorContent ? editorContent : null,
+        embedded_link:
+          project.Embedded_Link !== linkRef.current.value
+            ? linkRef.current.value
+            : null,
+        attachments:
+          project.Attachments !== attachmentString ? attachmentString : null,
         published: !savingAsDraft,
-        type: "film",
       };
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
@@ -77,6 +92,25 @@ export default function EditFilmForm(project: Row) {
     router.back();
     router.refresh();
     setDeleteButtonLoading(false);
+  };
+  const removeImage = async (index: number, key: string) => {
+    const imgStringArr = project.Attachments!.split(",");
+    const newString = imgStringArr.filter((str) => str !== key).join(",");
+    const res = await fetch("/api/s3/deleteImage", {
+      method: "POST",
+      body: JSON.stringify({
+        key: key,
+        newAttachmentString: newString,
+        id: project.id,
+      }),
+    });
+    console.log(res.json());
+    setImages((prevImages) =>
+      prevImages.filter((image, i) => i !== index - imageHolder.length)
+    );
+    setImageHolder((prevHeldImages) =>
+      prevHeldImages.filter((image, i) => i !== index)
+    );
   };
 
   return (
@@ -97,7 +131,7 @@ export default function EditFilmForm(project: Row) {
       </div>
       <div className="flex justify-center">
         <form
-          onSubmit={createFilmPage}
+          onSubmit={editFilmPage}
           className="flex flex-col align-middle justify-evenly w-1/2"
         >
           <div className="input-group mx-auto">
@@ -142,19 +176,35 @@ export default function EditFilmForm(project: Row) {
             <div className="text-center text-lg pt-4 -mb-2 font-light">
               Awards / other images
             </div>
-            <div className="mx-auto flex">
-              {images.map((image, index) => (
-                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                <img
-                  key={index}
-                  src={imageHolder[index] as string}
-                  className="w-36 h-36 my-auto mx-4"
-                />
-              ))}
+            <div className="flex justify-center">
               <Dropzone
                 onDrop={handleImageDrop}
                 acceptedFiles={"image/jpg, image/jpeg, image/png"}
               />
+            </div>
+            <div className="grid grid-cols-6 gap-4 -mx-24">
+              {imageHolder.map((key, index) => (
+                <div key={index}>
+                  <button
+                    type="button"
+                    className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
+                    onClick={() => removeImage(index, key as string)}
+                  >
+                    <XCircle
+                      height={24}
+                      width={24}
+                      stroke={"black"}
+                      strokeWidth={1}
+                    />
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element,
+                    jsx-a11y/alt-text */}
+                  <img
+                    src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
+                    className="w-36 h-36 my-auto mx-4"
+                  />
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex justify-evenly pt-4">

@@ -26,7 +26,7 @@ export default function RootPage() {
           >
             <div>
               <Link
-                href={"/film/grins"}
+                href={"/film/Grins"}
                 onMouseOver={() => setCurrentBGImage("Mike_and_abby.jpg")}
                 className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
               >
@@ -35,7 +35,7 @@ export default function RootPage() {
             </div>
             <div>
               <Link
-                href={"/film/hottears"}
+                href={"/film/Hot Tears"}
                 onMouseOver={() => setCurrentBGImage("TempHotTears.jpg")}
                 className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
               >
@@ -44,7 +44,7 @@ export default function RootPage() {
             </div>
             <div>
               <Link
-                href={"/film/dirt"}
+                href={"/film/Dirt"}
                 onMouseOver={() => setCurrentBGImage("DirtLipstick.jpg")}
                 className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
               >
@@ -53,7 +53,7 @@ export default function RootPage() {
             </div>
             <div>
               <Link
-                href={"/film/craigslist"}
+                href={"/film/Craigslist"}
                 onMouseOver={() => setCurrentBGImage("Mike_tongue_out.jpg")}
                 className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
               >
