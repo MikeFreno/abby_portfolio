@@ -13,5 +13,5 @@ export async function POST(input: NextRequest) {
   const query = "SELECT * FROM Project WHERE id = ?";
   const params = [id];
   const results = await conn.execute(query, params);
-  return NextResponse.json({ rows: results.rows }, { status: 200 });
+  return NextResponse.json({ row: results.rows[0] }, { status: 200 });
 }

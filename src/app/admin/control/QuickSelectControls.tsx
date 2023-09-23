@@ -153,6 +153,15 @@ export default function QuickSelectControls() {
                 >
                   <div className="hover-underline-animation-black">Edit</div>
                 </Link>
+                <Link
+                  href={"/admin/control/flow-control"}
+                  className="mt-2 w-fit"
+                  onClick={() => setPhotographyControlsShowing(false)}
+                >
+                  <div className="hover-underline-animation-black">
+                    Flow Control
+                  </div>
+                </Link>
               </div>
             </div>
           ) : null}
