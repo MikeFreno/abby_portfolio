@@ -6,8 +6,15 @@ export interface Row {
   Attachments: string | null;
   Published: 0 | 1;
   Type: "film" | "commercial" | "photography";
+  PhotographyFlow: string | null;
 }
-interface ResponseData {
+
+export interface ResponseData {
   error: string | null;
   rows: Row[] | null;
+}
+
+export interface FlowEntry {
+  cols: string[];
+  spacer: number;
 }

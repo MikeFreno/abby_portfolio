@@ -19,7 +19,8 @@ CREATE TABLE Project (
     Embedded_Link VARCHAR(2048),
     Attachments TEXT,
     Published BOOLEAN NOT NULL DEFAULT 0,
-    Type VARCHAR(255) NOT NULL
+    Type VARCHAR(255) NOT NULL,
+    PhotographyFlow TEXT,
 )
 `;
 
