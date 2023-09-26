@@ -59,7 +59,7 @@ export default function EditFilmForm(project: Row) {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "film")
+        AddImageToS3(image, titleRef.current!.value, "film"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -84,7 +84,7 @@ export default function EditFilmForm(project: Row) {
       };
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "PATCH", body: JSON.stringify(data) }
+        { method: "PATCH", body: JSON.stringify(data) },
       );
       router.push(`/film/${titleRef.current.value}`);
     }
@@ -115,17 +115,17 @@ export default function EditFilmForm(project: Row) {
     });
     console.log(res.json());
     setImages((prevImages) =>
-      prevImages.filter((image, i) => i !== index - imageHolder.length)
+      prevImages.filter((image, i) => i !== index - imageHolder.length),
     );
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 
   const removeNewImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((image, i) => i !== index));
     setNewImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 

@@ -19,7 +19,7 @@ export default async function EditSpecificPage({
       method: "POST",
       body: JSON.stringify({ id: params.projectID }),
       cache: "no-store",
-    }
+    },
   );
   const project = (await projectResponse.json()) as ResponseData;
 
@@ -35,6 +35,7 @@ export default async function EditSpecificPage({
             Attachments={project.rows[0].Attachments}
             Published={project.rows[0].Published}
             Type={project.rows[0].Type}
+            PhotographyFlow={null}
           />
         </>
       );
@@ -49,6 +50,7 @@ export default async function EditSpecificPage({
             Attachments={project.rows[0].Attachments}
             Published={project.rows[0].Published}
             Type={project.rows[0].Type}
+            PhotographyFlow={project.rows[0].PhotographyFlow}
           />
         </>
       );
@@ -63,6 +65,7 @@ export default async function EditSpecificPage({
             Attachments={project.rows[0].Attachments}
             Published={project.rows[0].Published}
             Type={project.rows[0].Type}
+            PhotographyFlow={null}
           />
         </>
       );
