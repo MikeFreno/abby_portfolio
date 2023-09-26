@@ -6,7 +6,7 @@ export interface Row {
   Attachments: string | null;
   Published: 0 | 1;
   Type: "film" | "commercial" | "photography";
-  PhotographyFlow: string | null;
+  PhotographyFlow?: string | null;
 }
 
 export interface ResponseData {
