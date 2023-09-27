@@ -1,22 +1,21 @@
 "use client";
 
 import TextEditor from "~/components/TextEditor";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
-import { Film } from "~/types/db";
+import { Sketch } from "~/types/db";
 import { useRouter } from "next/navigation";
 import AddImageToS3 from "../../../create/[type]/s3Upload";
 import XCircle from "~/icons/XCircle";
 import { env } from "~/env.mjs";
 
-export default function EditFilmForm(post: Film) {
+export default function EditSketchForm(post: Sketch) {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
   const [newImageHolder, setNewImageHolder] = useState<
     (string | ArrayBuffer)[]
   >([]);
-
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
@@ -28,13 +27,6 @@ export default function EditFilmForm(post: Film) {
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (post.attachments) {
-      const imgStringArr = post.attachments.split(",");
-      setImageHolder(imgStringArr);
-    }
-  }, [post]);
 
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
@@ -53,37 +45,37 @@ export default function EditFilmForm(post: Film) {
     setSavingAsDraft(!savingAsDraft);
   };
 
-  const editFilmPage = async (e: React.FormEvent) => {
+  const editSketchPage = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitButtonLoading(true);
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "film"),
+        AddImageToS3(image, titleRef.current!.value, "sketch"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
       // Join all keys into a single string with commas
-      const attachmentString = imageHolder.join(",") + keys.join(",");
+      const attachmentString = keys.join(",");
 
       const data = {
         id: post.id,
         title:
           post.title !== titleRef.current.value ? titleRef.current.value : null,
-        blurb: post.title !== editorContent ? editorContent : null,
-        link:
+        blurb: post.blurb !== editorContent ? editorContent : null,
+        embedded_link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,
         attachments:
           post.attachments !== attachmentString ? attachmentString : null,
         published: !savingAsDraft,
       };
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/update/`,
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/sketch/update`,
         { method: "PATCH", body: JSON.stringify(data) },
       );
-      router.push(`/film/${titleRef.current.value}`);
+      router.push(`/sketch`);
     }
     setSubmitButtonLoading(false);
   };
@@ -91,7 +83,7 @@ export default function EditFilmForm(post: Film) {
   const deletePost = async () => {
     setDeleteButtonLoading(true);
     await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/delete/${post.id}`,
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/sketch/delete/${post.id}`,
       {
         method: "DELETE",
       },
@@ -100,7 +92,6 @@ export default function EditFilmForm(post: Film) {
     router.refresh();
     setDeleteButtonLoading(false);
   };
-
   const removeImage = async (index: number, key: string) => {
     const imgStringArr = post.attachments!.split(",");
     const newString = imgStringArr.filter((str) => str !== key).join(",");
@@ -130,7 +121,7 @@ export default function EditFilmForm(post: Film) {
 
   return (
     <div className="py-8 overflow-scroll">
-      <div className="text-2xl text-center">Edit A Film Post</div>
+      <div className="text-2xl text-center">Edit A Sketch Post</div>
       <div className="flex justify-end">
         <button
           type="submit"
@@ -146,7 +137,7 @@ export default function EditFilmForm(post: Film) {
       </div>
       <div className="flex justify-center">
         <form
-          onSubmit={editFilmPage}
+          onSubmit={editSketchPage}
           className="flex flex-col align-middle justify-evenly w-1/2"
         >
           <div className="input-group mx-auto">
@@ -155,7 +146,6 @@ export default function EditFilmForm(post: Film) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="title"
-              defaultValue={post.title}
               required
               placeholder=" "
             />
@@ -167,10 +157,7 @@ export default function EditFilmForm(post: Film) {
               Enter Blurb below (optional)
             </div>
             <div className="pt-4 prose lg:prose-lg ProseMirror">
-              <TextEditor
-                updateContent={setEditorContent}
-                preSet={post.blurb}
-              />
+              <TextEditor updateContent={setEditorContent} />
             </div>
           </div>
           <div className="input-group mx-auto">
@@ -179,8 +166,7 @@ export default function EditFilmForm(post: Film) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="link"
-              defaultValue={post.link ? post.link : ""}
-              placeholder={" "}
+              placeholder=" "
             />
             <span className="bar"></span>
             <label className="underlinedInputLabel">
@@ -251,16 +237,15 @@ export default function EditFilmForm(post: Film) {
                 type="checkbox"
                 className="my-auto"
                 checked={!savingAsDraft}
+                defaultValue={post.published.toString()}
                 ref={postCheckboxRef}
                 onClick={savingStateToggle}
-                defaultValue={post.published.toString()}
                 readOnly
               />
               <div className="my-auto px-2 text-sm font-normal">
                 Check to Post
               </div>
             </div>
-
             <button
               type={submitButtonLoading ? "button" : "submit"}
               disabled={submitButtonLoading}
@@ -283,9 +268,4 @@ export default function EditFilmForm(post: Film) {
       </div>
     </div>
   );
-}
-
-interface getPreSignedResponseData {
-  uploadURL: string;
-  key: string;
 }

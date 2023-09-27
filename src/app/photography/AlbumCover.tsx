@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { env } from "~/env.mjs";
-import { Row } from "~/types/db";
+import { Photography } from "~/types/db";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-export default function AlbumCover(project: Row) {
+export default function AlbumCover(project: Photography) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [hovering, setHovering] = useState<boolean>(false);
   const [targetHeight, setTargetHeight] = useState<number | null>(null);
@@ -29,7 +29,7 @@ export default function AlbumCover(project: Row) {
   return (
     <div className="relative mx-auto">
       <Link
-        href={`/photography/${project.Title}`}
+        href={`/photography/${project.title}`}
         className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-white hover:bg-opacity-0 transition-all duration-500 ease-in-out"
         style={{
           top: 0,
@@ -42,19 +42,18 @@ export default function AlbumCover(project: Row) {
       >
         <div className="flex h-full flex-col justify-center">
           <div className="text-center text-4xl tracking-wider font-bold">
-            {!hovering ? project.Title.toUpperCase() : null}
+            {!hovering ? project.title.toUpperCase() : null}
           </div>
         </div>
       </Link>
       <Image
         ref={imageRef}
         src={
-          project.Attachments?.split(",")[0]
-            ? env.NEXT_PUBLIC_AWS_BUCKET_STRING +
-              project.Attachments?.split(",")[0]
+          project.images?.split(",")[0]
+            ? env.NEXT_PUBLIC_AWS_BUCKET_STRING + project.images?.split(",")[0]
             : "/placeholder.jpg"
         }
-        alt={project.Title + " cover"}
+        alt={project.title + " cover"}
         width={480}
         height={480}
       />

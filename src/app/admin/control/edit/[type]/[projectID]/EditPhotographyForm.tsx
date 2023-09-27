@@ -3,13 +3,13 @@
 import TextEditor from "~/components/TextEditor";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
-import { Row } from "~/types/db";
+import { Photography } from "~/types/db";
 import AddImageToS3 from "../../../create/[type]/s3Upload";
 import { useRouter } from "next/navigation";
 import { env } from "~/env.mjs";
 import XCircle from "~/icons/XCircle";
 
-export default function EditPhotographyForm(project: Row) {
+export default function EditPhotographyForm(post: Photography) {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
@@ -29,11 +29,11 @@ export default function EditPhotographyForm(project: Row) {
   const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (project.Attachments) {
-      const imgStringArr = project.Attachments.split(",");
+    if (post.images) {
+      const imgStringArr = post.images.split(",");
       setImageHolder(imgStringArr);
     }
-  }, [project]);
+  }, [post]);
 
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
@@ -61,7 +61,7 @@ export default function EditPhotographyForm(project: Row) {
     if (titleRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "photography")
+        AddImageToS3(image, titleRef.current!.value, "photography"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -71,16 +71,15 @@ export default function EditPhotographyForm(project: Row) {
       const attachmentString = keys.join(",");
 
       const data = {
+        id: post.id,
         title: titleRef.current.value,
         blurb: editorContent,
-        embedded_link: null,
-        attachments: attachmentString,
+        images: attachmentString,
         published: !savingAsDraft,
-        type: "photography",
       };
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "PATCH", body: JSON.stringify(data) }
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/update`,
+        { method: "PATCH", body: JSON.stringify(data) },
       );
       router.push(`/photography/${titleRef.current.value}`);
     }
@@ -89,39 +88,40 @@ export default function EditPhotographyForm(project: Row) {
 
   const deletePost = async () => {
     setDeleteButtonLoading(true);
-    await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/database/delete-by-id`, {
-      method: "POST",
-      body: JSON.stringify({ id: project.id }),
-    });
+    await fetch(
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/delete/${post.id}`,
+      {
+        method: "DELETE",
+      },
+    );
     router.back();
     router.refresh();
     setDeleteButtonLoading(false);
   };
 
   const removeImage = async (index: number, key: string) => {
-    const imgStringArr = project.Attachments!.split(",");
+    const imgStringArr = post.images!.split(",");
     const newString = imgStringArr.filter((str) => str !== key).join(",");
     const res = await fetch("/api/s3/deleteImage", {
       method: "POST",
       body: JSON.stringify({
         key: key,
         newAttachmentString: newString,
-        id: project.id,
+        id: post.id,
       }),
     });
-    console.log(res.json());
     setImages((prevImages) =>
-      prevImages.filter((image, i) => i !== index - imageHolder.length)
+      prevImages.filter((image, i) => i !== index - imageHolder.length),
     );
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 
   const removeNewImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((image, i) => i !== index));
     setNewImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 
@@ -151,7 +151,7 @@ export default function EditPhotographyForm(project: Row) {
               ref={titleRef}
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
-              defaultValue={project.Title}
+              defaultValue={post.title}
               name="title"
               required
               placeholder=" "
@@ -166,15 +166,11 @@ export default function EditPhotographyForm(project: Row) {
             <div className="pt-4 prose lg:prose-lg ProseMirror">
               <TextEditor
                 updateContent={setEditorContent}
-                preSet={project.Blurb ? project.Blurb : " "}
+                preSet={post.blurb ? post.blurb : " "}
               />
             </div>
           </div>
           <div className="flex flex-col">
-            <div className="text-center text-lg py-4 -mb-2 font-light">
-              Images - NEEDS WORK - The order of upload determines order of
-              appearance with no ability to adjust
-            </div>
             <div className="flex justify-center">
               <Dropzone
                 onDrop={handleImageDrop}
@@ -237,7 +233,7 @@ export default function EditPhotographyForm(project: Row) {
                 checked={!savingAsDraft}
                 ref={postCheckboxRef}
                 onClick={savingStateToggle}
-                defaultValue={project.Published}
+                defaultValue={post.published.toString()}
                 readOnly
               />
               <div className="my-auto px-2 text-sm font-normal">

@@ -1,12 +1,8 @@
-import { Row } from "~/types/db";
 import EditFilmForm from "./EditFilmForm";
 import EditPhotographyForm from "./EditPhotographyForm";
 import EditCommercialForm from "./EditCommercialForm";
-
-interface ResponseData {
-  error: string | null;
-  rows: Row[] | null;
-}
+import EditActingForm from "./EditActingForm";
+import EditSketchForm from "./EditSketchForm";
 
 export default async function EditSpecificPage({
   params,
@@ -14,56 +10,78 @@ export default async function EditSpecificPage({
   params: { type: string; projectID: string };
 }) {
   const projectResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-project-by-id`,
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/${params.type}/get_by_id/${params.projectID}`,
     {
-      method: "POST",
-      body: JSON.stringify({ id: params.projectID }),
+      method: "GET",
       cache: "no-store",
     },
   );
-  const project = (await projectResponse.json()) as ResponseData;
+  const project = (await projectResponse.json()).rows[0];
 
-  if (project.rows && project.rows.length > 0) {
-    if (project.rows[0].Type == "film") {
+  if (project) {
+    if (params.type == "film") {
       return (
         <>
           <EditFilmForm
-            id={project.rows[0].id}
-            Title={project.rows[0].Title}
-            Blurb={project.rows[0].Blurb}
-            Embedded_Link={project.rows[0].Embedded_Link}
-            Attachments={project.rows[0].Attachments}
-            Published={project.rows[0].Published}
-            Type={project.rows[0].Type}
+            id={project.id}
+            title={project.title}
+            blurb={project.blurb}
+            link={project.link}
+            attachments={project.attachments}
+            published={project.published}
           />
         </>
       );
-    } else if (project.rows[0].Type == "photography") {
+    } else if (params.type == "acting") {
+      return (
+        <>
+          <EditActingForm
+            id={project.id}
+            title={project.title}
+            blurb={project.blurb}
+            link={project.link}
+            attachments={project.attachments}
+            published={project.published}
+          />
+        </>
+      );
+    } else if (params.type == "sketch") {
+      return (
+        <>
+          <EditSketchForm
+            id={project.id}
+            title={project.title}
+            blurb={project.blurb}
+            link={project.link}
+            attachments={project.attachments}
+            published={project.published}
+          />
+        </>
+      );
+    } else if (params.type == "photography") {
       return (
         <>
           <EditPhotographyForm
-            id={project.rows[0].id}
-            Title={project.rows[0].Title}
-            Blurb={project.rows[0].Blurb}
-            Embedded_Link={project.rows[0].Embedded_Link}
-            Attachments={project.rows[0].Attachments}
-            Published={project.rows[0].Published}
-            Type={project.rows[0].Type}
-            PhotographyFlow={project.rows[0].PhotographyFlow}
+            id={project.id}
+            title={project.title}
+            blurb={project.blurb}
+            images={project.images}
+            captions={project.captions}
+            published={project.published}
+            photography_flow={project.photography_flow}
           />
         </>
       );
-    } else if (project.rows[0].Type == "commercial") {
+    } else if (params.type == "commercial") {
       return (
         <>
           <EditCommercialForm
-            id={project.rows[0].id}
-            Title={project.rows[0].Title}
-            Blurb={project.rows[0].Blurb}
-            Embedded_Link={project.rows[0].Embedded_Link}
-            Attachments={project.rows[0].Attachments}
-            Published={project.rows[0].Published}
-            Type={project.rows[0].Type}
+            id={project.id}
+            title={project.title}
+            blurb={project.blurb}
+            link={project.link}
+            attachments={project.attachments}
+            published={project.published}
           />
         </>
       );

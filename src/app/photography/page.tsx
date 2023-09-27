@@ -1,14 +1,14 @@
-import { Row } from "~/types/db";
+import { Photography } from "~/types/db";
 import { ConnectionFactory } from "../api/database/ConnectionFactory";
 import AlbumCover from "./AlbumCover";
 
 export default async function PhotographyMainPage() {
   const conn = ConnectionFactory();
-  const query = "SELECT * FROM Project WHERE Type = ?  AND Published = ?";
-  const params = ["photography", true]; // false is represented as 0 in MySQL
+  const query = "SELECT * FROM Photography WHERE Published = ?";
+  const params = [true];
   const photographyResponse = await conn.execute(query, params);
 
-  const photographyData = photographyResponse.rows as Row[];
+  const photographyData = photographyResponse.rows as Photography[];
 
   if (photographyData) {
     if (photographyData.length > 0)
@@ -19,12 +19,12 @@ export default async function PhotographyMainPage() {
               <AlbumCover
                 key={row.id}
                 id={row.id}
-                Title={row.Title}
-                Blurb={row.Blurb}
-                Embedded_Link={row.Embedded_Link}
-                Attachments={row.Attachments}
-                Published={row.Published}
-                Type={row.Type}
+                title={row.title}
+                blurb={row.blurb}
+                images={row.images}
+                published={row.published}
+                photography_flow={row.photography_flow}
+                captions={row.captions}
               />
             ))}
           </div>

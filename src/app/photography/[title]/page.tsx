@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { ResponseData } from "~/types/db";
-import Image from "next/image";
+import { ParsedPhotographyFlow, Photography } from "~/types/db";
 import { env } from "~/env.mjs";
 
 export default async function DynamicPhotographyPage({
@@ -9,42 +8,57 @@ export default async function DynamicPhotographyPage({
   params: { title: string };
 }) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-live-project-by-type-and-title`,
+    `${
+      process.env.NEXT_PUBLIC_DOMAIN
+    }/api/database/photography/get_by_title/${params.title.replace(
+      "%20",
+      " ",
+    )}`,
     {
-      method: "POST",
-      body: JSON.stringify({
-        type: "photography",
-        title: params.title.replace("%20", " "),
-      }),
+      method: "GET",
     },
   );
 
-  const photographyData = (await res.json()) as ResponseData;
+  const album = (await res.json()).row as Photography;
 
-  const photographyFlow = photographyData.rows[0]?.PhotographyFlow;
+  const flow = (await album.photography_flow.json()) as ParsedPhotographyFlow;
 
-  if (photographyData.rows) {
-    if (photographyData.rows[0]) {
-      return (
-        <div className="">
-          <div className="py-24 text-center text-2xl">
-            {photographyData.rows[0].Title}
-          </div>
+  if (album) {
+    return (
+      <div className="">
+        <div
+          className={`${album.blurb ? "pt-24" : "py-24"} text-center text-2xl`}
+        >
+          {album.title}
         </div>
-      );
-    } else {
-      return (
-        <div className="h-screen w-screen flex flex-col justify-center">
-          <div className="-mt-16 text-center">Album not found</div>
+        {album.blurb ? (
+          <div
+            className="pt-8 pb-24 text-center text-xl"
+            dangerouslySetInnerHTML={{
+              __html: album.blurb,
+            }}
+          />
+        ) : null}
+        <div className="px-4">
+          {Object.entries(flow).map(([row, values]) => (
+            <div key={row} className="">
+              {values.map((leaf, idx) => (
+                <div key={idx}>
+                  <img
+                    alt={`photo_${row}_${idx}`}
+                    src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
-      );
-    }
+      </div>
+    );
   } else {
     return (
       <div className="h-screen w-screen flex flex-col justify-center">
-        <div className="-mt-16 text-center">
-          Data fetching from server failed!
-        </div>
+        <div className="-mt-16 text-center">Album not found</div>
       </div>
     );
   }

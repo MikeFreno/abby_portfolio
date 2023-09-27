@@ -1,29 +1,28 @@
 import Link from "next/link";
-import { ResponseData } from "~/types/db";
 import { env } from "~/env.mjs";
+import { Photography } from "~/types/db";
 
 export default async function EditOverviewPage() {
   const publishedPhotography = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-all-published`,
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/get_all_live`,
     {
-      method: "POST",
-      body: JSON.stringify({ type: "photography" }),
+      method: "GET",
       cache: "no-store",
     },
   );
 
-  const pub_projects = (await publishedPhotography.json()) as ResponseData;
+  const pub_projects = (await publishedPhotography.json())
+    .rows as Photography[];
 
   const draftPhotography = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/get-all-drafts`,
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/get_all_drafts`,
     {
-      method: "POST",
-      body: JSON.stringify({ type: "photography" }),
+      method: "GET",
       cache: "no-store",
     },
   );
 
-  const draft_projects = (await draftPhotography.json()) as ResponseData;
+  const draft_projects = (await draftPhotography.json()).rows as Photography[];
 
   return (
     <div className="min-h-screen w-full">
@@ -34,19 +33,19 @@ export default async function EditOverviewPage() {
         Live photography projects
       </div>
       <div>
-        {pub_projects.rows?.length == 0 ? (
+        {pub_projects.length == 0 ? (
           <div className="text-center pt-24">
             No live photography currently!
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-8 grid-flow-row pb-4 px-24 pt-24 last:flex last:justify-center">
-            {pub_projects.rows?.map((row) => (
+            {pub_projects.map((row) => (
               <div
                 key={row.id}
                 className="px-8 py-4 rounded-md shadow-xl bg-zinc-100 h-fit"
               >
                 <div className="flex flex-col justify-evenly">
-                  <div className="text-2xl text-center pt-2">{row.Title}</div>
+                  <div className="text-2xl text-center pt-2">{row.title}</div>
                   <div className="flex justify-center">
                     <div className="flex flex-col">
                       <img
@@ -54,7 +53,7 @@ export default async function EditOverviewPage() {
                         width="120px"
                         src={
                           env.NEXT_PUBLIC_AWS_BUCKET_STRING +
-                          row.Attachments?.split(",")[0]
+                          row.images?.split(",")[0]
                         }
                         alt={"post image"}
                       />
@@ -76,19 +75,19 @@ export default async function EditOverviewPage() {
         Draft photography projects
       </div>
       <div>
-        {draft_projects.rows?.length == 0 ? (
+        {draft_projects.length == 0 ? (
           <div className="text-center pt-24">
             No photography drafts currently!
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-8 grid-flow-row pb-4 px-24 pt-24 last:flex last:justify-center">
-            {draft_projects.rows?.map((row) => (
+            {draft_projects.map((row) => (
               <div
                 key={row.id}
                 className="px-8 py-4 rounded-md shadow-xl bg-zinc-100 h-fit"
               >
                 <div className="flex flex-col justify-evenly">
-                  <div className="text-2xl text-center pt-2">{row.Title}</div>
+                  <div className="text-2xl text-center pt-2">{row.title}</div>
                   <div className="flex justify-center">
                     <div className="flex flex-col">
                       <img
@@ -96,7 +95,7 @@ export default async function EditOverviewPage() {
                         width="120px"
                         src={
                           env.NEXT_PUBLIC_AWS_BUCKET_STRING +
-                          row.Attachments?.split(",")[0]
+                          row.images?.split(",")[0]
                         }
                         alt={"post image"}
                       />

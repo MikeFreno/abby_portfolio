@@ -4,52 +4,50 @@ export interface Photography {
   title: string;
   blurb: string | null;
   images: string | null;
-  published: boolean | null;
-  photography_flow: JsonString; // parses to ParsedPhotographyFlow
-  captions: JsonString; // parses to ParsedCaptions
+  published: boolean;
+  photography_flow: any; // parses to ParsedPhotographyFlow
+  captions: any; // parses to ParsedCaptions
 }
 
 // Film Interface
 export interface Film {
   id: number;
   title: string;
-  blurb: string;
+  blurb: string | null;
   link: string | null;
   attachments: string | null;
-  published: boolean | null;
+  published: boolean;
 }
 
 // Commercial Interface
 export interface Commercial {
   id: number;
   title: string;
-  blurb: string;
+  blurb: string | null;
   link: string | null;
   attachments: string | null;
-  published: boolean | null;
+  published: boolean;
 }
 
 // Sketch Interface
 export interface Sketch {
   id: number;
   title: string;
-  blurb: string;
+  blurb: string | null;
   link: string | null;
   attachments: string | null;
-  published: boolean | null;
+  published: boolean;
 }
 
 // Acting Interface
 export interface Acting {
   id: number;
   title: string;
-  blurb: string;
+  blurb: string | null;
   link: string | null;
   attachments: string | null;
-  published: boolean | null;
+  published: boolean;
 }
-
-export type JsonString = string;
 
 export type ParsedPhotographyFlow = { [key: number]: string[] };
 export type ParsedCaptions = { [key: number]: string };

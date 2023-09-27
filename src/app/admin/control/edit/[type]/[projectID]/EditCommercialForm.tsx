@@ -3,13 +3,13 @@
 import TextEditor from "~/components/TextEditor";
 import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
-import { Row } from "~/types/db";
+import { Commercial } from "~/types/db";
 import { useRouter } from "next/navigation";
 import AddImageToS3 from "../../../create/[type]/s3Upload";
 import XCircle from "~/icons/XCircle";
 import { env } from "~/env.mjs";
 
-export default function EditFilmForm(project: Row) {
+export default function EditCommercialForm(post: Commercial) {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
@@ -51,7 +51,7 @@ export default function EditFilmForm(project: Row) {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "commercial")
+        AddImageToS3(image, titleRef.current!.value, "commercial"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -61,22 +61,19 @@ export default function EditFilmForm(project: Row) {
       const attachmentString = keys.join(",");
 
       const data = {
+        id: post.id,
         title:
-          project.Title !== titleRef.current.value
-            ? titleRef.current.value
-            : null,
-        blurb: project.Title !== editorContent ? editorContent : null,
+          post.title !== titleRef.current.value ? titleRef.current.value : null,
+        blurb: post.blurb !== editorContent ? editorContent : null,
         embedded_link:
-          project.Embedded_Link !== linkRef.current.value
-            ? linkRef.current.value
-            : null,
+          post.link !== linkRef.current.value ? linkRef.current.value : null,
         attachments:
-          project.Attachments !== attachmentString ? attachmentString : null,
+          post.attachments !== attachmentString ? attachmentString : null,
         published: !savingAsDraft,
       };
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "PATCH", body: JSON.stringify(data) }
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/update`,
+        { method: "PATCH", body: JSON.stringify(data) },
       );
       router.push(`/commercial`);
     }
@@ -85,38 +82,40 @@ export default function EditFilmForm(project: Row) {
 
   const deletePost = async () => {
     setDeleteButtonLoading(true);
-    await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/database/delete-by-id`, {
-      method: "POST",
-      body: JSON.stringify({ id: project.id }),
-    });
+    await fetch(
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/delete/${post.id}`,
+      {
+        method: "DELETE",
+      },
+    );
     router.back();
     router.refresh();
     setDeleteButtonLoading(false);
   };
   const removeImage = async (index: number, key: string) => {
-    const imgStringArr = project.Attachments!.split(",");
+    const imgStringArr = post.attachments!.split(",");
     const newString = imgStringArr.filter((str) => str !== key).join(",");
     const res = await fetch("/api/s3/deleteImage", {
       method: "POST",
       body: JSON.stringify({
         key: key,
         newAttachmentString: newString,
-        id: project.id,
+        id: post.id,
       }),
     });
     console.log(res.json());
     setImages((prevImages) =>
-      prevImages.filter((image, i) => i !== index - imageHolder.length)
+      prevImages.filter((image, i) => i !== index - imageHolder.length),
     );
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 
   const removeNewImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((image, i) => i !== index));
     setNewImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 
@@ -238,7 +237,7 @@ export default function EditFilmForm(project: Row) {
                 type="checkbox"
                 className="my-auto"
                 checked={!savingAsDraft}
-                defaultValue={project.Published}
+                defaultValue={post.published.toString()}
                 ref={postCheckboxRef}
                 onClick={savingStateToggle}
                 readOnly
