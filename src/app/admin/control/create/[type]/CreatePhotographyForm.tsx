@@ -55,12 +55,12 @@ export default function CreatePhotographyForm() {
         published: !savingAsDraft,
       };
 
-      await fetch(
+      const res = await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/create`,
         { method: "POST", body: JSON.stringify(data) },
       );
-
-      router.push(`/photography/${titleRef.current.value}`);
+      const id = (await res.json()).id;
+      router.push(`/admin/control/flow-control/${id}`);
     }
 
     setSubmitButtonLoading(false);
@@ -100,10 +100,6 @@ export default function CreatePhotographyForm() {
             <div className="pt-4 prose lg:prose-lg ProseMirror">
               <TextEditor updateContent={setEditorContent} />
             </div>
-          </div>
-          <div className="text-center text-lg pt-4 -mb-2 font-light">
-            Images - NEEDS WORK - Order of upload determines order of appearance
-            with no ability to adjust
           </div>
           <div className="flex justify-center">
             <Dropzone

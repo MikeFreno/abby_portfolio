@@ -1,27 +1,38 @@
 /* eslint-disable @next/next/no-img-element */
 import { ParsedPhotographyFlow, Photography } from "~/types/db";
 import { env } from "~/env.mjs";
+import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 
 export default async function DynamicPhotographyPage({
   params,
 }: {
   params: { title: string };
 }) {
-  const res = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_DOMAIN
-    }/api/database/photography/get_by_title/${params.title.replace(
-      "%20",
-      " ",
-    )}`,
-    {
-      method: "GET",
-    },
-  );
+  const conn = ConnectionFactory();
+  const query = `SELECT * FROM Photography WHERE title = ? AND published = ?`;
+  const db_params = [params.title.replace("%20", " "), true];
+  const res = await conn.execute(query, db_params);
 
-  const album = (await res.json()).row as Photography;
+  const album = res.rows[0] as Photography;
 
-  const flow = (await album.photography_flow.json()) as ParsedPhotographyFlow;
+  let flow: { [key: number]: string[] } = {};
+  if (album.photography_flow) {
+    flow = (await album.photography_flow.json()) as ParsedPhotographyFlow;
+  } else {
+    if (album.images) {
+      // render default flowState
+      let localAttachments = album.images.split(",");
+      let srced: { src: string }[] = [];
+      localAttachments.forEach((attachment) =>
+        srced.push({ src: env.NEXT_PUBLIC_AWS_BUCKET_STRING + attachment }),
+      );
+
+      let necessaryRows = Math.ceil(localAttachments.length / 3);
+      for (let n = 0; n < necessaryRows; n++) {
+        flow[n] = localAttachments.slice(n * 3, n * 3 + 3);
+      }
+    }
+  }
 
   if (album) {
     return (
@@ -41,12 +52,13 @@ export default async function DynamicPhotographyPage({
         ) : null}
         <div className="px-4">
           {Object.entries(flow).map(([row, values]) => (
-            <div key={row} className="">
+            <div key={row} className="flex justify-evenly">
               {values.map((leaf, idx) => (
-                <div key={idx}>
+                <div key={idx} className="flex">
                   <img
                     alt={`photo_${row}_${idx}`}
                     src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
+                    className="my-auto"
                   />
                 </div>
               ))}

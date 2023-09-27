@@ -49,18 +49,14 @@ export default function CreateFilmForm() {
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
-      // Join all keys into a single string with commas
-      const attachmentString = keys.join(",");
-      console.log(attachmentString);
-
       const data = {
         title: titleRef.current.value,
         blurb: editorContent,
         link: linkRef.current.value,
-        attachments: attachmentString,
+        attachments: keys,
         published: !savingAsDraft,
       };
-
+      console.log(data);
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/create`,
         { method: "POST", body: JSON.stringify(data) },

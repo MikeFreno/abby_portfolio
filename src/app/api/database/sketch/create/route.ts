@@ -16,7 +16,7 @@ export async function POST(input: NextRequest) {
   const conn = ConnectionFactory();
   const query = `
     INSERT INTO Sketch (title, blurb, link, attachments, published)
-    VALUES (?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?)
     `;
 
   const params = [title, blurb, link, attachments, published];

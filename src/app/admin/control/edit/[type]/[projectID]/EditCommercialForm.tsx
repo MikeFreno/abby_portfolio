@@ -1,7 +1,7 @@
 "use client";
 
 import TextEditor from "~/components/TextEditor";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
 import { Commercial } from "~/types/db";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ export default function EditCommercialForm(post: Commercial) {
   const [newImageHolder, setNewImageHolder] = useState<
     (string | ArrayBuffer)[]
   >([]);
+
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
@@ -27,6 +28,13 @@ export default function EditCommercialForm(post: Commercial) {
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (post.attachments) {
+      const imgStringArr = post.attachments.split(",");
+      setImageHolder(imgStringArr);
+    }
+  }, [post]);
 
   const handleImageDrop = useCallback((acceptedFiles: Blob[]) => {
     acceptedFiles.forEach((file: Blob) => {
@@ -58,24 +66,24 @@ export default function EditCommercialForm(post: Commercial) {
       const keys = await Promise.all(uploadPromises);
 
       // Join all keys into a single string with commas
-      const attachmentString = keys.join(",");
+      const attachmentString = imageHolder.join(",") + keys.join(",");
 
       const data = {
         id: post.id,
         title:
           post.title !== titleRef.current.value ? titleRef.current.value : null,
-        blurb: post.blurb !== editorContent ? editorContent : null,
-        embedded_link:
+        blurb: post.title !== editorContent ? editorContent : null,
+        link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,
         attachments:
           post.attachments !== attachmentString ? attachmentString : null,
         published: !savingAsDraft,
       };
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/update`,
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/update/`,
         { method: "PATCH", body: JSON.stringify(data) },
       );
-      router.push(`/commercial`);
+      router.push(`/commercial/${titleRef.current.value}`);
     }
     setSubmitButtonLoading(false);
   };
@@ -92,6 +100,7 @@ export default function EditCommercialForm(post: Commercial) {
     router.refresh();
     setDeleteButtonLoading(false);
   };
+
   const removeImage = async (index: number, key: string) => {
     const imgStringArr = post.attachments!.split(",");
     const newString = imgStringArr.filter((str) => str !== key).join(",");
@@ -146,6 +155,7 @@ export default function EditCommercialForm(post: Commercial) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="title"
+              defaultValue={post.title}
               required
               placeholder=" "
             />
@@ -157,7 +167,10 @@ export default function EditCommercialForm(post: Commercial) {
               Enter Blurb below (optional)
             </div>
             <div className="pt-4 prose lg:prose-lg ProseMirror">
-              <TextEditor updateContent={setEditorContent} />
+              <TextEditor
+                updateContent={setEditorContent}
+                preSet={post.blurb}
+              />
             </div>
           </div>
           <div className="input-group mx-auto">
@@ -166,7 +179,8 @@ export default function EditCommercialForm(post: Commercial) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="link"
-              placeholder=" "
+              defaultValue={post.link ? post.link : ""}
+              placeholder={" "}
             />
             <span className="bar"></span>
             <label className="underlinedInputLabel">
@@ -237,7 +251,6 @@ export default function EditCommercialForm(post: Commercial) {
                 type="checkbox"
                 className="my-auto"
                 checked={!savingAsDraft}
-                defaultValue={post.published.toString()}
                 ref={postCheckboxRef}
                 onClick={savingStateToggle}
                 readOnly
@@ -246,6 +259,7 @@ export default function EditCommercialForm(post: Commercial) {
                 Check to Post
               </div>
             </div>
+
             <button
               type={submitButtonLoading ? "button" : "submit"}
               disabled={submitButtonLoading}
@@ -268,4 +282,9 @@ export default function EditCommercialForm(post: Commercial) {
       </div>
     </div>
   );
+}
+
+interface getPreSignedResponseData {
+  uploadURL: string;
+  key: string;
 }

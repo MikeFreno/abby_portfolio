@@ -46,7 +46,6 @@ export default function CreateCommercialForm() {
         AddImageToS3(image, titleRef.current!.value, "commercial"),
       );
 
-      // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
       const data = {
@@ -61,7 +60,7 @@ export default function CreateCommercialForm() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/create`,
         { method: "POST", body: JSON.stringify(data) },
       );
-      router.push(`/commercial`);
+      //router.push(`/commercial`);
     }
     setSubmitButtonLoading(false);
   };

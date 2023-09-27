@@ -16,8 +16,9 @@ export default async function EditSpecificPage({
       cache: "no-store",
     },
   );
-  const project = (await projectResponse.json()).rows[0];
-
+  const project = (await projectResponse.json()).row;
+  console.log(projectResponse);
+  console.log(project);
   if (project) {
     if (params.type == "film") {
       return (

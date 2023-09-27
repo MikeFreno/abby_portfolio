@@ -1,101 +1,36 @@
 import Link from "next/link";
+import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 import { Acting, Commercial, Film, Photography, Sketch } from "~/types/db";
 import { toTitleCase } from "~/utility/functions";
 
 export default async function AdminMainPage() {
-  const actingDraftResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/acting/get-all-drafts`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
+  const conn = ConnectionFactory();
+  const actingQuery = `SELECT * FROM Acting WHERE published = ?`;
+  const commercialQuery = `SELECT * FROM Commercial WHERE published = ?`;
+  const filmQuery = `SELECT * FROM Film WHERE published = ?`;
+  const photographyQuery = `SELECT * FROM Photography WHERE published = ?`;
+  const sketchQuery = `SELECT * FROM Sketch WHERE published = ?`;
 
-  const actingLiveResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/acting/get-all-live`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const commercialDraftResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/get-all-drafts`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const commercialLiveResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/get-all-live`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const filmDraftResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/get-all-drafts`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const filmLiveResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/get-all-live`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const photographyDraftResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/get-all-drafts`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const photographyLiveResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/get-all-live`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-  const sketchDraftResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/get-all-drafts`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const sketchLiveResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/get-all-live`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-
-  const actingDrafts = (await actingDraftResponse.json()).rows as Acting[];
-  const actingLive = (await actingLiveResponse.json()).rows as Acting[];
-  const commercialDrafts = (await commercialDraftResponse.json())
+  const liveParam = [true];
+  const draftParam = [false];
+  const actingDrafts = (await conn.execute(actingQuery, draftParam))
+    .rows as Acting[];
+  const actingLive = (await conn.execute(actingQuery, liveParam))
+    .rows as Acting[];
+  const commercialDrafts = (await conn.execute(commercialQuery, draftParam))
     .rows as Commercial[];
-  const commercialLive = (await commercialLiveResponse.json())
+  const commercialLive = (await conn.execute(commercialQuery, liveParam))
     .rows as Commercial[];
-  const filmDrafts = (await filmDraftResponse.json()).rows as Film[];
-  const filmLive = (await filmLiveResponse.json()).rows as Film[];
-  const photographyDrafts = (await photographyDraftResponse.json())
+  const filmDrafts = (await conn.execute(filmQuery, draftParam)).rows as Film[];
+  const filmLive = (await conn.execute(filmQuery, liveParam)).rows as Film[];
+  const photographyDrafts = (await conn.execute(photographyQuery, draftParam))
     .rows as Photography[];
-  const photographyLive = (await photographyLiveResponse.json())
+  const photographyLive = (await conn.execute(photographyQuery, liveParam))
     .rows as Photography[];
-  const sketchDrafts = (await sketchDraftResponse.json()).rows as Sketch[];
-  const sketchLive = (await sketchLiveResponse.json()).rows as Sketch[];
+  const sketchDrafts = (await conn.execute(sketchQuery, draftParam))
+    .rows as Sketch[];
+  const sketchLive = (await conn.execute(sketchQuery, liveParam))
+    .rows as Sketch[];
 
   return (
     <div className="px-12 min-h-screen w-full pb-40 fade-in">
@@ -179,7 +114,7 @@ function ProjectSection(props: {
   type: "acting" | "commercial" | "film" | "photography" | "sketch";
   published: boolean;
 }) {
-  return props.data?.length > 0 ? (
+  return props.data.length > 0 ? (
     <>
       <div className="text-center py-2 text-xl underline underline-offset-4 tracking-wide">
         {props.published
@@ -196,7 +131,7 @@ function ProjectSection(props: {
               <div className="text-2xl text-center py-4">{row.title}</div>
               <div className="flex justify-center py-4">
                 <Link
-                  href={`/admin/control/edit/${props.published}/${row.id}`}
+                  href={`/admin/control/edit/${props.type}/${row.id}`}
                   className="w-fit rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
                 >
                   Edit this {props.type} post

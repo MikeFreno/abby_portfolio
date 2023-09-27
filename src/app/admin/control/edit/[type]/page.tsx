@@ -20,9 +20,7 @@ export default async function EditOverviewPage({
   if (posts.rows)
     return (
       <div className="min-h-screen w-full">
-        <div className="text-2xl text-center pt-24">
-          {toTitleCase(params.type)} projects
-        </div>
+        <div className="text-2xl text-center pt-24">{params.type} projects</div>
         <div>
           {posts.rows.length == 0 ? (
             <div className="text-center pt-24">

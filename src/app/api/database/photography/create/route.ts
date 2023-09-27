@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
+import { Photography } from "~/types/db";
 
 interface POSTInputData {
   title: string;
@@ -18,9 +19,18 @@ export async function POST(input: NextRequest) {
     INSERT INTO Photography (title, blurb, images, photography_flow, captions, published)
     VALUES (?, ?, ?, ?, ?, ?)
     `;
-  const imagesJoined = images ? images.join(",") : {};
-  const captions_entry = captions ? captions : {};
-  const params = [title, blurb, imagesJoined, {}, captions_entry, published];
-  const res = await conn.execute(query, params);
-  return NextResponse.json({ res });
+  const imagesJoined = images ? images.join(",") : null;
+  const captions_entry = captions ? captions : null;
+  const params = [title, blurb, imagesJoined, null, captions_entry, published];
+  try {
+    await conn.execute(query, params);
+    const followup_query = `SELECT * FROM Photography`;
+    const followup_res = await conn.execute(followup_query);
+    const albums = followup_res.rows as Photography[];
+    const last_id = albums[albums.length - 1].id;
+    return NextResponse.json({ id: last_id }, { status: 200 });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: e }, { status: 500 });
+  }
 }

@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
     const query = "SELECT * FROM Acting WHERE published = ?";
     const params = [true];
     const results = await conn.execute(query, params);
+    console.log("acting live:" + results);
     return NextResponse.json({ rows: results.rows }, { status: 200 });
   } catch (e) {
     console.error(e);

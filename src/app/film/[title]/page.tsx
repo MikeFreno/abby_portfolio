@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 import { env } from "~/env.mjs";
 import { Film } from "~/types/db";
 
@@ -7,16 +8,12 @@ export default async function DynamicFilmPage({
 }: {
   params: { title: string };
 }) {
-  const filmResponse = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_DOMAIN
-    }/api/database/film/get_by_title/${params.title.replace("%20", " ")}`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
-  const film = (await filmResponse.json()).row as Film;
+  const conn = ConnectionFactory();
+  const query = `SELECT * FROM Film WHERE title = ? AND published = ?`;
+  const db_params = [params.title.replace("%20", " "), true];
+  const res = await conn.execute(query, db_params);
+  console.log(res);
+  const film = res.rows[0] as Film;
 
   if (film) {
     return (
@@ -37,22 +34,31 @@ export default async function DynamicFilmPage({
         <div className="text-center text-4xl tracking-wide font-semibold">
           {film.title.toUpperCase()}
         </div>
-        <div
-          className="flex justify-center text-center mx-auto py-12 max-w-[60vw] md:max-w-[40vw]"
-          dangerouslySetInnerHTML={{
-            __html: film.blurb as string,
-          }}
-        />
-        <div className="grid grid-cols-3 gap-4">
+        {film.blurb ? (
+          <div
+            className="flex justify-center text-center mx-auto py-12 max-w-[60vw] md:max-w-[40vw]"
+            dangerouslySetInnerHTML={{
+              __html: film.blurb,
+            }}
+          />
+        ) : (
+          <div className="py-12" />
+        )}
+        <div className="flex justify-evenly w-full">
           {film.attachments
-            ?.split(",")
-            .map((key, index) => (
-              <img
-                key={index}
-                src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
-                alt={index.toString()}
-              />
-            ))}
+            ? film.attachments.split(",").map((key, index) => (
+                <img
+                  key={index}
+                  src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
+                  alt={index.toString()}
+                  style={{
+                    maxWidth: `${
+                      100 / (film.attachments!.split(",").length + 1)
+                    }%`,
+                  }}
+                />
+              ))
+            : null}
         </div>
       </div>
     );
