@@ -42,27 +42,22 @@ export default function CreatePhotographyForm() {
     if (titleRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "photography")
+        AddImageToS3(image, titleRef.current!.value, "photography"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
-      // Join all keys into a single string with commas
-      const attachmentString = keys.join(",");
-
       const data = {
         title: titleRef.current.value,
         blurb: editorContent,
-        embedded_link: null,
-        attachments: attachmentString,
+        images: keys,
         published: !savingAsDraft,
-        type: "photography",
       };
 
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "POST", body: JSON.stringify(data) }
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/create`,
+        { method: "POST", body: JSON.stringify(data) },
       );
 
       router.push(`/photography/${titleRef.current.value}`);
@@ -74,7 +69,7 @@ export default function CreatePhotographyForm() {
   const removeImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((image, i) => i !== index));
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 

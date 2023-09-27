@@ -3,7 +3,19 @@ import CreateFilmForm from "./CreateFilmForm";
 import CreatePhotographyForm from "./CreatePhotographyForm";
 
 export default function CreatePage({ params }: { params: { type: string } }) {
-  if (params.type == "film") {
+  if (params.type == "acting") {
+    return (
+      <>
+        <CreateActingForm />
+      </>
+    );
+  } else if (params.type == "commercial") {
+    return (
+      <>
+        <CreateCommercialForm />
+      </>
+    );
+  } else if (params.type == "film") {
     return (
       <>
         <CreateFilmForm />
@@ -15,10 +27,10 @@ export default function CreatePage({ params }: { params: { type: string } }) {
         <CreatePhotographyForm />
       </>
     );
-  } else if (params.type == "commercial") {
+  } else if (params.type == "sketch") {
     return (
       <>
-        <CreateCommercialForm />
+        <CreateSketchForm />
       </>
     );
   } else {

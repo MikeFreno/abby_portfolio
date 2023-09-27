@@ -7,7 +7,7 @@ import AddImageToS3 from "./s3Upload";
 import XCircle from "~/icons/XCircle";
 import { useRouter } from "next/navigation";
 
-export default function CreateCommercialForm() {
+export default function CreateActingForm() {
   const [editorContent, setEditorContent] = useState<string>("");
   const [images, setImages] = useState<(File | Blob)[]>([]);
   const [imageHolder, setImageHolder] = useState<(string | ArrayBuffer)[]>([]);
@@ -37,13 +37,13 @@ export default function CreateCommercialForm() {
     setSavingAsDraft(!savingAsDraft);
   };
 
-  const createCommercialPage = async (e: React.FormEvent) => {
+  const createActingPage = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitButtonLoading(true);
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "commercial"),
+        AddImageToS3(image, titleRef.current!.value, "acting"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -58,10 +58,10 @@ export default function CreateCommercialForm() {
       };
 
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/create`,
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/acting/create`,
         { method: "POST", body: JSON.stringify(data) },
       );
-      router.push(`/commercial`);
+      router.push(`/acting`);
     }
     setSubmitButtonLoading(false);
   };
@@ -78,7 +78,7 @@ export default function CreateCommercialForm() {
       <div className="text-2xl text-center">Create A Commercial Post</div>
       <div className="flex justify-center">
         <form
-          onSubmit={createCommercialPage}
+          onSubmit={createActingPage}
           className="flex flex-col align-middle justify-evenly w-1/2"
         >
           <div className="input-group mx-auto">

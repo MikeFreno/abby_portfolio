@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FlowEntry, Row } from "~/types/db";
 import Image from "next/image";
 import { env } from "~/env.mjs";
 import ArrowIcon from "~/icons/Arrow";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 export default function FlowClient(props: { post: Row }) {
   const [flow, setFlow] = useState<{ [row: number]: FlowEntry }>();
   const [firstLoadFinished, setFirstLoadFinished] = useState<boolean>(false);
+  const [attachmentArray, setAttachmentArray] = useState<{ src: string }[]>([]);
+  const [showingLightbox, setShowingLightbox] = useState<boolean>(false);
+  const clickedImageRef = useRef<number>(0);
 
   function createFlowState() {
     if (props.post.PhotographyFlow) {
@@ -20,6 +26,12 @@ export default function FlowClient(props: { post: Row }) {
       if (props.post.Attachments) {
         // render default flowState
         let localAttachments = props.post.Attachments.split(",");
+        let srced: { src: string }[] = [];
+        localAttachments.forEach((attachment) =>
+          srced.push({ src: env.NEXT_PUBLIC_AWS_BUCKET_STRING + attachment }),
+        );
+        setAttachmentArray(srced);
+
         let necessaryRows = Math.ceil(localAttachments.length / 3);
 
         for (let n = 0; n < necessaryRows; n++) {
@@ -42,7 +54,6 @@ export default function FlowClient(props: { post: Row }) {
   }, []);
 
   function moveImageUp(row: number, col: number) {
-    //console.log("called up on row " + row + " column " + col);
     //target is ((row - 1), col)
     if (row > 0) {
       let newFlow = { ...flow! };
@@ -56,7 +67,6 @@ export default function FlowClient(props: { post: Row }) {
     }
   }
   function moveImageLeft(row: number, col: number) {
-    //console.log("called left on row " + row + " column " + col);
     //target is (row, (col - 1))
     let newFlow = { ...flow! };
     let newArr = [...newFlow[row].cols];
@@ -67,7 +77,6 @@ export default function FlowClient(props: { post: Row }) {
     setFlow(newFlow);
   }
   function moveImageRight(row: number, col: number) {
-    //console.log("called right on row " + row + " column " + col);
     //target is (row, (col + 1))
     let newFlow = { ...flow! };
     let newArr = [...newFlow[row].cols];
@@ -78,7 +87,6 @@ export default function FlowClient(props: { post: Row }) {
     setFlow(newFlow);
   }
   function moveImageDown(row: number, col: number) {
-    //console.log("called down on row " + row + " column " + col);
     //target is ((row + 1), col)
     if (row < Object.keys(flow!).length - 1) {
       let newFlow = { ...flow! };
@@ -90,6 +98,15 @@ export default function FlowClient(props: { post: Row }) {
       newFlow[row].cols = sourceRowArr;
       setFlow(newFlow);
     }
+  }
+
+  function openLightbox(imageSrc: string) {
+    const idx = attachmentArray.findIndex(
+      (attachment) =>
+        attachment.src == env.NEXT_PUBLIC_AWS_BUCKET_STRING + imageSrc,
+    );
+    clickedImageRef.current = idx;
+    setShowingLightbox(true);
   }
 
   while (!firstLoadFinished) {
@@ -117,108 +134,120 @@ export default function FlowClient(props: { post: Row }) {
 
   if (flow) {
     return (
-      <div className="py-4 px-8">
-        <div className="text-zinc-800 text-3xl tracking-wider text-center pb-8">
-          {props.post.Title} Photography Flow
-        </div>
-        <div
-          id="flow control"
-          className="p-4 w-full flex justify-center flex-col"
-        >
-          {Object.entries(flow).map(([row, values]) => (
-            <div
-              key={row}
-              className="w-4/5 flex flex-row justify-evenly h-fit py-4 my-4 mx-auto bg-zinc-200 rounded"
-            >
-              {values.cols.map((leaf) => (
-                <div key={leaf} className="w-1/3 my-auto px-2 py-4">
-                  {+row > 0 ? (
-                    <div className="relative flex items-center">
-                      <button
-                        id="up-arrow"
-                        onClick={() =>
-                          moveImageUp(+row, values.cols.indexOf(leaf))
-                        }
-                        className="absolute top-1 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                      >
-                        <div className="rotate-180">
-                          <ArrowIcon
-                            width={24}
-                            height={24}
-                            strokeWidth={1}
-                            stroke={"black"}
-                          />
-                        </div>
-                      </button>
-                    </div>
-                  ) : null}
-                  <div className="relative flex items-center">
-                    {values.cols.indexOf(leaf) > 0 ? (
-                      <button
-                        id="left-arrow"
-                        onClick={() =>
-                          moveImageLeft(+row, values.cols.indexOf(leaf))
-                        }
-                        className="absolute left-1 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                      >
-                        <div className="rotate-90">
-                          <ArrowIcon
-                            width={24}
-                            height={24}
-                            strokeWidth={1}
-                            stroke={"black"}
-                          />
-                        </div>
-                      </button>
+      <>
+        <div className="py-4 px-8">
+          <div className="text-zinc-800 text-3xl tracking-wider text-center pb-8">
+            {props.post.Title} Photography Flow
+          </div>
+          <div
+            id="flow control"
+            className="p-4 w-full flex justify-center flex-col"
+          >
+            {Object.entries(flow).map(([row, values]) => (
+              <div
+                key={row}
+                className="w-4/5 flex flex-row justify-evenly h-fit py-4 my-4 mx-auto bg-zinc-200 rounded"
+              >
+                {values.cols.map((leaf) => (
+                  <div key={leaf} className="w-1/3 my-auto px-2 py-4">
+                    {+row > 0 ? (
+                      <div className="relative flex items-center">
+                        <button
+                          id="up-arrow"
+                          onClick={() =>
+                            moveImageUp(+row, values.cols.indexOf(leaf))
+                          }
+                          className="absolute top-2 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                        >
+                          <div className="rotate-180">
+                            <ArrowIcon
+                              width={24}
+                              height={24}
+                              strokeWidth={2.5}
+                              stroke={"#3f3f46"}
+                            />
+                          </div>
+                        </button>
+                      </div>
                     ) : null}
-                    <img
-                      alt={"image_" + row + "_" + values.cols.indexOf(leaf)}
-                      src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
-                      className="h-48 w-full"
-                    />
-                    {values.cols.indexOf(leaf) < values.cols.length - 1 ? (
-                      <button
-                        id="right-arrow"
-                        onClick={() =>
-                          moveImageRight(+row, values.cols.indexOf(leaf))
-                        }
-                        className="absolute right-1 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                      >
-                        <div className="-rotate-90">
+                    <div className="relative flex items-center">
+                      {values.cols.indexOf(leaf) > 0 ? (
+                        <button
+                          id="left-arrow"
+                          onClick={() =>
+                            moveImageLeft(+row, values.cols.indexOf(leaf))
+                          }
+                          className="absolute left-4 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                        >
+                          <div className="rotate-90">
+                            <ArrowIcon
+                              width={24}
+                              height={24}
+                              strokeWidth={2.5}
+                              stroke={"#3f3f46"}
+                            />
+                          </div>
+                        </button>
+                      ) : null}
+                      <div className="bg-zinc-50 rounded-sm w-full bg-opacity-50">
+                        <img
+                          alt={"image_" + row + "_" + values.cols.indexOf(leaf)}
+                          src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
+                          className="h-48 mx-auto"
+                          onClick={() => openLightbox(leaf)}
+                        />
+                      </div>
+                      {values.cols.indexOf(leaf) < values.cols.length - 1 ? (
+                        <button
+                          id="right-arrow"
+                          onClick={() =>
+                            moveImageRight(+row, values.cols.indexOf(leaf))
+                          }
+                          className="absolute right-4 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                        >
+                          <div className="-rotate-90">
+                            <ArrowIcon
+                              width={24}
+                              height={24}
+                              strokeWidth={2.5}
+                              stroke={"#3f3f46"}
+                            />
+                          </div>
+                        </button>
+                      ) : null}
+                    </div>
+                    {+row < Object.keys(flow).length - 1 ? (
+                      <div className="relative flex items-center">
+                        <button
+                          id="down-arrow"
+                          onClick={() =>
+                            moveImageDown(+row, values.cols.indexOf(leaf))
+                          }
+                          className="absolute bottom-2 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                        >
                           <ArrowIcon
                             width={24}
                             height={24}
-                            strokeWidth={1}
-                            stroke={"black"}
+                            strokeWidth={2.5}
+                            stroke={"#3f3f46"}
                           />
-                        </div>
-                      </button>
+                        </button>
+                      </div>
                     ) : null}
                   </div>
-                  {+row < Object.keys(flow).length - 1 ? (
-                    <div className="relative flex items-center">
-                      <button
-                        id="down-arrow"
-                        onClick={() =>
-                          moveImageDown(+row, values.cols.indexOf(leaf))
-                        }
-                        className="absolute bottom-1 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                      >
-                        <ArrowIcon
-                          width={24}
-                          height={24}
-                          strokeWidth={1}
-                          stroke={"black"}
-                        />
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          ))}
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        <Lightbox
+          open={showingLightbox}
+          close={() => setShowingLightbox(false)}
+          slides={attachmentArray}
+          index={clickedImageRef.current}
+          plugins={[Zoom]}
+        />
+      </>
     );
   } else
     return (

@@ -43,7 +43,7 @@ export default function CreateFilmForm() {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "film")
+        AddImageToS3(image, titleRef.current!.value, "film"),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -56,15 +56,14 @@ export default function CreateFilmForm() {
       const data = {
         title: titleRef.current.value,
         blurb: editorContent,
-        embedded_link: linkRef.current.value,
+        link: linkRef.current.value,
         attachments: attachmentString,
         published: !savingAsDraft,
-        type: "film",
       };
 
       await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/project-manipulation`,
-        { method: "POST", body: JSON.stringify(data) }
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/create`,
+        { method: "POST", body: JSON.stringify(data) },
       );
 
       router.push(`/film/${titleRef.current.value}`);
@@ -74,7 +73,7 @@ export default function CreateFilmForm() {
   const removeImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((image, i) => i !== index));
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index)
+      prevHeldImages.filter((image, i) => i !== index),
     );
   };
 

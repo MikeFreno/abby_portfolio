@@ -16,10 +16,12 @@ export default async function DynamicPhotographyPage({
         type: "photography",
         title: params.title.replace("%20", " "),
       }),
-    }
+    },
   );
 
   const photographyData = (await res.json()) as ResponseData;
+
+  const photographyFlow = photographyData.rows[0]?.PhotographyFlow;
 
   if (photographyData.rows) {
     if (photographyData.rows[0]) {
@@ -27,17 +29,6 @@ export default async function DynamicPhotographyPage({
         <div className="">
           <div className="py-24 text-center text-2xl">
             {photographyData.rows[0].Title}
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            {photographyData.rows[0].Attachments?.split(",").map(
-              (key, index) => (
-                <img
-                  key={index}
-                  src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
-                  alt={index.toString()}
-                />
-              )
-            )}
           </div>
         </div>
       );

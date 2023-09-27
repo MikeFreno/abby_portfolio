@@ -1,11 +1,45 @@
-//this is mainly for reference
-const projectCreation = `CREATE TABLE Row (
+const photography_table = `CREATE TABLE Photography (
     id INT PRIMARY KEY,
-    Title VARCHAR(255), 
-    Blurb VARCHAR(255) NULL, 
-    Embedded_Link VARCHAR(255) NULL, 
-    Attachments VARCHAR(255) NULL, 
-    Published BOOLEAN, 
-    Type ENUM('film', 'commercial', 'photography'), 
-    PhotographyFlow JSON NULL
-); `; //type is currently a VARCHAR(255), should be changed
+    title VARCHAR(255) NOT NULL,
+    blurb TEXT,
+    images TEXT,
+    published BOOLEAN,
+    photography_flow JSON,
+    captions JSON
+);`;
+
+const film_table = `CREATE TABLE Film (
+    id INT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    blurb TEXT NOT NULL,
+    link VARCHAR(255),
+    attachments TEXT,
+    published BOOLEAN
+);`;
+
+const commercial_table = `CREATE TABLE Commercial (
+    id INT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    blurb TEXT NOT NULL,
+    link VARCHAR(255),
+    attachments TEXT,
+    published BOOLEAN
+);`;
+
+const sketch_table = `CREATE TABLE Sketch (
+    id INT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    blurb TEXT NOT NULL,
+    link VARCHAR(255),
+    attachments TEXT,
+    published BOOLEAN
+);`;
+
+const acting_table = `CREATE TABLE Acting (
+    id INT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    blurb TEXT NOT NULL,
+    link VARCHAR(255),
+    attachments TEXT,
+    published BOOLEAN
+);`;
