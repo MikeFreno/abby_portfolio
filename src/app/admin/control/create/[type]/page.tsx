@@ -1,6 +1,8 @@
+import CreateActingForm from "./CreateActingForm";
 import CreateCommercialForm from "./CreateCommercialForm";
 import CreateFilmForm from "./CreateFilmForm";
 import CreatePhotographyForm from "./CreatePhotographyForm";
+import CreateSketchForm from "./CreateSketchForm";
 
 export default function CreatePage({ params }: { params: { type: string } }) {
   if (params.type == "acting") {
