@@ -7,8 +7,8 @@ export async function GET(
 ) {
   try {
     const conn = ConnectionFactory();
-    const query = "SELECT * FROM Commercial WHERE id = ?";
-    const params = [context.params.id];
+    const query = "SELECT * FROM Acting WHERE id = ?";
+    const params = [+context.params.id];
     const results = await conn.execute(query, params);
     return NextResponse.json({ row: results.rows[0] }, { status: 200 });
   } catch (e) {

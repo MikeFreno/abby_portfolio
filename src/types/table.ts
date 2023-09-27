@@ -1,6 +1,6 @@
 const photography_table = `CREATE TABLE Photography (
     id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL UNIQUE,
     blurb TEXT,
     images TEXT,
     published BOOLEAN,
@@ -10,7 +10,7 @@ const photography_table = `CREATE TABLE Photography (
 
 const film_table = `CREATE TABLE Film (
     id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL UNIQUE,
     blurb TEXT NOT NULL,
     link VARCHAR(255),
     attachments TEXT,
@@ -19,7 +19,7 @@ const film_table = `CREATE TABLE Film (
 
 const commercial_table = `CREATE TABLE Commercial (
     id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL UNIQUE,
     blurb TEXT NOT NULL,
     link VARCHAR(255),
     attachments TEXT,
@@ -28,7 +28,7 @@ const commercial_table = `CREATE TABLE Commercial (
 
 const sketch_table = `CREATE TABLE Sketch (
     id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL UNIQUE,
     blurb TEXT NOT NULL,
     link VARCHAR(255),
     attachments TEXT,
@@ -37,7 +37,7 @@ const sketch_table = `CREATE TABLE Sketch (
 
 const acting_table = `CREATE TABLE Acting (
     id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL UNIQUE,
     blurb TEXT NOT NULL,
     link VARCHAR(255),
     attachments TEXT,

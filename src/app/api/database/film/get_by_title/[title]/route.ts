@@ -3,12 +3,12 @@ import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: { title: string } },
 ) {
   try {
     const conn = ConnectionFactory();
-    const query = "SELECT * FROM Acting WHERE id = ?";
-    const params = [context.params.id];
+    const query = "SELECT * FROM Film WHERE title = ?";
+    const params = [context.params.title];
     const results = await conn.execute(query, params);
     return NextResponse.json({ row: results.rows[0] }, { status: 200 });
   } catch (e) {

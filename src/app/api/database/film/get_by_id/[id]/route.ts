@@ -8,7 +8,7 @@ export async function GET(
   try {
     const conn = ConnectionFactory();
     const query = "SELECT * FROM Film WHERE id = ?";
-    const params = [context.params.id];
+    const params = [+context.params.id];
     const results = await conn.execute(query, params);
     return NextResponse.json({ row: results.rows[0] }, { status: 200 });
   } catch (e) {
