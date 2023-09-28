@@ -42,7 +42,9 @@ export default function AlbumCover(project: Photography) {
       >
         <div className="flex h-full flex-col justify-center">
           <div className="text-center text-4xl tracking-wider font-bold">
-            {!hovering ? project.title.toUpperCase() : null}
+            {!hovering
+              ? project.title.replaceAll("_", " ").toUpperCase()
+              : null}
           </div>
         </div>
       </Link>

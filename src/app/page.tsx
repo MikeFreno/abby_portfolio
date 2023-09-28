@@ -35,7 +35,7 @@ export default function RootPage() {
             </div>
             <div>
               <Link
-                href={"/film/Hot Tears"}
+                href={"/film/Hot_Tears"}
                 onMouseOver={() => setCurrentBGImage("TempHotTears.jpg")}
                 className="text-6xl transition-all duration-500 ease-in-out hover:tracking-wider"
               >

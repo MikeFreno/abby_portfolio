@@ -107,7 +107,7 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href={"/film/Hot Tears"}
+                  href={"/film/Hot_Tears"}
                   className="flex justify-end w-full py-2 pl-2"
                 >
                   <div
