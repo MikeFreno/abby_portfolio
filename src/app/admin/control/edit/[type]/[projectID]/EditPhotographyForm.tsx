@@ -61,7 +61,11 @@ export default function EditPhotographyForm(post: Photography) {
     if (titleRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "photography"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replace(" ", "_"),
+          "photography",
+        ),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -72,7 +76,7 @@ export default function EditPhotographyForm(post: Photography) {
 
       const data = {
         id: post.id,
-        title: titleRef.current.value,
+        title: titleRef.current.value.replace(" ", "_"),
         blurb: editorContent,
         images: attachmentString,
         published: !savingAsDraft,
@@ -81,7 +85,7 @@ export default function EditPhotographyForm(post: Photography) {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/update`,
         { method: "PATCH", body: JSON.stringify(data) },
       );
-      router.push(`/photography/${titleRef.current.value}`);
+      router.push(`/admin/control/flow-control/${post.id}`);
     }
     setSubmitButtonLoading(false);
   };

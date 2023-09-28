@@ -42,7 +42,11 @@ export default function CreatePhotographyForm() {
     if (titleRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "photography"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replace(" ", "_"),
+          "photography",
+        ),
       );
 
       // Use Promise.all() to wait for all promises to resolve

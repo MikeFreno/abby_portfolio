@@ -59,7 +59,11 @@ export default function EditFilmForm(post: Film) {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "film"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replaceAll(" ", "_"),
+          "film",
+        ),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -71,7 +75,9 @@ export default function EditFilmForm(post: Film) {
       const data = {
         id: post.id,
         title:
-          post.title !== titleRef.current.value ? titleRef.current.value : null,
+          post.title !== titleRef.current.value.replaceAll(" ", "_")
+            ? titleRef.current.value.replaceAll(" ", "_")
+            : null,
         blurb: post.title !== editorContent ? editorContent : null,
         link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,
@@ -83,7 +89,7 @@ export default function EditFilmForm(post: Film) {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/film/update/`,
         { method: "PATCH", body: JSON.stringify(data) },
       );
-      router.push(`/film/${titleRef.current.value}`);
+      router.push(`/film/${titleRef.current.value.replaceAll(" ", "_")}`);
     }
     setSubmitButtonLoading(false);
   };

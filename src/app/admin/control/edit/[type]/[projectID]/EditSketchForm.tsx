@@ -51,7 +51,11 @@ export default function EditSketchForm(post: Sketch) {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "sketch"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replaceAll(" ", "_"),
+          "sketch",
+        ),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -63,7 +67,9 @@ export default function EditSketchForm(post: Sketch) {
       const data = {
         id: post.id,
         title:
-          post.title !== titleRef.current.value ? titleRef.current.value : null,
+          post.title !== titleRef.current.value.replaceAll(" ", "_")
+            ? titleRef.current.value.replaceAll(" ", "_")
+            : null,
         blurb: post.blurb !== editorContent ? editorContent : null,
         embedded_link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,

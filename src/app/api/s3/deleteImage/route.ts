@@ -28,7 +28,7 @@ export async function POST(input: NextRequest) {
   const command = new DeleteObjectCommand(s3params);
   const res = await client.send(command);
   const conn = ConnectionFactory();
-  const query = "UPDATE Project SET Attachments = ? WHERE id = ?";
+  const query = "UPDATE Photography SET images = ? WHERE id = ?";
   const dbparams = [newAttachmentString, id];
   const results = await conn.execute(query, dbparams);
   return NextResponse.json(res);

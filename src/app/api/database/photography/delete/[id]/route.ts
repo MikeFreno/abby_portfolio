@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 
-export async function POST(
+export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: { id: number } },
 ) {
-  const conn = ConnectionFactory();
-  const query = "DELETE FROM Sketch WHERE id = ?";
-  const params = [context.params.id];
-  const results = await conn.execute(query, params);
-  console.log(results);
-
-  return NextResponse.json({ status: 202 });
+  try {
+    const conn = ConnectionFactory();
+    const query = "DELETE FROM Photography WHERE id = ?";
+    const params = [context.params.id];
+    await conn.execute(query, params);
+    return NextResponse.json({ status: 202 });
+  } catch (e) {
+    console.log(e);
+    return NextResponse.json({ status: 500 });
+  }
 }

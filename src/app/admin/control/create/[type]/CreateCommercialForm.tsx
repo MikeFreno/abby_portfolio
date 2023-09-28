@@ -43,13 +43,17 @@ export default function CreateCommercialForm() {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "commercial"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replaceAll(" ", "_"),
+          "commercial",
+        ),
       );
 
       const keys = await Promise.all(uploadPromises);
 
       const data = {
-        title: titleRef.current.value,
+        title: titleRef.current.value.replaceAll(" ", "_"),
         blurb: editorContent,
         link: linkRef.current.value,
         attachments: keys,
@@ -60,7 +64,7 @@ export default function CreateCommercialForm() {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/create`,
         { method: "POST", body: JSON.stringify(data) },
       );
-      //router.push(`/commercial`);
+      router.push(`/commercial`);
     }
     setSubmitButtonLoading(false);
   };

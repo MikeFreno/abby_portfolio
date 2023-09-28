@@ -10,7 +10,7 @@ export default async function DynamicFilmPage({
 }) {
   const conn = ConnectionFactory();
   const query = `SELECT * FROM Film WHERE title = ? AND published = ?`;
-  const db_params = [params.title.replace("%20", " "), true];
+  const db_params = [params.title, true];
   const res = await conn.execute(query, db_params);
   console.log(res);
   const film = res.rows[0] as Film;
@@ -32,7 +32,7 @@ export default async function DynamicFilmPage({
         )}
 
         <div className="text-center text-4xl tracking-wide font-semibold">
-          {film.title.toUpperCase()}
+          {film.title.replaceAll("_", " ").toUpperCase()}
         </div>
         {film.blurb ? (
           <div

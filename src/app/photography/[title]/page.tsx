@@ -38,9 +38,11 @@ export default async function DynamicPhotographyPage({
     return (
       <div className="">
         <div
-          className={`${album.blurb ? "pt-24" : "py-24"} text-center text-2xl`}
+          className={`${
+            album.blurb ? "pt-24" : "py-24"
+          } text-center tracking-wide text-4xl`}
         >
-          {album.title}
+          {album.title.replaceAll("_", " ")}
         </div>
         {album.blurb ? (
           <div

@@ -43,14 +43,18 @@ export default function CreateSketchForm() {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "acting"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replaceAll(" ", "_"),
+          "acting",
+        ),
       );
 
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
       const data = {
-        title: titleRef.current.value,
+        title: titleRef.current.value.replaceAll(" ", "_"),
         blurb: editorContent,
         link: linkRef.current.value,
         attachments: keys,

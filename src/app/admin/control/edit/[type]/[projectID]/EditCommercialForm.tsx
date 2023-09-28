@@ -59,7 +59,11 @@ export default function EditCommercialForm(post: Commercial) {
     if (titleRef.current && linkRef.current) {
       // Use Array.prototype.map() to create an array of promises
       const uploadPromises = images.map((image) =>
-        AddImageToS3(image, titleRef.current!.value, "commercial"),
+        AddImageToS3(
+          image,
+          titleRef.current!.value.replaceAll(" ", "_"),
+          "commercial",
+        ),
       );
 
       // Use Promise.all() to wait for all promises to resolve
@@ -71,7 +75,9 @@ export default function EditCommercialForm(post: Commercial) {
       const data = {
         id: post.id,
         title:
-          post.title !== titleRef.current.value ? titleRef.current.value : null,
+          post.title !== titleRef.current.value.replaceAll(" ", "_")
+            ? titleRef.current.value.replaceAll(" ", "_")
+            : null,
         blurb: post.title !== editorContent ? editorContent : null,
         link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,
@@ -83,7 +89,7 @@ export default function EditCommercialForm(post: Commercial) {
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/commercial/update/`,
         { method: "PATCH", body: JSON.stringify(data) },
       );
-      router.push(`/commercial/${titleRef.current.value}`);
+      router.push(`/commercial`);
     }
     setSubmitButtonLoading(false);
   };

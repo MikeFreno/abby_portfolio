@@ -34,7 +34,7 @@ function CommercialProjectChunk(commercial: Commercial) {
   return (
     <div className="">
       <div className="pt-36 text-center text-4xl tracking-wide">
-        {commercial.title}
+        {commercial.title.replaceAll("_", " ")}
       </div>
       <div
         className="text-center py-12"

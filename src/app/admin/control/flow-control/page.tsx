@@ -45,7 +45,9 @@ export default async function EditOverviewPage() {
                 className="px-8 py-4 rounded-md shadow-xl bg-zinc-100 h-fit"
               >
                 <div className="flex flex-col justify-evenly">
-                  <div className="text-2xl text-center pt-2">{row.title}</div>
+                  <div className="text-2xl text-center pt-2">
+                    {row.title.replace("_", " ")}
+                  </div>
                   <div className="flex justify-center">
                     <div className="flex flex-col">
                       <img

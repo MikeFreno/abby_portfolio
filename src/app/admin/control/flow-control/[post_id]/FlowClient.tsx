@@ -7,7 +7,7 @@ import ArrowIcon from "~/icons/Arrow";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import { Photography } from "~/types/db";
+import { ParsedPhotographyFlow, Photography } from "~/types/db";
 import PlusIcon from "~/icons/Plus";
 import MinusIcon from "~/icons/Minus";
 import Link from "next/link";
@@ -21,9 +21,7 @@ export default function FlowClient(props: { post: Photography }) {
 
   function createFlowState() {
     if (props.post.photography_flow) {
-      const flow = JSON.parse(props.post.photography_flow) as {
-        [key: number]: string[];
-      };
+      const flow = props.post.photography_flow as ParsedPhotographyFlow;
       setFlow(flow);
     } else {
       if (props.post.images) {
@@ -148,7 +146,7 @@ export default function FlowClient(props: { post: Photography }) {
     return (
       <div className="py-4 px-8">
         <div className="text-zinc-800 text-3xl tracking-wider text-center pb-8">
-          {props.post.title} Photography Flow
+          {props.post.title.replaceAll("_", " ")} Photography Flow
         </div>
         <div className="flex justify-center">
           <div className="flex flex-col">
@@ -172,7 +170,7 @@ export default function FlowClient(props: { post: Photography }) {
       <>
         <div className="py-4 px-8">
           <div className="text-zinc-800 text-3xl tracking-wider text-center pb-8">
-            {props.post.title} Photography Flow
+            {props.post.title.replaceAll("_", " ")} Photography Flow
           </div>
           <div
             id="flow control"
@@ -333,7 +331,7 @@ export default function FlowClient(props: { post: Photography }) {
     return (
       <div className="py-4 px-8">
         <div className="text-zinc-800 text-3xl tracking-wider text-center pb-8">
-          {props.post.title} Photography Flow
+          {props.post.title.replaceAll("_", " ")} Photography Flow
         </div>
         <div>Fatal error loading data</div>
       </div>
