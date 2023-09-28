@@ -16,6 +16,8 @@ export default function QuickSelectControls() {
     useState<boolean>(false);
   const [commercialControlsShowing, setCommercialControlsShowing] =
     useState<boolean>(false);
+  const [sketchControlsShowing, setSketchControlsShowing] = useState(false);
+  const [actingControlsShowing, setActingControlsShowing] = useState(false);
 
   const pathname = usePathname();
 
@@ -31,6 +33,13 @@ export default function QuickSelectControls() {
 
   const toggleCommercialControls = () => {
     setCommercialControlsShowing(!commercialControlsShowing);
+  };
+  const toggleSketchControls = () => {
+    setSketchControlsShowing(!sketchControlsShowing);
+  };
+
+  const toggleActingControls = () => {
+    setActingControlsShowing(!actingControlsShowing);
   };
 
   const menuToggle = () => {
@@ -200,6 +209,86 @@ export default function QuickSelectControls() {
                 href={"/admin/control/edit/commercial"}
                 className="mt-2 w-fit"
                 onClick={() => setCommercialControlsShowing(false)}
+              >
+                <div className="hover-underline-animation-black">Edit</div>
+              </Link>
+            </div>
+          ) : null}
+          <button
+            className="text-start mt-16 transition-all duration-500 ease-in-out transform hover-underline-animation-black"
+            onClick={toggleSketchControls}
+          >
+            <div className="flex justify-between">
+              <div className="pr-6">Sketch Section Controls</div>
+              <div
+                className={`${
+                  sketchControlsShowing ? "" : "-rotate-90"
+                } my-auto transition-all duration-300 ease-in-out transform`}
+              >
+                <ChevronDown
+                  height={20}
+                  width={20}
+                  stroke={"black"}
+                  strokeWidth={1}
+                />
+              </div>
+            </div>
+          </button>
+          {sketchControlsShowing ? (
+            <div className="h-fit fade-in flex flex-col pl-4 pt-4">
+              <Link
+                href={"/admin/control/create/sketch"}
+                className="mt-2 w-fit"
+                onClick={() => setSketchControlsShowing(false)}
+              >
+                <div className="hover-underline-animation-black">
+                  Create New
+                </div>
+              </Link>
+              <Link
+                href={"/admin/control/edit/sketch"}
+                className="mt-2 w-fit"
+                onClick={() => setSketchControlsShowing(false)}
+              >
+                <div className="hover-underline-animation-black">Edit</div>
+              </Link>
+            </div>
+          ) : null}
+          <button
+            className="text-start mt-16 transition-all duration-500 ease-in-out transform hover-underline-animation-black"
+            onClick={toggleActingControls}
+          >
+            <div className="flex justify-between">
+              <div className="pr-6">Acting Section Controls</div>
+              <div
+                className={`${
+                  actingControlsShowing ? "" : "-rotate-90"
+                } my-auto transition-all duration-300 ease-in-out transform`}
+              >
+                <ChevronDown
+                  height={20}
+                  width={20}
+                  stroke={"black"}
+                  strokeWidth={1}
+                />
+              </div>
+            </div>
+          </button>
+          {actingControlsShowing ? (
+            <div className="h-fit fade-in flex flex-col pl-4 pt-4">
+              <Link
+                href={"/admin/control/create/acting"}
+                className="mt-2 w-fit"
+                onClick={() => setActingControlsShowing(false)}
+              >
+                <div className="hover-underline-animation-black">
+                  Create New
+                </div>
+              </Link>
+              <Link
+                href={"/admin/control/edit/acting"}
+                className="mt-2 w-fit"
+                onClick={() => setActingControlsShowing(false)}
               >
                 <div className="hover-underline-animation-black">Edit</div>
               </Link>

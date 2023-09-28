@@ -128,7 +128,9 @@ function ProjectSection(props: {
             className="px-8 py-4 my-4 rounded-md shadow-xl bg-emerald-50 h-fit"
           >
             <div className="flex flex-col justify-evenly">
-              <div className="text-2xl text-center py-4">{row.title}</div>
+              <div className="text-2xl text-center py-4">
+                {row.title.replaceAll("_", " ")}
+              </div>
               <div className="flex justify-center py-4">
                 <Link
                   href={`/admin/control/edit/${props.type}/${row.id}`}

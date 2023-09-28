@@ -36,7 +36,7 @@ export default async function EditOverviewPage({
                   >
                     <div className="flex flex-col justify-evenly">
                       <div className="text-2xl text-center py-4">
-                        {row.title}
+                        {row.title.replaceAll("_", " ")}
                       </div>
                       <div className="flex justify-center py-4">
                         <Link
