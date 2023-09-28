@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
+import { Acting } from "~/types/db";
 
 interface POSTInputData {
   title: string;
@@ -26,9 +27,12 @@ export async function POST(input: NextRequest) {
       attachments ? attachments?.join("\\,") : null,
       published,
     ];
-    const res = await conn.execute(query, params);
-    console.log(res);
-    return NextResponse.json({ result: res });
+    await conn.execute(query, params);
+    const followup_query = `SELECT * FROM Commercial`;
+    const followup_res = await conn.execute(followup_query);
+    const rows = followup_res.rows as Acting[];
+    const last_title = rows[rows.length - 1].title;
+    return NextResponse.json({ title: last_title }, { status: 200 });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: e }, { status: 500 });

@@ -10,13 +10,14 @@ export default async function DynamicPhotographyPage({
 }) {
   const conn = ConnectionFactory();
   const query = `SELECT * FROM Photography WHERE title = ? AND published = ?`;
-  const db_params = [params.title.replace("%20", " "), true];
-  const res = await conn.execute(query, db_params);
+  const db_params = [params.title.replaceAll("%2C", ","), true];
 
+  const res = await conn.execute(query, db_params);
+  //console.log("Results:" + res.rows[0]);
   const album = res.rows[0] as Photography;
 
   let flow: { [key: number]: string[] } = {};
-  if (album.photography_flow) {
+  if (album && album.photography_flow) {
     flow = album.photography_flow as ParsedPhotographyFlow;
   } else {
     if (album.images) {
@@ -52,7 +53,7 @@ export default async function DynamicPhotographyPage({
             }}
           />
         ) : null}
-        <div className="px-4">
+        <div className="p-4">
           {Object.entries(flow).map(([row, values]) => (
             <div key={row} className="flex justify-evenly">
               {values.map((leaf, idx) => (

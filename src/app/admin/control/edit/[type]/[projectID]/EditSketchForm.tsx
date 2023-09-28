@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import AddImageToS3 from "../../../create/[type]/s3Upload";
 import XCircle from "~/icons/XCircle";
 import { env } from "~/env.mjs";
+import Link from "next/link";
 
 export default function EditSketchForm(post: Sketch) {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -271,6 +272,12 @@ export default function EditSketchForm(post: Sketch) {
                 : "Save as Draft"}
             </button>
           </div>
+          <a
+            href={`/sketch/${titleRef.current?.value.replaceAll(" ", "_")}`}
+            className="py-4 text-lg px-6 transform mx-auto text-white w-fit my-2 opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+          >
+            Go To Sketch
+          </a>
         </form>
       </div>
     </div>

@@ -6,6 +6,7 @@ import Dropzone from "~/components/Dropzone";
 import AddImageToS3 from "./s3Upload";
 import XCircle from "~/icons/XCircle";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function CreateSketchForm() {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -14,8 +15,7 @@ export default function CreateSketchForm() {
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
-
-  const router = useRouter();
+  const [titleRecieved, setTitleRecieved] = useState<string | null>(null);
 
   const postCheckboxRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -61,11 +61,11 @@ export default function CreateSketchForm() {
         published: !savingAsDraft,
       };
 
-      await fetch(
+      const res = await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/sketch/create`,
         { method: "POST", body: JSON.stringify(data) },
       );
-      router.push(`/sketch`);
+      setTitleRecieved((await res.json()).title);
     }
     setSubmitButtonLoading(false);
   };
@@ -185,6 +185,14 @@ export default function CreateSketchForm() {
                 : "Save as Draft"}
             </button>
           </div>
+          {titleRecieved ? (
+            <a
+              href={`/sketch/${titleRecieved}`}
+              className="py-4 text-lg px-6 transform mx-auto text-white w-fit my-2 opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+            >
+              Go to Post
+            </a>
+          ) : null}
         </form>
       </div>
     </div>

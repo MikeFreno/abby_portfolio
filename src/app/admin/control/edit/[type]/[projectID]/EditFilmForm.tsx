@@ -281,13 +281,14 @@ export default function EditFilmForm(post: Film) {
                 : "Save as Draft"}
             </button>
           </div>
+          <a
+            href={`/film/${titleRef.current?.value}`}
+            className="py-4 text-lg px-6 transform mx-auto text-white w-fit my-2 opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+          >
+            Go To Film
+          </a>
         </form>
       </div>
     </div>
   );
-}
-
-interface getPreSignedResponseData {
-  uploadURL: string;
-  key: string;
 }

@@ -16,6 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <link rel="preload" as="image" href="/Abby_self_mirror.jpg" />
+      <link rel="preload" as="image" href="/DirtLipstick.jpg" />
+      <link rel="preload" as="image" href="/HotTearsMakeup.jpg" />
+      <link rel="preload" as="image" href="/Mike_and_abby.jpg" />
+      <link rel="preload" as="image" href="/Mike_tongue_out.jpg" />
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <body className={`${playfair.className}`}>{children}</body>
     </html>

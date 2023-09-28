@@ -9,11 +9,6 @@ export default function RootPage() {
     useState<string>("HotTearsMakeup.jpg");
   return (
     <>
-      <link rel="preload" as="image" href="/Abby_self_mirror.jpg" />
-      <link rel="preload" as="image" href="/DirtLipstick.jpg" />
-      <link rel="preload" as="image" href="/HotTearsMakeup.jpg" />
-      <link rel="preload" as="image" href="/Mike_and_abby.jpg" />
-      <link rel="preload" as="image" href="/Mike_tongue_out.jpg" />
       <Navbar />
       <div
         className={`h-screen w-screen scroll-y-disabled text-white bg-cover bg-fixed bg-center bg-no-repeat page-fade-in transition-all ease-in-out duration-700`}
