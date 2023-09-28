@@ -21,7 +21,7 @@ export default async function DynamicPhotographyPage({
   } else {
     if (album.images) {
       // render default flowState
-      let localAttachments = album.images.split(",");
+      let localAttachments = album.images.split("\\,");
       let srced: { src: string }[] = [];
       localAttachments.forEach((attachment) =>
         srced.push({ src: env.NEXT_PUBLIC_AWS_BUCKET_STRING + attachment }),

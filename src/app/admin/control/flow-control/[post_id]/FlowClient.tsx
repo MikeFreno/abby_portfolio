@@ -29,7 +29,7 @@ export default function FlowClient(props: { post: Photography }) {
     } else {
       if (props.post.images) {
         // render default flowState
-        let localAttachments = props.post.images.split(",");
+        let localAttachments = props.post.images.split("\\,");
         let srced: { src: string }[] = [];
         localAttachments.forEach((attachment) =>
           srced.push({ src: env.NEXT_PUBLIC_AWS_BUCKET_STRING + attachment }),

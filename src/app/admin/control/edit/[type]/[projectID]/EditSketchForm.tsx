@@ -95,8 +95,8 @@ export default function EditSketchForm(post: Sketch) {
     setDeleteButtonLoading(false);
   };
   const removeImage = async (index: number, key: string) => {
-    const imgStringArr = post.attachments!.split(",");
-    const newString = imgStringArr.filter((str) => str !== key).join(",");
+    const imgStringArr = post.attachments!.split("\\,");
+    const newString = imgStringArr.filter((str) => str !== key).join("\\,");
     const res = await fetch("/api/s3/deleteImage", {
       method: "POST",
       body: JSON.stringify({

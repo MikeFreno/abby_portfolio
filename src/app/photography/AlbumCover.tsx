@@ -51,7 +51,7 @@ export default function AlbumCover(project: Photography) {
       <Image
         ref={imageRef}
         src={
-          project.images?.split(",")[0]
+          project.images?.split("\\,")[0]
             ? env.NEXT_PUBLIC_AWS_BUCKET_STRING + project.images?.split(",")[0]
             : "/placeholder.jpg"
         }

@@ -31,7 +31,7 @@ export default function EditCommercialForm(post: Commercial) {
 
   useEffect(() => {
     if (post.attachments) {
-      const imgStringArr = post.attachments.split(",");
+      const imgStringArr = post.attachments.split("\\,");
       setImageHolder(imgStringArr);
     }
   }, [post]);
@@ -104,8 +104,8 @@ export default function EditCommercialForm(post: Commercial) {
   };
 
   const removeImage = async (index: number, key: string) => {
-    const imgStringArr = post.attachments!.split(",");
-    const newString = imgStringArr.filter((str) => str !== key).join(",");
+    const imgStringArr = post.attachments!.split("\\,");
+    const newString = imgStringArr.filter((str) => str !== key).join("\\,");
     const res = await fetch("/api/s3/deleteImage", {
       method: "POST",
       body: JSON.stringify({

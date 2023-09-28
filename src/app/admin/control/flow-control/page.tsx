@@ -55,7 +55,7 @@ export default async function EditOverviewPage() {
                         width="120px"
                         src={
                           env.NEXT_PUBLIC_AWS_BUCKET_STRING +
-                          row.images?.split(",")[0]
+                          row.images?.split("\\,")[0]
                         }
                         alt={"post image"}
                       />
@@ -97,7 +97,7 @@ export default async function EditOverviewPage() {
                         width="120px"
                         src={
                           env.NEXT_PUBLIC_AWS_BUCKET_STRING +
-                          row.images?.split(",")[0]
+                          row.images?.split("\\,")[0]
                         }
                         alt={"post image"}
                       />

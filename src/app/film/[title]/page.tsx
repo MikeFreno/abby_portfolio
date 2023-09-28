@@ -12,7 +12,6 @@ export default async function DynamicFilmPage({
   const query = `SELECT * FROM Film WHERE title = ? AND published = ?`;
   const db_params = [params.title, true];
   const res = await conn.execute(query, db_params);
-  console.log(res);
   const film = res.rows[0] as Film;
 
   if (film) {
@@ -46,7 +45,7 @@ export default async function DynamicFilmPage({
         )}
         <div className="flex justify-evenly w-full">
           {film.attachments
-            ? film.attachments.split(",").map((key, index) => (
+            ? film.attachments.split("\\,").map((key, index) => (
                 <img
                   key={index}
                   src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}

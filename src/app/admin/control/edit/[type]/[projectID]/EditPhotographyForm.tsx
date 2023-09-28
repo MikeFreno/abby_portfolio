@@ -30,7 +30,7 @@ export default function EditPhotographyForm(post: Photography) {
 
   useEffect(() => {
     if (post.images) {
-      const imgStringArr = post.images.split(",");
+      const imgStringArr = post.images.split("\\,");
       setImageHolder(imgStringArr);
     }
   }, [post]);
@@ -101,8 +101,8 @@ export default function EditPhotographyForm(post: Photography) {
   };
 
   const removeImage = async (index: number, key: string) => {
-    const imgStringArr = post.images!.split(",");
-    const newString = imgStringArr.filter((str) => str !== key).join(",");
+    const imgStringArr = post.images!.split("\\,");
+    const newString = imgStringArr.filter((str) => str !== key).join("\\,");
     const res = await fetch("/api/s3/deleteImage", {
       method: "POST",
       body: JSON.stringify({
