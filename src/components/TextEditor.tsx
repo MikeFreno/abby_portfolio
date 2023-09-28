@@ -16,9 +16,6 @@ export default function TextEditor({ updateContent, preSet }: any) {
       ? preSet
       : `
       <p>
-        <em><b>Clear this if you don&apos;t want a blurb!</b></em>
-      </p>
-      <p>
         Try to select <em>this text</em> to see a bubble menu.
       </p>
       <p>
