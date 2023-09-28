@@ -17,7 +17,7 @@ export default async function DynamicPhotographyPage({
 
   let flow: { [key: number]: string[] } = {};
   if (album.photography_flow) {
-    flow = (await album.photography_flow.json()) as ParsedPhotographyFlow;
+    flow = album.photography_flow as ParsedPhotographyFlow;
   } else {
     if (album.images) {
       // render default flowState

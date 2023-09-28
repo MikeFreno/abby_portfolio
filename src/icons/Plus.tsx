@@ -1,4 +1,4 @@
-export default function ArrowIcon(props: {
+export default function PlusIcon(props: {
   height: number;
   width: number;
   strokeWidth: number;
@@ -14,11 +14,7 @@ export default function ArrowIcon(props: {
       height={props.height}
       stroke={props.stroke}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
     </svg>
   );
 }

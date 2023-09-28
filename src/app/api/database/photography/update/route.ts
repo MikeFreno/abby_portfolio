@@ -3,12 +3,12 @@ import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 
 interface PATCHInputData {
   id: number;
-  title: string | null;
-  blurb: string | null;
-  images: string[] | null;
-  photography_flow: JSON | null;
-  captions: JSON | null;
-  published: boolean | null;
+  title?: string | null;
+  blurb?: string | null;
+  images?: string[] | null;
+  photography_flow?: JSON | null;
+  captions?: JSON | null;
+  published?: boolean | null;
 }
 
 export async function PATCH(input: NextRequest) {
@@ -21,28 +21,28 @@ export async function PATCH(input: NextRequest) {
   let setFields = "";
   const updateParams = [];
 
-  if (title !== null) {
+  if (title) {
     setFields += "title = ?, ";
     updateParams.push(title);
   }
-  if (blurb !== null) {
+  if (blurb) {
     setFields += "blurb = ?, ";
     updateParams.push(blurb);
   }
-  if (images !== null) {
+  if (images) {
     setFields += "images = ?, ";
     const imagesJoined = images.join(",");
     updateParams.push(imagesJoined);
   }
-  if (photography_flow !== null) {
+  if (photography_flow) {
     setFields += "photography_flow = ?, ";
-    updateParams.push(photography_flow);
+    updateParams.push(JSON.stringify(photography_flow));
   }
-  if (photography_flow !== null) {
+  if (captions) {
     setFields += "captions = ?, ";
     updateParams.push(captions);
   }
-  if (published !== null) {
+  if (published) {
     setFields += "published = ?, ";
     updateParams.push(published);
   }
@@ -51,5 +51,6 @@ export async function PATCH(input: NextRequest) {
   const params = [...updateParams, id];
 
   const res = await conn.execute(query, params);
+  console.log(res);
   return NextResponse.json({ res });
 }

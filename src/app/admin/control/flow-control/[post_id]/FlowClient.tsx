@@ -8,6 +8,9 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { Photography } from "~/types/db";
+import PlusIcon from "~/icons/Plus";
+import MinusIcon from "~/icons/Minus";
+import Link from "next/link";
 
 export default function FlowClient(props: { post: Photography }) {
   const [flow, setFlow] = useState<{ [row: number]: string[] }>();
@@ -104,6 +107,41 @@ export default function FlowClient(props: { post: Photography }) {
     );
     clickedImageRef.current = idx;
     setShowingLightbox(true);
+  }
+
+  function addRow() {
+    if (flow) {
+      let n = Object.keys(flow).length;
+
+      setFlow((prevState) => ({
+        ...prevState,
+        [n]: [],
+      }));
+    }
+  }
+
+  function removeRow(row: number) {
+    if (flow) {
+      const newFlow = Object.keys(flow)
+        .filter((key) => +key !== row)
+        .reduce(
+          (obj, key, index) => {
+            obj[index] = flow[+key];
+            return obj;
+          },
+          {} as { [row: number]: string[] },
+        );
+      setFlow(newFlow);
+    }
+  }
+
+  async function saveFlow() {
+    const data = { id: props.post.id, photography_flow: flow };
+    console.log(data);
+    await fetch(`/api/database/photography/update`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
   }
 
   while (!firstLoadFinished) {
@@ -233,8 +271,53 @@ export default function FlowClient(props: { post: Photography }) {
                     ) : null}
                   </div>
                 ))}
+                {values.length == 0 ? (
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => removeRow(+row)}
+                      className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                    >
+                      <MinusIcon
+                        height={24}
+                        width={24}
+                        strokeWidth={2}
+                        stroke={"#27272a"}
+                      />
+                    </button>
+                  </div>
+                ) : null}
               </div>
             ))}
+            <div className="py-4 px-12 w-fit rounded-md bg-zinc-200 mx-auto">
+              <div className="text-center text-2xl tracking-wide">Add Row</div>
+              <div className="flex justify-center">
+                <button
+                  onClick={addRow}
+                  className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                >
+                  <PlusIcon
+                    height={24}
+                    width={24}
+                    strokeWidth={2}
+                    stroke={"#27272a"}
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="mx-auto my-4">
+              <button
+                className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                onClick={saveFlow}
+              >
+                Save Flow
+              </button>{" "}
+              <Link
+                href={`/photography/${props.post.title}`}
+                className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+              >
+                Go To Post
+              </Link>
+            </div>
           </div>
         </div>
         <Lightbox
