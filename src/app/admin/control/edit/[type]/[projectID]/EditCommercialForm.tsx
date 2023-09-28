@@ -161,7 +161,7 @@ export default function EditCommercialForm(post: Commercial) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="title"
-              defaultValue={post.title}
+              defaultValue={post.title.replaceAll("_", " ")}
               required
               placeholder=" "
             />

@@ -155,7 +155,7 @@ export default function EditPhotographyForm(post: Photography) {
               ref={titleRef}
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
-              defaultValue={post.title}
+              defaultValue={post.title.replaceAll("_", " ")}
               name="title"
               required
               placeholder=" "

@@ -152,6 +152,7 @@ export default function EditActingForm(post: Acting) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="title"
+              defaultValue={post.title.replaceAll("_", " ")}
               required
               placeholder=" "
             />
@@ -163,7 +164,10 @@ export default function EditActingForm(post: Acting) {
               Enter Blurb below (optional)
             </div>
             <div className="pt-4 prose lg:prose-lg ProseMirror">
-              <TextEditor updateContent={setEditorContent} />
+              <TextEditor
+                updateContent={setEditorContent}
+                preSet={post.blurb}
+              />
             </div>
           </div>
           <div className="input-group mx-auto">
@@ -172,7 +176,8 @@ export default function EditActingForm(post: Acting) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="link"
-              placeholder=" "
+              defaultValue={post.link ? post.link : ""}
+              placeholder={" "}
             />
             <span className="bar"></span>
             <label className="underlinedInputLabel">

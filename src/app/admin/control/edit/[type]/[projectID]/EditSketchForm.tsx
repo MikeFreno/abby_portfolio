@@ -151,6 +151,7 @@ export default function EditSketchForm(post: Sketch) {
               ref={titleRef}
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
+              defaultValue={post.title.replaceAll("_", " ")}
               name="title"
               required
               placeholder=" "
@@ -163,7 +164,10 @@ export default function EditSketchForm(post: Sketch) {
               Enter Blurb below (optional)
             </div>
             <div className="pt-4 prose lg:prose-lg ProseMirror">
-              <TextEditor updateContent={setEditorContent} />
+              <TextEditor
+                updateContent={setEditorContent}
+                preSet={post.blurb ? post.blurb : " "}
+              />
             </div>
           </div>
           <div className="input-group mx-auto">
@@ -172,7 +176,8 @@ export default function EditSketchForm(post: Sketch) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="link"
-              placeholder=" "
+              defaultValue={post.link ? post.link : ""}
+              placeholder={" "}
             />
             <span className="bar"></span>
             <label className="underlinedInputLabel">

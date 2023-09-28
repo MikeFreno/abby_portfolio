@@ -161,7 +161,7 @@ export default function EditFilmForm(post: Film) {
               type="text"
               className="bg-transparent w-[500px] underlinedInput"
               name="title"
-              defaultValue={post.title}
+              defaultValue={post.title.replaceAll("_", " ")}
               required
               placeholder=" "
             />
