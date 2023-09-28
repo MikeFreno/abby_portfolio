@@ -69,9 +69,6 @@ export default function EditCommercialForm(post: Commercial) {
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
-      // Join all keys into a single string with commas
-      const attachmentString = imageHolder.join(",") + keys.join(",");
-
       const data = {
         id: post.id,
         title:
@@ -81,8 +78,7 @@ export default function EditCommercialForm(post: Commercial) {
         blurb: post.title !== editorContent ? editorContent : null,
         link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,
-        attachments:
-          post.attachments !== attachmentString ? attachmentString : null,
+        attachments: keys,
         published: !savingAsDraft,
       };
       await fetch(

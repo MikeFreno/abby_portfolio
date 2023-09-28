@@ -5,7 +5,7 @@ interface POSTInputData {
   title: string;
   blurb: string | null;
   link: string | null;
-  attachments: string[] | null;
+  attachments: string[];
   published: boolean;
 }
 
@@ -18,9 +18,14 @@ export async function POST(input: NextRequest) {
     INSERT INTO Commercial (title, blurb, link, attachments, published)
     VALUES (?, ?, ?, ?, ?)
     `;
-  const joined = attachments?.join(",");
   try {
-    const params = [title, blurb, link, joined, published];
+    const params = [
+      title,
+      blurb,
+      link,
+      attachments ? attachments?.join("\\,") : null,
+      published,
+    ];
     const res = await conn.execute(query, params);
     console.log(res);
     return NextResponse.json({ result: res });

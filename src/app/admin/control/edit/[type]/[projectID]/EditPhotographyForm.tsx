@@ -71,14 +71,11 @@ export default function EditPhotographyForm(post: Photography) {
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
-      // Join all keys into a single string with commas
-      const attachmentString = keys.join(",");
-
       const data = {
         id: post.id,
         title: titleRef.current.value.replace(" ", "_"),
         blurb: editorContent,
-        images: attachmentString,
+        images: keys,
         published: !savingAsDraft,
       };
       await fetch(

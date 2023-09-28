@@ -11,6 +11,7 @@ import { ParsedPhotographyFlow, Photography } from "~/types/db";
 import PlusIcon from "~/icons/Plus";
 import MinusIcon from "~/icons/Minus";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function FlowClient(props: { post: Photography }) {
   const [flow, setFlow] = useState<{ [row: number]: string[] }>();
@@ -18,6 +19,8 @@ export default function FlowClient(props: { post: Photography }) {
   const [attachmentArray, setAttachmentArray] = useState<{ src: string }[]>([]);
   const [showingLightbox, setShowingLightbox] = useState<boolean>(false);
   const clickedImageRef = useRef<number>(0);
+
+  const router = useRouter();
 
   function createFlowState() {
     if (props.post.photography_flow) {
@@ -116,6 +119,14 @@ export default function FlowClient(props: { post: Photography }) {
         [n]: [],
       }));
     }
+  }
+
+  function goToEdit() {
+    const confirm = window.confirm("Would you like to save your current flow?");
+    if (confirm) {
+      saveFlow();
+    }
+    router.push(`/admin/control/flow-control/${props.post.id}`);
   }
 
   function removeRow(row: number) {
@@ -315,6 +326,14 @@ export default function FlowClient(props: { post: Photography }) {
               >
                 Go To Post
               </Link>
+            </div>
+            <div className="mx-auto">
+              <button
+                onClick={goToEdit}
+                className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+              >
+                Edit Album
+              </button>
             </div>
           </div>
         </div>

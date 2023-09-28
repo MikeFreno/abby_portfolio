@@ -1,7 +1,7 @@
 export default async function AddImageToS3(
   file: Blob | File,
   title: string,
-  type: string
+  type: string,
 ) {
   const getPreSignedResponse = await fetch(
     `${process.env.NEXT_PUBLIC_DOMAIN}/api/s3/getPreSignedURL`,
@@ -12,7 +12,7 @@ export default async function AddImageToS3(
         title: title,
         filename: file.name,
       }),
-    }
+    },
   );
 
   const { uploadURL, key } =

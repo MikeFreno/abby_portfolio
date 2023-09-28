@@ -61,9 +61,6 @@ export default function EditActingForm(post: Acting) {
       // Use Promise.all() to wait for all promises to resolve
       const keys = await Promise.all(uploadPromises);
 
-      // Join all keys into a single string with commas
-      const attachmentString = keys.join(",");
-
       const data = {
         id: post.id,
         title:
@@ -73,8 +70,7 @@ export default function EditActingForm(post: Acting) {
         blurb: post.blurb !== editorContent ? editorContent : null,
         embedded_link:
           post.link !== linkRef.current.value ? linkRef.current.value : null,
-        attachments:
-          post.attachments !== attachmentString ? attachmentString : null,
+        attachments: keys,
         published: !savingAsDraft,
       };
       await fetch(

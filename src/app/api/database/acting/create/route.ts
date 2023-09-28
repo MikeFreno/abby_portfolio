@@ -5,7 +5,7 @@ interface POSTInputData {
   title: string;
   blurb: string | null;
   link: string | null;
-  attachments: string | null;
+  attachments: string[];
   published: boolean;
 }
 
@@ -19,7 +19,13 @@ export async function POST(input: NextRequest) {
     VALUES (?, ?, ?, ?, ?)
     `;
 
-  const params = [title, blurb, link, attachments, published];
+  const params = [
+    title,
+    blurb,
+    link,
+    attachments ? attachments.join("\\,") : null,
+    published,
+  ];
   const res = await conn.execute(query, params);
   return NextResponse.json({ res });
 }

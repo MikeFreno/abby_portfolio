@@ -6,7 +6,7 @@ interface PATCHInputData {
   title: string | null;
   blurb: string | null;
   link: string | null;
-  attachments: string | null;
+  attachments: string[] | null;
   published: boolean | null;
 }
 
@@ -33,7 +33,7 @@ export async function PATCH(input: NextRequest) {
   }
   if (attachments !== null) {
     setFields += "attachments = ?, ";
-    updateParams.push(attachments);
+    updateParams.push(attachments.join("\\,"));
   }
   if (published !== null) {
     setFields += "published = ?, ";

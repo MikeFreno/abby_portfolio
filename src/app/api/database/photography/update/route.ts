@@ -31,7 +31,7 @@ export async function PATCH(input: NextRequest) {
   }
   if (images) {
     setFields += "images = ?, ";
-    const imagesJoined = images.join(",");
+    const imagesJoined = images.join("\\,");
     updateParams.push(imagesJoined);
   }
   if (photography_flow) {

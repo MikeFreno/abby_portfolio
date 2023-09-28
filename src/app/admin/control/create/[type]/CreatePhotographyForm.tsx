@@ -53,7 +53,7 @@ export default function CreatePhotographyForm() {
       const keys = await Promise.all(uploadPromises);
 
       const data = {
-        title: titleRef.current.value,
+        title: titleRef.current.value.replace(" ", "_"),
         blurb: editorContent,
         images: keys,
         published: !savingAsDraft,

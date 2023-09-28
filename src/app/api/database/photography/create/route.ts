@@ -19,7 +19,7 @@ export async function POST(input: NextRequest) {
     INSERT INTO Photography (title, blurb, images, photography_flow, captions, published)
     VALUES (?, ?, ?, ?, ?, ?)
     `;
-  const imagesJoined = images ? images.join(",") : null;
+  const imagesJoined = images ? images.join("\\,") : null;
   const captions_entry = captions ? captions : null;
   const params = [title, blurb, imagesJoined, null, captions_entry, published];
   try {
