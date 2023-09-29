@@ -10,7 +10,7 @@ export default async function AddImageToS3(
       body: JSON.stringify({
         type: type,
         title: title,
-        filename: file.name,
+        filename: file.name.replaceAll("+", "_").replaceAll(" ", "_"),
       }),
     },
   );

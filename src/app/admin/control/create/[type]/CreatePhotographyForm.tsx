@@ -6,6 +6,7 @@ import Dropzone from "~/components/Dropzone";
 import XCircle from "~/icons/XCircle";
 import AddImageToS3 from "./s3Upload";
 import { useRouter } from "next/navigation";
+import CheckCircle from "~/icons/CheckCircle";
 
 export default function CreatePhotographyForm() {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -14,6 +15,7 @@ export default function CreatePhotographyForm() {
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
+  const [coverImage, setCoverImage] = useState<string>(post.cover_image);
 
   const router = useRouter();
 
@@ -53,9 +55,10 @@ export default function CreatePhotographyForm() {
       const keys = await Promise.all(uploadPromises);
 
       const data = {
-        title: titleRef.current.value.replace(" ", "_"),
+        title: titleRef.current.value.replaceAll(" ", "_"),
         blurb: editorContent,
         images: keys,
+        cover_image: coverImage.replaceAll("+", "_").replaceAll(" ", "_"),
         published: !savingAsDraft,
       };
 
@@ -111,9 +114,22 @@ export default function CreatePhotographyForm() {
               acceptedFiles={"image/jpg, image/jpeg, image/png"}
             />
           </div>
+          <div className="text-center text-xl">
+            You can click on the center of an image to set it as the cover photo
+          </div>
           <div className="grid grid-cols-6 gap-4 -mx-24">
             {images.map((image, index) => (
               <div key={index}>
+                {image.name == coverImage ? (
+                  <div className=" absolute bg-emerald-400 rounded-full translate-x-16 translate-y-14">
+                    <CheckCircle
+                      height={36}
+                      width={36}
+                      strokeWidth={1.5}
+                      stroke={"#27272a"}
+                    />
+                  </div>
+                ) : null}
                 <button
                   type="button"
                   className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"

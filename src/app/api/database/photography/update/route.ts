@@ -6,6 +6,7 @@ interface PATCHInputData {
   title?: string | null;
   blurb?: string | null;
   images?: string[] | null;
+  cover_image?: string | null;
   photography_flow?: JSON | null;
   captions?: JSON | null;
   published?: boolean | null;
@@ -13,8 +14,16 @@ interface PATCHInputData {
 
 export async function PATCH(input: NextRequest) {
   const inputData = (await input.json()) as PATCHInputData;
-  const { id, title, blurb, images, photography_flow, captions, published } =
-    inputData;
+  const {
+    id,
+    title,
+    blurb,
+    images,
+    cover_image,
+    photography_flow,
+    captions,
+    published,
+  } = inputData;
 
   const conn = ConnectionFactory();
 
@@ -33,6 +42,10 @@ export async function PATCH(input: NextRequest) {
     setFields += "images = ?, ";
     const imagesJoined = images.join("\\,");
     updateParams.push(imagesJoined);
+  }
+  if (cover_image) {
+    setFields += "cover_image = ?, ";
+    updateParams.push(JSON.stringify(cover_image));
   }
   if (photography_flow) {
     setFields += "photography_flow = ?, ";

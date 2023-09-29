@@ -2,6 +2,7 @@
 import { ParsedPhotographyFlow, Photography } from "~/types/db";
 import { env } from "~/env.mjs";
 import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
+import PhotographyAlbum from "./client";
 
 export default async function DynamicPhotographyPage({
   params,
@@ -36,40 +37,7 @@ export default async function DynamicPhotographyPage({
   }
 
   if (album) {
-    return (
-      <div className="">
-        <div
-          className={`${
-            album.blurb ? "pt-24" : "py-24"
-          } text-center tracking-wide text-4xl`}
-        >
-          {album.title.replaceAll("_", " ")}
-        </div>
-        {album.blurb ? (
-          <div
-            className="pt-8 pb-24 text-center text-xl"
-            dangerouslySetInnerHTML={{
-              __html: album.blurb,
-            }}
-          />
-        ) : null}
-        <div className="p-4">
-          {Object.entries(flow).map(([row, values]) => (
-            <div key={row} className="flex justify-evenly">
-              {values.map((leaf, idx) => (
-                <div key={idx} className="flex">
-                  <img
-                    alt={`photo_${row}_${idx}`}
-                    src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
-                    className="my-auto"
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <PhotographyAlbum album={album} flow={flow} />;
   } else {
     return (
       <div className="h-screen w-screen flex flex-col justify-center">

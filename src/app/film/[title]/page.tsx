@@ -20,8 +20,8 @@ export default async function DynamicFilmPage({
         {film.link ? (
           <div className="py-24 flex justify-center mx-auto">
             <iframe
-              width="800"
-              height="450"
+              width="1200"
+              height="700"
               src={film.link}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             />

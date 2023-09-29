@@ -26,10 +26,17 @@ export default function FlowClient(props: { post: Photography }) {
     if (props.post.photography_flow) {
       const flow = props.post.photography_flow as ParsedPhotographyFlow;
       setFlow(flow);
+      let localAttachments = props.post.images?.split("\\,");
+      let srced: { src: string }[] = [];
+      localAttachments?.forEach((attachment) =>
+        srced.push({ src: env.NEXT_PUBLIC_AWS_BUCKET_STRING + attachment }),
+      );
+      setAttachmentArray(srced);
     } else {
       if (props.post.images) {
         // render default flowState
         let localAttachments = props.post.images.split("\\,");
+        console.log("local attachments" + localAttachments);
         let srced: { src: string }[] = [];
         localAttachments.forEach((attachment) =>
           srced.push({ src: env.NEXT_PUBLIC_AWS_BUCKET_STRING + attachment }),
@@ -101,6 +108,26 @@ export default function FlowClient(props: { post: Photography }) {
     }
   }
 
+  function moveRowUp(row: number) {
+    if (flow && row > 0) {
+      let newFlow = { ...flow };
+
+      [newFlow[row], newFlow[row - 1]] = [newFlow[row - 1], newFlow[row]];
+
+      setFlow(newFlow);
+    }
+  }
+
+  function moveRowDown(row: number) {
+    if (flow && row < Object.entries(flow).length - 1) {
+      let newFlow = { ...flow };
+
+      [newFlow[row], newFlow[row + 1]] = [newFlow[row + 1], newFlow[row]];
+
+      setFlow(newFlow);
+    }
+  }
+
   function openLightbox(imageSrc: string) {
     const idx = attachmentArray.findIndex(
       (attachment) =>
@@ -110,14 +137,28 @@ export default function FlowClient(props: { post: Photography }) {
     setShowingLightbox(true);
   }
 
-  function addRow() {
+  function addRowTop() {
     if (flow) {
-      let n = Object.keys(flow).length;
+      let newFlow: { [row: number]: string[] } = { 0: [] };
+      Object.entries(flow).forEach(([key, values]) => {
+        newFlow[+key + 1] = values;
+      });
+      setFlow(newFlow);
+    }
+  }
 
-      setFlow((prevState) => ({
-        ...prevState,
-        [n]: [],
-      }));
+  function addRowAtN(index: number) {
+    if (flow) {
+      let newFlow: { [row: number]: string[] } = {};
+
+      Object.entries(flow).forEach(([key, values]) => {
+        const adjustedKey = +key >= index ? +key + 1 : +key;
+        newFlow[adjustedKey] = values;
+      });
+
+      newFlow[index] = [];
+
+      setFlow(newFlow);
     }
   }
 
@@ -187,121 +228,11 @@ export default function FlowClient(props: { post: Photography }) {
             id="flow control"
             className="p-4 w-full flex justify-center flex-col"
           >
-            {Object.entries(flow).map(([row, values]) => (
-              <div
-                key={row}
-                className="w-4/5 flex flex-row justify-evenly h-fit py-4 my-4 mx-auto bg-zinc-200 rounded"
-              >
-                {values.map((leaf) => (
-                  <div key={leaf} className="w-1/3 my-auto px-2 py-4">
-                    {+row > 0 ? (
-                      <div className="relative flex items-center">
-                        <button
-                          id="up-arrow"
-                          onClick={() =>
-                            moveImageUp(+row, values.indexOf(leaf))
-                          }
-                          className="absolute top-2 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                        >
-                          <div className="rotate-180">
-                            <ArrowIcon
-                              width={24}
-                              height={24}
-                              strokeWidth={2.5}
-                              stroke={"#3f3f46"}
-                            />
-                          </div>
-                        </button>
-                      </div>
-                    ) : null}
-                    <div className="relative flex items-center">
-                      {values.indexOf(leaf) > 0 ? (
-                        <button
-                          id="left-arrow"
-                          onClick={() =>
-                            moveImageLeft(+row, values.indexOf(leaf))
-                          }
-                          className="absolute left-4 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                        >
-                          <div className="rotate-90">
-                            <ArrowIcon
-                              width={24}
-                              height={24}
-                              strokeWidth={2.5}
-                              stroke={"#3f3f46"}
-                            />
-                          </div>
-                        </button>
-                      ) : null}
-                      <div className="bg-zinc-50 rounded-sm w-full bg-opacity-50">
-                        <img
-                          alt={"image_" + row + "_" + values.indexOf(leaf)}
-                          src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
-                          className="h-48 mx-auto"
-                          onClick={() => openLightbox(leaf)}
-                        />
-                      </div>
-                      {values.indexOf(leaf) < values.length - 1 ? (
-                        <button
-                          id="right-arrow"
-                          onClick={() =>
-                            moveImageRight(+row, values.indexOf(leaf))
-                          }
-                          className="absolute right-4 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                        >
-                          <div className="-rotate-90">
-                            <ArrowIcon
-                              width={24}
-                              height={24}
-                              strokeWidth={2.5}
-                              stroke={"#3f3f46"}
-                            />
-                          </div>
-                        </button>
-                      ) : null}
-                    </div>
-                    {+row < Object.keys(flow).length - 1 ? (
-                      <div className="relative flex items-center">
-                        <button
-                          id="down-arrow"
-                          onClick={() =>
-                            moveImageDown(+row, values.indexOf(leaf))
-                          }
-                          className="absolute bottom-2 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                        >
-                          <ArrowIcon
-                            width={24}
-                            height={24}
-                            strokeWidth={2.5}
-                            stroke={"#3f3f46"}
-                          />
-                        </button>
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
-                {values.length == 0 ? (
-                  <div className="flex justify-center">
-                    <button
-                      onClick={() => removeRow(+row)}
-                      className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-                    >
-                      <MinusIcon
-                        height={24}
-                        width={24}
-                        strokeWidth={2}
-                        stroke={"#27272a"}
-                      />
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-            ))}
             <div className="py-4 px-12 w-fit rounded-md bg-zinc-200 mx-auto">
               <div className="text-center text-2xl tracking-wide">Add Row</div>
               <div className="flex justify-center">
                 <button
-                  onClick={addRow}
+                  onClick={addRowTop}
                   className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
                 >
                   <PlusIcon
@@ -313,6 +244,162 @@ export default function FlowClient(props: { post: Photography }) {
                 </button>
               </div>
             </div>
+            {Object.entries(flow).map(([row, values]) => (
+              <div key={row}>
+                <div className="flex flex-col w-4/5 h-fit py-4 my-4 mx-auto bg-zinc-200 rounded">
+                  <div className="flex flex-row justify-evenly ">
+                    {values.map((leaf) => (
+                      <div key={leaf} className="w-1/3 my-auto px-2 py-4">
+                        {+row > 0 ? (
+                          <div className="relative flex items-center">
+                            <button
+                              id="up-arrow"
+                              onClick={() =>
+                                moveImageUp(+row, values.indexOf(leaf))
+                              }
+                              className="absolute top-2 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                            >
+                              <div className="rotate-180">
+                                <ArrowIcon
+                                  width={24}
+                                  height={24}
+                                  strokeWidth={2.5}
+                                  stroke={"#3f3f46"}
+                                />
+                              </div>
+                            </button>
+                          </div>
+                        ) : null}
+                        <div className="relative flex items-center">
+                          {values.indexOf(leaf) > 0 ? (
+                            <button
+                              id="left-arrow"
+                              onClick={() =>
+                                moveImageLeft(+row, values.indexOf(leaf))
+                              }
+                              className="absolute left-4 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                            >
+                              <div className="rotate-90">
+                                <ArrowIcon
+                                  width={24}
+                                  height={24}
+                                  strokeWidth={2.5}
+                                  stroke={"#3f3f46"}
+                                />
+                              </div>
+                            </button>
+                          ) : null}
+                          <div className="rounded-sm w-full bg-opacity-50">
+                            <img
+                              alt={"image_" + row + "_" + values.indexOf(leaf)}
+                              src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
+                              className="h-64 mx-auto"
+                              onClick={() => openLightbox(leaf)}
+                            />
+                          </div>
+                          {values.indexOf(leaf) < values.length - 1 ? (
+                            <button
+                              id="right-arrow"
+                              onClick={() =>
+                                moveImageRight(+row, values.indexOf(leaf))
+                              }
+                              className="absolute right-4 transform opacity-50 hover:opacity-100 -translate-y-1/2 top-1/2 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                            >
+                              <div className="-rotate-90">
+                                <ArrowIcon
+                                  width={24}
+                                  height={24}
+                                  strokeWidth={2.5}
+                                  stroke={"#3f3f46"}
+                                />
+                              </div>
+                            </button>
+                          ) : null}
+                        </div>
+                        {+row < Object.keys(flow).length - 1 ? (
+                          <div className="relative flex items-center">
+                            <button
+                              id="down-arrow"
+                              onClick={() =>
+                                moveImageDown(+row, values.indexOf(leaf))
+                              }
+                              className="absolute bottom-2 transform opacity-50 hover:opacity-100 -translate-x-1/2 left-1/2 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                            >
+                              <ArrowIcon
+                                width={24}
+                                height={24}
+                                strokeWidth={2.5}
+                                stroke={"#3f3f46"}
+                              />
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
+                    ))}
+                    {values.length == 0 ? (
+                      <div className="flex flex-col">
+                        <div className="flex justify-center">
+                          <button
+                            onClick={() => removeRow(+row)}
+                            className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                          >
+                            <MinusIcon
+                              height={24}
+                              width={24}
+                              strokeWidth={2}
+                              stroke={"#27272a"}
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="flex justify-center my-1">
+                    {+row > 0 ? (
+                      <button
+                        onClick={() => moveRowUp(+row)}
+                        className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md mx-1"
+                      >
+                        <div className="rotate-180">
+                          <ArrowIcon
+                            height={24}
+                            width={24}
+                            strokeWidth={2}
+                            stroke={"#27272a"}
+                          />
+                        </div>
+                      </button>
+                    ) : null}
+                    {+row < Object.entries(flow).length - 1 ? (
+                      <button
+                        onClick={() => moveRowDown(+row)}
+                        className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md mx-1"
+                      >
+                        <ArrowIcon
+                          height={24}
+                          width={24}
+                          strokeWidth={2}
+                          stroke={"#27272a"}
+                        />
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => addRowAtN(+row + 1)}
+                    className="transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                  >
+                    <PlusIcon
+                      height={24}
+                      width={24}
+                      strokeWidth={2}
+                      stroke={"#27272a"}
+                    />
+                  </button>
+                </div>
+              </div>
+            ))}
             <div className="mx-auto my-4">
               <button
                 className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"

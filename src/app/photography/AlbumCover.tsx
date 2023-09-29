@@ -27,7 +27,7 @@ export default function AlbumCover(project: Photography) {
   }, []);
 
   return (
-    <div className="relative mx-auto bg-emerald-50">
+    <div className="relative mx-auto my-8 bg-emerald-50">
       <Link
         href={`/photography/${project.title}`}
         className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-white hover:bg-opacity-0 transition-all duration-500 ease-in-out"
@@ -51,7 +51,10 @@ export default function AlbumCover(project: Photography) {
       <Image
         ref={imageRef}
         src={
-          project.images?.split("\\,")[0]
+          project.cover_image
+            ? env.NEXT_PUBLIC_AWS_BUCKET_STRING +
+              project.cover_image.replaceAll('"', "")
+            : project.images?.split("\\,")[0]
             ? env.NEXT_PUBLIC_AWS_BUCKET_STRING +
               project.images?.split("\\,")[0]
             : "/placeholder.jpg"

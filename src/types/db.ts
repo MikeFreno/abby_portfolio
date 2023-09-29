@@ -4,6 +4,7 @@ export interface Photography {
   title: string;
   blurb: string | null;
   images: string | null;
+  cover_image: string | null;
   published: boolean;
   photography_flow: any; // parses to ParsedPhotographyFlow
   captions: any; // parses to ParsedCaptions

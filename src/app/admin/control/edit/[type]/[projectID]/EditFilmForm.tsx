@@ -67,8 +67,8 @@ export default function EditFilmForm(post: Film) {
       );
 
       // Use Promise.all() to wait for all promises to resolve
-      const keys = await Promise.all(uploadPromises);
-
+      let keys = await Promise.all(uploadPromises);
+      imageHolder.forEach((image) => keys.push(image as string));
       const data = {
         id: post.id,
         title:
@@ -116,17 +116,17 @@ export default function EditFilmForm(post: Film) {
     });
     console.log(res.json());
     setImages((prevImages) =>
-      prevImages.filter((image, i) => i !== index - imageHolder.length),
+      prevImages.filter((_, i) => i !== index - imageHolder.length),
     );
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index),
+      prevHeldImages.filter((_, i) => i !== index),
     );
   };
 
   const removeNewImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setNewImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index),
+      prevHeldImages.filter((_, i) => i !== index),
     );
   };
 

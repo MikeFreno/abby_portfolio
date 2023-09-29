@@ -8,6 +8,7 @@ import AddImageToS3 from "../../../create/[type]/s3Upload";
 import { useRouter } from "next/navigation";
 import { env } from "~/env.mjs";
 import XCircle from "~/icons/XCircle";
+import CheckCircle from "~/icons/CheckCircle";
 
 export default function EditPhotographyForm(post: Photography) {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -16,6 +17,7 @@ export default function EditPhotographyForm(post: Photography) {
   const [newImageHolder, setNewImageHolder] = useState<
     (string | ArrayBuffer)[]
   >([]);
+  const [coverImage, setCoverImage] = useState<string>(post.cover_image);
 
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
@@ -51,6 +53,11 @@ export default function EditPhotographyForm(post: Photography) {
     });
   }, []);
 
+  const coverImageSetter = (imageName: string) => {
+    console.log("triggered");
+    setCoverImage(imageName);
+  };
+
   const savingStateToggle = () => {
     setSavingAsDraft(!savingAsDraft);
   };
@@ -69,13 +76,15 @@ export default function EditPhotographyForm(post: Photography) {
       );
 
       // Use Promise.all() to wait for all promises to resolve
-      const keys = await Promise.all(uploadPromises);
+      let keys = await Promise.all(uploadPromises);
+      imageHolder.forEach((image) => keys.push(image as string));
 
       const data = {
         id: post.id,
         title: titleRef.current.value.replace(" ", "_"),
         blurb: editorContent,
         images: keys,
+        cover_image: coverImage.replaceAll("+", "_").replaceAll(" ", "_"),
         published: !savingAsDraft,
       };
       await fetch(
@@ -103,7 +112,7 @@ export default function EditPhotographyForm(post: Photography) {
   const removeImage = async (index: number, key: string) => {
     const imgStringArr = post.images!.split("\\,");
     const newString = imgStringArr.filter((str) => str !== key).join("\\,");
-    const res = await fetch("/api/s3/deleteImage", {
+    await fetch("/api/s3/deleteImage", {
       method: "POST",
       body: JSON.stringify({
         key: key,
@@ -112,17 +121,17 @@ export default function EditPhotographyForm(post: Photography) {
       }),
     });
     setImages((prevImages) =>
-      prevImages.filter((image, i) => i !== index - imageHolder.length),
+      prevImages.filter((_, i) => i !== index - imageHolder.length),
     );
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index),
+      prevHeldImages.filter((_, i) => i !== index),
     );
   };
 
   const removeNewImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setNewImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index),
+      prevHeldImages.filter((_, i) => i !== index),
     );
   };
 
@@ -178,9 +187,23 @@ export default function EditPhotographyForm(post: Photography) {
                 acceptedFiles={"image/jpg, image/jpeg, image/png"}
               />
             </div>
+            <div className="text-center text-xl mb-4">
+              You can click on the center of an image to set it as the cover
+              photo (portrait works best)
+            </div>
             <div className="grid grid-cols-6 gap-4 -mx-24">
               {imageHolder.map((key, index) => (
                 <div key={index}>
+                  {key == coverImage ? (
+                    <div className="absolute bg-emerald-400 rounded-full translate-x-16 translate-y-14">
+                      <CheckCircle
+                        height={36}
+                        width={36}
+                        strokeWidth={1.5}
+                        stroke={"#27272a"}
+                      />
+                    </div>
+                  ) : null}
                   <button
                     type="button"
                     className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
@@ -198,16 +221,30 @@ export default function EditPhotographyForm(post: Photography) {
                   <img
                     src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
                     className="w-36 h-36 my-auto mx-4"
+                    onClick={() => coverImageSetter(key as string)}
                   />
                 </div>
               ))}
               <div className="border-r mx-auto border-black" />
               {images.map((image, index) => (
                 <div key={index}>
+                  {image.name == coverImage ? (
+                    <div className="inset-0 absolute bg-emerald-400 rounded-full translate-x-16 translate-y-14">
+                      <CheckCircle
+                        height={36}
+                        width={36}
+                        strokeWidth={1.5}
+                        stroke={"#27272a"}
+                      />
+                    </div>
+                  ) : null}
                   <button
                     type="button"
                     className="absolute ml-4 pb-[120px] hover:bg-white hover:bg-opacity-80"
-                    onClick={() => removeNewImage(index)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      removeNewImage(index);
+                    }}
                   >
                     <XCircle
                       height={24}
@@ -221,6 +258,7 @@ export default function EditPhotographyForm(post: Photography) {
                   <img
                     src={newImageHolder[index] as string}
                     className="w-36 h-36 my-auto mx-4"
+                    onClick={() => coverImageSetter(image.name)}
                   />
                 </div>
               ))}

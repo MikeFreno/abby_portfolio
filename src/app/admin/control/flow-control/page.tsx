@@ -54,8 +54,11 @@ export default async function EditOverviewPage() {
                         className="mx-auto py-2"
                         width="120px"
                         src={
-                          env.NEXT_PUBLIC_AWS_BUCKET_STRING +
-                          row.images?.split("\\,")[0]
+                          row.cover_image
+                            ? env.NEXT_PUBLIC_AWS_BUCKET_STRING +
+                              row.cover_image.replaceAll('"', "")
+                            : env.NEXT_PUBLIC_AWS_BUCKET_STRING +
+                              row.images?.split("\\,")[0]
                         }
                         alt={"post image"}
                       />
@@ -63,7 +66,7 @@ export default async function EditOverviewPage() {
                         href={`/admin/control/flow-control/${row.id}/`}
                         className="w-fit rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
                       >
-                        Edit this photography post
+                        Edit this flow
                       </Link>
                     </div>
                   </div>

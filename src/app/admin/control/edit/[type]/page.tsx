@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { env } from "~/env.mjs";
 import { Acting, Commercial, Film, Photography, Sketch } from "~/types/db";
 import { toTitleCase } from "~/utility/functions";
 
@@ -20,7 +21,9 @@ export default async function EditOverviewPage({
   if (posts.rows)
     return (
       <div className="min-h-screen w-full">
-        <div className="text-2xl text-center pt-24">{params.type} projects</div>
+        <div className="text-2xl text-center pt-24">
+          {toTitleCase(params.type)} projects
+        </div>
         <div>
           {posts.rows.length == 0 ? (
             <div className="text-center pt-24">
@@ -39,12 +42,30 @@ export default async function EditOverviewPage({
                         {row.title.replaceAll("_", " ")}
                       </div>
                       <div className="flex justify-center py-4">
-                        <Link
-                          href={`/admin/control/edit/${params.type}/${row.id}`}
-                          className="w-fit rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
-                        >
-                          Edit this {params.type} post
-                        </Link>
+                        <div className="flex flex-col">
+                          {params.type == "photography" ? (
+                            <img
+                              className="mx-auto py-2"
+                              width="120px"
+                              src={
+                                (row as Photography).cover_image
+                                  ? env.NEXT_PUBLIC_AWS_BUCKET_STRING +
+                                    (
+                                      row as Photography
+                                    ).cover_image?.replaceAll('"', "")
+                                  : env.NEXT_PUBLIC_AWS_BUCKET_STRING +
+                                    (row as Photography).images?.split("\\,")[0]
+                              }
+                              alt={"post image"}
+                            />
+                          ) : null}
+                          <Link
+                            href={`/admin/control/edit/${params.type}/${row.id}`}
+                            className="w-fit rounded border text-white shadow-md border-emerald-500 bg-emerald-400 hover:bg-emerald-500 active:scale-90 transition-all duration-300 ease-in-out px-4 py-2"
+                          >
+                            Edit this {toTitleCase(params.type)} post
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

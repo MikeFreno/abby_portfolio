@@ -3,6 +3,7 @@ const photography_table = `CREATE TABLE Photography (
     title VARCHAR(255) NOT NULL UNIQUE,
     blurb TEXT,
     images TEXT,
+    cover_image VARCHAR(255),
     published BOOLEAN NOT NULL DEFAULT 0,
     photography_flow JSON,
     captions JSON
