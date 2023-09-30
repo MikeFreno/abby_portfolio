@@ -10,6 +10,7 @@ interface PATCHInputData {
   photography_flow?: JSON | null;
   captions?: JSON | null;
   published?: boolean | null;
+  coverImageIsNew?: boolean;
 }
 
 export async function PATCH(input: NextRequest) {
@@ -23,6 +24,7 @@ export async function PATCH(input: NextRequest) {
     photography_flow,
     captions,
     published,
+    coverImageIsNew,
   } = inputData;
 
   const conn = ConnectionFactory();
@@ -45,7 +47,11 @@ export async function PATCH(input: NextRequest) {
   }
   if (cover_image) {
     setFields += "cover_image = ?, ";
-    updateParams.push(JSON.stringify(cover_image));
+    coverImageIsNew
+      ? updateParams.push(
+          JSON.stringify("photography/" + title + "/" + cover_image),
+        )
+      : updateParams.push(JSON.stringify(cover_image));
   }
   if (photography_flow) {
     setFields += "photography_flow = ?, ";

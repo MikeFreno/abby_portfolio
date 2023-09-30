@@ -26,7 +26,7 @@ export async function POST(input: NextRequest) {
     title,
     blurb,
     imagesJoined,
-    cover_image,
+    "photography/" + title + "/" + cover_image,
     null,
     captions_entry,
     published,

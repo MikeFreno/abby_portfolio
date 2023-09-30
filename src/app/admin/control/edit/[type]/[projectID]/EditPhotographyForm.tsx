@@ -17,7 +17,8 @@ export default function EditPhotographyForm(post: Photography) {
   const [newImageHolder, setNewImageHolder] = useState<
     (string | ArrayBuffer)[]
   >([]);
-  const [coverImage, setCoverImage] = useState<string>(post.cover_image);
+  const [coverImage, setCoverImage] = useState<string | null>(post.cover_image);
+  const [coverImageIsNew, setCoverImageIsNew] = useState<boolean>(false);
 
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
@@ -53,9 +54,9 @@ export default function EditPhotographyForm(post: Photography) {
     });
   }, []);
 
-  const coverImageSetter = (imageName: string) => {
-    console.log("triggered");
+  const coverImageSetter = (imageName: string, isNew: boolean) => {
     setCoverImage(imageName);
+    setCoverImageIsNew(isNew);
   };
 
   const savingStateToggle = () => {
@@ -84,8 +85,9 @@ export default function EditPhotographyForm(post: Photography) {
         title: titleRef.current.value.replace(" ", "_"),
         blurb: editorContent,
         images: keys,
-        cover_image: coverImage.replaceAll("+", "_").replaceAll(" ", "_"),
+        cover_image: coverImage?.replaceAll("+", "_").replaceAll(" ", "_"),
         published: !savingAsDraft,
+        coverImageIsNew: coverImageIsNew,
       };
       await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/database/photography/update`,
@@ -221,7 +223,7 @@ export default function EditPhotographyForm(post: Photography) {
                   <img
                     src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + key}
                     className="w-36 h-36 my-auto mx-4"
-                    onClick={() => coverImageSetter(key as string)}
+                    onClick={() => coverImageSetter(key as string, false)}
                   />
                 </div>
               ))}
@@ -258,7 +260,7 @@ export default function EditPhotographyForm(post: Photography) {
                   <img
                     src={newImageHolder[index] as string}
                     className="w-36 h-36 my-auto mx-4"
-                    onClick={() => coverImageSetter(image.name)}
+                    onClick={() => coverImageSetter(image.name, true)}
                   />
                 </div>
               ))}

@@ -15,7 +15,7 @@ export default function CreatePhotographyForm() {
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
-  const [coverImage, setCoverImage] = useState<string>(post.cover_image);
+  const [coverImage, setCoverImage] = useState<string>();
 
   const router = useRouter();
 
@@ -36,6 +36,9 @@ export default function CreatePhotographyForm() {
 
   const savingStateToggle = () => {
     setSavingAsDraft(!savingAsDraft);
+  };
+  const coverImageSetter = (imageName: string) => {
+    setCoverImage(imageName);
   };
 
   const createPhotographyPage = async (e: React.FormEvent) => {
@@ -58,7 +61,7 @@ export default function CreatePhotographyForm() {
         title: titleRef.current.value.replaceAll(" ", "_"),
         blurb: editorContent,
         images: keys,
-        cover_image: coverImage.replaceAll("+", "_").replaceAll(" ", "_"),
+        cover_image: coverImage?.replaceAll("+", "_").replaceAll(" ", "_"),
         published: !savingAsDraft,
       };
 
@@ -147,6 +150,7 @@ export default function CreatePhotographyForm() {
                 <img
                   src={imageHolder[index] as string}
                   className="w-36 h-36 my-auto mx-4"
+                  onClick={() => coverImageSetter(image.name)}
                 />
               </div>
             ))}
