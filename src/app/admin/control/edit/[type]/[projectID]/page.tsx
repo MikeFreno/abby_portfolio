@@ -69,6 +69,7 @@ export default async function EditSpecificPage({
             captions={project.captions}
             published={project.published}
             photography_flow={project.photography_flow}
+            cover_image={project.cover_image}
           />
         </>
       );
