@@ -197,12 +197,14 @@ export default function EditPhotographyForm(post: Photography) {
               {imageHolder.map((key, index) => (
                 <div key={index}>
                   {key == coverImage ? (
-                    <div className="absolute bg-emerald-400 rounded-full translate-x-16 translate-y-14">
+                    <div className="absolute translate-x-16 translate-y-12">
+                      <div className="absolute z-0 bg-emerald-400 ml-1.5 mt-1.5 rounded-full w-10 h-10" />
                       <CheckCircle
-                        height={36}
-                        width={36}
+                        height={52}
+                        width={52}
                         strokeWidth={1.5}
                         stroke={"#27272a"}
+                        className="z-10 absolute"
                       />
                     </div>
                   ) : null}
@@ -231,12 +233,14 @@ export default function EditPhotographyForm(post: Photography) {
               {images.map((image, index) => (
                 <div key={index}>
                   {image.name == coverImage ? (
-                    <div className="inset-0 absolute bg-emerald-400 rounded-full translate-x-16 translate-y-14">
+                    <div className="absolute translate-x-16 translate-y-12">
+                      <div className="absolute z-0 bg-emerald-400 ml-1.5 mt-1.5 rounded-full w-10 h-10" />
                       <CheckCircle
-                        height={36}
-                        width={36}
+                        height={52}
+                        width={52}
                         strokeWidth={1.5}
                         stroke={"#27272a"}
+                        className="z-10 absolute"
                       />
                     </div>
                   ) : null}
@@ -288,9 +292,9 @@ export default function EditPhotographyForm(post: Photography) {
                 submitButtonLoading
                   ? "w-32 bg-zinc-500"
                   : !savingAsDraft
-                  ? "w-32 border-emerald-500 bg-emerald-400 hover:bg-emerald-500"
-                  : "w-36 border-blue-500 bg-blue-400 hover:bg-blue-500 "
-              } rounded border text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
+                  ? "w-32 bg-emerald-400 hover:bg-emerald-500"
+                  : "w-36 bg-blue-400 hover:bg-blue-500 "
+              } rounded text-white shadow-md transform active:scale-90 transition-all duration-300 ease-in-out px-4 py-2`}
             >
               {submitButtonLoading
                 ? "Loading..."
@@ -300,11 +304,17 @@ export default function EditPhotographyForm(post: Photography) {
             </button>
           </div>
           <a
+            href={`/admin/control/flow-control/${post.id}`}
+            className="py-2 mx-auto px-4 transform text-white w-fit my-2 opacity-90 hover:opacity-100 z-10 bg-blue-400 p-1 hover:bg-blue-500 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+          >
+            Go To Flow Control
+          </a>
+          <a
             href={`/photography/${titleRef.current?.value.replaceAll(
               " ",
               "_",
             )}`}
-            className="py-4 text-lg px-6 transform mx-auto text-white w-fit my-2 opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+            className="py-4 text-lg px-6 transform mx-auto text-white w-fit my-2 opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
           >
             Go To Album
           </a>

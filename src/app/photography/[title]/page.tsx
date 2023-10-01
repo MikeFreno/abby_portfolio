@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { ParsedPhotographyFlow, Photography } from "~/types/db";
+import { Photography } from "~/types/db";
 import { env } from "~/env.mjs";
 import { ConnectionFactory } from "~/app/api/database/ConnectionFactory";
 import PhotographyAlbum from "./client";
@@ -19,7 +19,7 @@ export default async function DynamicPhotographyPage({
 
   let flow: { [key: number]: string[] } = {};
   if (album && album.photography_flow) {
-    flow = album.photography_flow as ParsedPhotographyFlow;
+    flow = album.photography_flow;
   } else {
     if (album.images) {
       // render default flowState

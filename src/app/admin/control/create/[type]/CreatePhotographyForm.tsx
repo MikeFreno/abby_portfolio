@@ -77,9 +77,9 @@ export default function CreatePhotographyForm() {
   };
 
   const removeImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setImageHolder((prevHeldImages) =>
-      prevHeldImages.filter((image, i) => i !== index),
+      prevHeldImages.filter((_, i) => i !== index),
     );
   };
 
@@ -117,19 +117,22 @@ export default function CreatePhotographyForm() {
               acceptedFiles={"image/jpg, image/jpeg, image/png"}
             />
           </div>
-          <div className="text-center text-xl">
+          <div className="text-center text-xl mb-4">
             You can click on the center of an image to set it as the cover photo
+            (portrait works best)
           </div>
           <div className="grid grid-cols-6 gap-4 -mx-24">
             {images.map((image, index) => (
               <div key={index}>
                 {image.name == coverImage ? (
-                  <div className=" absolute bg-emerald-400 rounded-full translate-x-16 translate-y-14">
+                  <div className="absolute translate-x-16 translate-y-12">
+                    <div className="absolute z-0 bg-emerald-400 ml-1.5 mt-1.5 rounded-full w-10 h-10" />
                     <CheckCircle
-                      height={36}
-                      width={36}
+                      height={52}
+                      width={52}
                       strokeWidth={1.5}
                       stroke={"#27272a"}
+                      className="z-10 absolute"
                     />
                   </div>
                 ) : null}

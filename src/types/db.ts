@@ -6,8 +6,8 @@ export interface Photography {
   images: string | null;
   cover_image: string | null;
   published: boolean;
-  photography_flow: any; // parses to ParsedPhotographyFlow
-  captions: any; // parses to ParsedCaptions
+  photography_flow: { [key: number]: string[] };
+  captions: { [key: number]: string };
 }
 
 // Film Interface
@@ -49,6 +49,3 @@ export interface Acting {
   attachments: string | null;
   published: boolean;
 }
-
-export type ParsedPhotographyFlow = { [key: number]: string[] };
-export type ParsedCaptions = { [key: number]: string };

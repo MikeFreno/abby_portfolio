@@ -27,7 +27,7 @@ export default function AlbumCover(project: Photography) {
   }, []);
 
   return (
-    <div className="relative mx-auto my-8 bg-emerald-50">
+    <div className="relative h-fit my-8">
       <Link
         href={`/photography/${project.title}`}
         className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-white hover:bg-opacity-0 transition-all duration-500 ease-in-out"
@@ -59,6 +59,7 @@ export default function AlbumCover(project: Photography) {
               project.images?.split("\\,")[0]
             : "/placeholder.jpg"
         }
+        className=""
         alt={project.title + " cover"}
         width={480}
         height={480}

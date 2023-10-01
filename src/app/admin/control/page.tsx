@@ -121,11 +121,11 @@ function ProjectSection(props: {
           ? `Live ${props.type} projects`
           : `${toTitleCase(props.type)} drafts`}
       </div>
-      <div className="grid grid-cols-2 gap-8 pb-4 last:flex last:justify-center">
+      <div className="grid grid-cols-2 gap-8 pb-4">
         {props.data.map((row) => (
           <div
             key={row.id}
-            className="px-8 py-4 my-4 rounded-md shadow-xl bg-emerald-50 h-fit"
+            className="px-8 py-4 my-4 w-3/4 mx-auto rounded-md shadow-xl bg-emerald-50 h-fit"
           >
             <div className="flex flex-col justify-evenly">
               <div className="text-2xl text-center py-4">

@@ -7,24 +7,26 @@ import ArrowIcon from "~/icons/Arrow";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import { ParsedPhotographyFlow, Photography } from "~/types/db";
+import { Photography } from "~/types/db";
 import PlusIcon from "~/icons/Plus";
 import MinusIcon from "~/icons/Minus";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import XCircle from "~/icons/XCircle";
 
 export default function FlowClient(props: { post: Photography }) {
   const [flow, setFlow] = useState<{ [row: number]: string[] }>();
   const [firstLoadFinished, setFirstLoadFinished] = useState<boolean>(false);
   const [attachmentArray, setAttachmentArray] = useState<{ src: string }[]>([]);
   const [showingLightbox, setShowingLightbox] = useState<boolean>(false);
+  const [flowSaving, setFlowSaving] = useState<boolean>(false);
   const clickedImageRef = useRef<number>(0);
 
   const router = useRouter();
 
   function createFlowState() {
     if (props.post.photography_flow) {
-      const flow = props.post.photography_flow as ParsedPhotographyFlow;
+      const flow = props.post.photography_flow;
       setFlow(flow);
       let localAttachments = props.post.images?.split("\\,");
       let srced: { src: string }[] = [];
@@ -74,6 +76,40 @@ export default function FlowClient(props: { post: Photography }) {
       setFlow(newFlow);
     }
   }
+
+  function deleteImageFromFlow(image: string) {
+    if (flow) {
+      const confirm = window.confirm("delete image?");
+      if (confirm) {
+        let newFlow: { [row: number]: string[] } = {};
+        Object.entries(flow).forEach(([row, values]) => {
+          let newValues: string[] = [];
+          values.forEach((value) => {
+            if (value !== image) {
+              newValues.push(value);
+            }
+          });
+          newFlow[+row] = newValues;
+        });
+        setFlow(newFlow);
+        removeImageFromImages(image);
+      }
+    }
+  }
+
+  const removeImageFromImages = async (key: string) => {
+    const imgStringArr = props.post.images!.split("\\,");
+    const newString = imgStringArr.filter((str) => str !== key).join("\\,");
+    await fetch("/api/s3/deleteImage", {
+      method: "POST",
+      body: JSON.stringify({
+        key: key,
+        newAttachmentString: newString,
+        id: props.post.id,
+      }),
+    });
+  };
+
   function moveImageLeft(row: number, col: number) {
     //target is (row, (col - 1))
     let newFlow = { ...flow! };
@@ -167,7 +203,7 @@ export default function FlowClient(props: { post: Photography }) {
     if (confirm) {
       saveFlow();
     }
-    router.push(`/admin/control/flow-control/${props.post.id}`);
+    router.push(`/admin/control/edit/photography/${props.post.id}`);
   }
 
   function removeRow(row: number) {
@@ -186,12 +222,14 @@ export default function FlowClient(props: { post: Photography }) {
   }
 
   async function saveFlow() {
+    setFlowSaving(true);
     const data = { id: props.post.id, photography_flow: flow };
     console.log(data);
     await fetch(`/api/database/photography/update`, {
       method: "PATCH",
       body: JSON.stringify(data),
     });
+    setFlowSaving(false);
   }
 
   while (!firstLoadFinished) {
@@ -290,6 +328,19 @@ export default function FlowClient(props: { post: Photography }) {
                             </button>
                           ) : null}
                           <div className="rounded-sm w-full bg-opacity-50">
+                            <div className="absolute w-full h-fit ml-[40%]">
+                              <div
+                                className="mt-24 z-10 bg-white w-fit bg-opacity-0 hover:bg-opacity-50 opacity-0 transition-all ease-in-out duration-300 hover:opacity-100"
+                                onClick={() => deleteImageFromFlow(leaf)}
+                              >
+                                <XCircle
+                                  height={72}
+                                  width={72}
+                                  stroke={"black"}
+                                  strokeWidth={1}
+                                />
+                              </div>
+                            </div>
                             <img
                               alt={"image_" + row + "_" + values.indexOf(leaf)}
                               src={env.NEXT_PUBLIC_AWS_BUCKET_STRING + leaf}
@@ -354,7 +405,7 @@ export default function FlowClient(props: { post: Photography }) {
                       </div>
                     ) : null}
                   </div>
-                  <div className="flex justify-center my-1">
+                  <div className="flex justify-center rounded-md bg-zinc-600 w-fit py-2 mt-1 px-4 mx-auto">
                     {+row > 0 ? (
                       <button
                         onClick={() => moveRowUp(+row)}
@@ -402,22 +453,26 @@ export default function FlowClient(props: { post: Photography }) {
             ))}
             <div className="mx-auto my-4">
               <button
-                className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-emerald-300 p-1 hover:bg-emerald-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                disabled={flowSaving}
+                className={`${
+                  flowSaving
+                    ? "bg-zinc-400"
+                    : "bg-emerald-300 opacity-90 hover:opacity-100 hover:bg-emerald-400"
+                } py-4 text-lg mx-1 px-6 transform text-white z-10 bg-emerald-300 p-1 active:scale-90 transition-all ease-in-out duration-300 rounded-md`}
                 onClick={saveFlow}
               >
-                Save Flow
-              </button>{" "}
-              <Link
-                href={`/photography/${props.post.title}`}
-                className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
-              >
-                Go To Post
+                {flowSaving ? "Loading..." : "Save Flow"}
+              </button>
+              <Link href={`/photography/${props.post.title}`}>
+                <button className="py-4 mx-1 text-lg px-6 transform text-white opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md">
+                  Go To Post
+                </button>
               </Link>
             </div>
             <div className="mx-auto">
               <button
                 onClick={goToEdit}
-                className="py-4 text-lg px-6 transform opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
+                className="py-4 text-lg px-6 text-white transform opacity-90 hover:opacity-100 z-10 bg-blue-300 p-1 hover:bg-blue-400 active:scale-90 transition-all ease-in-out duration-300 rounded-md"
               >
                 Edit Album
               </button>

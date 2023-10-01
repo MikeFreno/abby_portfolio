@@ -16,17 +16,18 @@ export default async function PhotographyMainPage() {
         <div className="min-h-screen">
           <div className="grid grid-cols-1 md:grid-cols-2 px-12 py-24">
             {photographyData.map((row) => (
-              <AlbumCover
-                key={row.id}
-                id={row.id}
-                title={row.title}
-                blurb={row.blurb}
-                images={row.images}
-                published={row.published}
-                photography_flow={row.photography_flow}
-                captions={row.captions}
-                cover_image={row.cover_image}
-              />
+              <div key={row.id} className="m-auto">
+                <AlbumCover
+                  id={row.id}
+                  title={row.title}
+                  blurb={row.blurb}
+                  images={row.images}
+                  published={row.published}
+                  photography_flow={row.photography_flow}
+                  captions={row.captions}
+                  cover_image={row.cover_image}
+                />
+              </div>
             ))}
           </div>
         </div>

@@ -3,6 +3,7 @@ export default function CheckCircle(props: {
   width: number;
   strokeWidth: number;
   stroke: string;
+  className: string;
 }) {
   return (
     <svg
@@ -13,6 +14,7 @@ export default function CheckCircle(props: {
       width={props.width}
       height={props.height}
       stroke={props.stroke}
+      className={props.className}
     >
       <path
         strokeLinecap="round"

@@ -18,7 +18,7 @@ export async function POST(input: NextRequest) {
   const conn = ConnectionFactory();
   const query = `
     INSERT INTO Photography (title, blurb, images, cover_image, photography_flow, captions, published)
-    VALUES (?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
   const imagesJoined = images ? images.join("\\,") : null;
   const captions_entry = captions ? captions : null;
