@@ -29,7 +29,7 @@ export default async function AddImageToS3(
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 
   return key;

@@ -5,7 +5,6 @@ import { useCallback, useRef, useState } from "react";
 import Dropzone from "~/components/Dropzone";
 import AddImageToS3 from "./s3Upload";
 import XCircle from "~/icons/XCircle";
-import Link from "next/link";
 
 export default function CreateActingForm() {
   const [editorContent, setEditorContent] = useState<string>("");
@@ -97,7 +96,7 @@ export default function CreateActingForm() {
             <span className="bar"></span>
             <label className="underlinedInputLabel">Title</label>
           </div>
-          <div className="py-4">
+          <div className="py-4 mx-auto">
             <div className="text-center font-light text-lg">
               Enter Blurb below (optional)
             </div>

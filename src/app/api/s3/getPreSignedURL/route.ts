@@ -10,23 +10,31 @@ interface InputData {
 }
 
 export async function POST(input: NextRequest) {
-  const inputData = (await input.json()) as InputData;
-  const { type, title, filename } = inputData;
+  try {
+    const inputData = (await input.json()) as InputData;
+    const { type, title, filename } = inputData;
 
-  const client = new S3Client({
-    region: env.AWS_REGION,
-  });
-  const Key = `${type}/${title}/${filename}`;
-  const ext = /^.+\.([^.]+)$/.exec(filename);
+    const client = new S3Client({
+      region: env.AWS_REGION,
+    });
+    const Key = `${type}/${title}/${filename}`;
+    const ext = /^.+\.([^.]+)$/.exec(filename);
 
-  const s3params = {
-    Bucket: env.AWS_S3_BUCKET_NAME as string,
-    Key,
-    ContentType: `image/${ext![1]}`,
-  };
+    const s3params = {
+      Bucket: env.AWS_S3_BUCKET_NAME as string,
+      Key,
+      ContentType: `image/${ext![1]}`,
+    };
 
-  const command = new PutObjectCommand(s3params);
+    const command = new PutObjectCommand(s3params);
 
-  const signedUrl = await getSignedUrl(client, command, { expiresIn: 120 });
-  return NextResponse.json({ uploadURL: signedUrl, key: Key });
+    const signedUrl = await getSignedUrl(client, command, { expiresIn: 120 });
+    return NextResponse.json(
+      { uploadURL: signedUrl, key: Key },
+      { status: 200 },
+    );
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ status: 500 });
+  }
 }

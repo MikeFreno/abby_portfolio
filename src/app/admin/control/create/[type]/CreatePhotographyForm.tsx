@@ -15,7 +15,7 @@ export default function CreatePhotographyForm() {
   const [savingAsDraft, setSavingAsDraft] = useState<boolean>(true);
   const [submitButtonLoading, setSubmitButtonLoading] =
     useState<boolean>(false);
-  const [coverImage, setCoverImage] = useState<string>();
+  const [coverImage, setCoverImage] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -61,7 +61,9 @@ export default function CreatePhotographyForm() {
         title: titleRef.current.value.replaceAll(" ", "_"),
         blurb: editorContent,
         images: keys,
-        cover_image: coverImage?.replaceAll("+", "_").replaceAll(" ", "_"),
+        cover_image: coverImage
+          ? coverImage.replaceAll("+", "_").replaceAll(" ", "_")
+          : null,
         published: !savingAsDraft,
       };
 
@@ -103,7 +105,7 @@ export default function CreatePhotographyForm() {
             <span className="bar"></span>
             <label className="underlinedInputLabel">Title</label>
           </div>
-          <div className="py-4">
+          <div className="py-4 mx-auto">
             <div className="text-center font-light text-lg">
               Enter Blurb below (optional)
             </div>

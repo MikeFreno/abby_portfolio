@@ -82,7 +82,7 @@ export default function EditPhotographyForm(post: Photography) {
 
       const data = {
         id: post.id,
-        title: titleRef.current.value.replace(" ", "_"),
+        title: titleRef.current.value.replaceAll(" ", "_"),
         blurb: editorContent,
         images: keys,
         cover_image: coverImage?.replaceAll("+", "_").replaceAll(" ", "_"),
@@ -171,7 +171,7 @@ export default function EditPhotographyForm(post: Photography) {
             <span className="bar"></span>
             <label className="underlinedInputLabel">Title</label>
           </div>
-          <div className="py-4">
+          <div className="py-4 mx-auto">
             <div className="text-center font-light text-lg">
               Enter Blurb below (optional)
             </div>

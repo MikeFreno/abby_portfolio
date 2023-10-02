@@ -10,8 +10,12 @@ export default async function DynamicPhotographyPage({
   params: { title: string };
 }) {
   const conn = ConnectionFactory();
+  //console.log(params.title);
   const query = `SELECT * FROM Photography WHERE title = ? AND published = ?`;
-  const db_params = [params.title.replaceAll("%2C", ","), true];
+  const db_params = [
+    params.title.replaceAll("%2C", ",").replaceAll("%40", "@"),
+    true,
+  ];
 
   const res = await conn.execute(query, db_params);
   //console.log("Results:" + res.rows[0]);

@@ -96,7 +96,7 @@ export default function CreateCommercialForm() {
             <span className="bar"></span>
             <label className="underlinedInputLabel">Title</label>
           </div>
-          <div className="py-4">
+          <div className="py-4 mx-auto">
             <div className="text-center font-light text-lg">
               Enter Blurb below (optional)
             </div>
